@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose')
 const dotenv = require('dotenv');
-const { connectToServer } = require('./utils/dbConnect');
 
 // route imports
 const userRoutes = require('./routes/v1/user.route');
@@ -19,7 +19,7 @@ app.use(cors());
 
 
 // Connect to MongoDB using Mongoose
-mongoose.connect(process.env.DATABASE_LOCAL).then(() => {
+mongoose.connect(process.env.DATABASE_ATLAS).then(() => {
   const port = process.env.PORT || 5000;
 
   app.listen(port, () => {

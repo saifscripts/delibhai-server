@@ -1,4 +1,4 @@
-const { getDb } = require('../utils/dbConnect');
+const User = require("../models/User");
 
 const verifyAdmin = async (req, res, next) => {
   const db = getDb();
@@ -6,7 +6,7 @@ const verifyAdmin = async (req, res, next) => {
   const decodedEmail = req.email;
   const query = { email: decodedEmail };
 
-  const user = await db.collection('users').findOne(query);
+  const user = User.findOne(query);
 
   if (user.role === 'admin') {
     next();

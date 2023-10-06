@@ -1,10 +1,10 @@
 const User = require('../models/User');
 
 // Example service methods
-exports.getAllUsersService = async() => {
-  return User.find();
+exports.getUserByIdService = async(id) => {
+  return await User.findById(id)
 }
 
-exports.createUserService = async(userData) => {
-  return User.create(userData);
+exports.signupService = async(userInfo) => {
+  return await User.create(userInfo);
 }
