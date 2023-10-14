@@ -107,6 +107,17 @@ userSchema.pre("save", function (next) {
   next();
 });
 
+// Set default status (this stops users updating the status directly);
+userSchema.pre("save", function (next) {
+  if (!this.isModified("status")) {
+    //  only run if role is modified, otherwise it will change every time we save the user!
+    return next();
+  }
+  this.status = 'inactive'
+
+  next();
+});
+
 
 module.exports = mongoose.model('User', userSchema);
  
