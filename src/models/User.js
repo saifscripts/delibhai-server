@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
-const isMobilePhone = require('../utils/isMobilePhone')
+const {isMobilePhone} = require('../utils/isMobilePhone')
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -21,13 +21,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true,
     lowercase: true,
-    unique: [true, 'User with this email already exist'],
+    unique: true,
     validate: [validator.isEmail, 'Email is not valid']
   },
   mobile: {
     type: String,
     require: [true, 'Mobile Number is required'],
-    unique: [true, 'This mobile number is already in use'],
+    unique: true,
     validate: [isMobilePhone('bn-BD'), 'Mobile Number is invalid'],
   },
   password: {
@@ -36,13 +36,13 @@ const userSchema = new mongoose.Schema({
     validate: {
       validator: (value) =>
         validator.isStrongPassword(value, {
-          minLength: 6,
-          // minLowercase: 1,
-          // minNumbers: 1,
-          // minUppercase: 1,
-          // minSymbols: 1,
+          minLength: 4,
+          minLowercase: 0,
+          minNumbers: 0,
+          minUppercase: 0,
+          minSymbols: 0,
         }),
-      message: "Password is not strong enough.",
+      message: "Password must be at least 4 characters",
     },
   },
   confirmPassword: {
@@ -76,6 +76,8 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date,
+},{
+  timestamps: true
 });
 
 module.exports = mongoose.model('User', userSchema);
