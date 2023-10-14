@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require("bcryptjs");
 const {isMobilePhone} = require('../utils/isMobilePhone')
 
 const userSchema = new mongoose.Schema({
@@ -79,6 +80,33 @@ const userSchema = new mongoose.Schema({
 },{
   timestamps: true
 });
+
+userSchema.pre("save", function (next) {
+  if (!this.isModified("password")) {
+    //  only run if password is modified, otherwise it will change every time we save the user!
+    return next();
+  }
+  const password = this.password;
+
+  const hashedPassword = bcrypt.hashSync(password);
+
+  this.password = hashedPassword;
+  this.confirmPassword = undefined;
+
+  next();
+});
+
+// Set default role (this stops users updating the role directly);
+userSchema.pre("save", function (next) {
+  if (!this.isModified("role")) {
+    //  only run if role is modified, otherwise it will change every time we save the user!
+    return next();
+  }
+  this.role = 'hero'
+
+  next();
+});
+
 
 module.exports = mongoose.model('User', userSchema);
  
