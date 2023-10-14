@@ -1,4 +1,6 @@
 const { getAllUsersService, signupService,getUserByIdService } = require("../services/user.service");
+const { generateOTP } = require("../utils/generateOTP");
+const { sendSMS } = require("../utils/sendSMS");
 
 exports.getAllUsers = async(req, res) => {
   const users = await getAllUsersService();
@@ -7,16 +9,15 @@ exports.getAllUsers = async(req, res) => {
 
 exports.signup = async(req, res) => {
   try {
-    const userInfo = req.body;
-    const user = await signupService(userInfo);
+    const user = await signupService(req.body);
 
-    console.log(user)
-    if(!user) {
-      return res.status(400).json({
-        success: false,
-        message: "User couldn't signed up"
-      })
-    }
+    const otp = user.generateOTP();
+
+    await user.save({ validateBeforeSave: false });
+
+    const {sid} = await sendSMS(`Verification Code: ${otp}`, user.mobile);
+    console.log(sid);
+
     res.status(200).json({
       success: true,
       message: 'User signed up successfully'

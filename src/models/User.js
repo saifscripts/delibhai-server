@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require("bcryptjs");
-const {isMobilePhone} = require('../utils/isMobilePhone')
+const {isMobilePhone} = require('../utils/isMobilePhone');
+const { generateOTP } = require('../utils/generateOTP');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -117,6 +118,39 @@ userSchema.pre("save", function (next) {
 
   next();
 });
+
+// Set default status (this stops users updating the status directly);
+userSchema.pre("save", function (next) {
+  if (!this.isModified("mobile")) {
+    //  only run if role is modified, otherwise it will change every time we save the user!
+    return next();
+  }
+
+  let mobile = this.mobile;
+
+  if (mobile.startsWith('+88')) {
+    mobile = mobile.slice(3);
+  } else if (mobile.startsWith('88')) {
+    mobile = mobile.slice(2);
+  }
+
+  this.mobile = mobile;
+
+  next();
+});
+
+userSchema.methods.generateOTP = function () {
+  const otp = generateOTP(6);
+
+  this.otp = otp;
+
+  const date = new Date();
+
+  date.setMinutes(date.getMinutes() + 1);
+  this.otpExpires = date;
+
+  return otp;
+};
 
 
 module.exports = mongoose.model('User', userSchema);
