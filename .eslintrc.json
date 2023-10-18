@@ -8,6 +8,7 @@
     "node": true
   },
   "rules": {
+    "no-plusplus": 0,
     "no-return-await": 0,
     "implicit-arrow-linebreak": 0,
     "no-console": 0,

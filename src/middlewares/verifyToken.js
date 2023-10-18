@@ -1,24 +1,27 @@
 const jwt = require('jsonwebtoken');
+const { promisify } = require('util');
 
-const verifyToken = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  const userEmail = req.query.email;
-  if (!authHeader) {
-    return res.status(401).send({ message: 'Unauthorized Access' });
-  }
-  const token = authHeader.split(' ')[1];
-  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-    if (err) {
-      return res.status(403).send({ message: 'Forbidden Access' });
+const verifyToken = async (req, res, next) => {
+    try {
+        const token = req.headers?.authorization?.split(' ')[1];
+
+        if (!token) {
+            return res.send(401).json({
+                success: false,
+                message: 'You are not logged in',
+            });
+        }
+
+        const decoded = await promisify(jwt.verify)(token, process.env.ACCESS_TOKEN_SECRET);
+        req.user = decoded;
+
+        next();
+    } catch (error) {
+        res.status(403).json({
+            success: false,
+            error,
+        });
     }
-    const decodedEmail = decoded.email;
-    if (decodedEmail === userEmail) {
-      req.email = decodedEmail;
-      next();
-    } else {
-      return res.status(403).send({ message: 'Forbidden Access' });
-    }
-  });
 };
 
 module.exports = verifyToken;

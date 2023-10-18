@@ -162,3 +162,20 @@ exports.login = async (req, res) => {
         });
     }
 };
+
+exports.getMe = async (req, res) => {
+    try {
+        const user = await getUserByIdService(req.user._id);
+
+        res.status(200).json({
+            success: true,
+            message: 'Successfully logged in',
+            data: user,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message,
+        });
+    }
+};

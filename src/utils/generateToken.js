@@ -5,7 +5,7 @@ exports.generateToken = (userInfo) => {
     const payload = { _id, mobile, role };
 
     const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: '20000',
+        expiresIn: '30d',
     });
 
     return token;
