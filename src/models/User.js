@@ -160,4 +160,8 @@ userSchema.methods.removeOTP = function () {
     this.otpExpires = undefined;
 };
 
+userSchema.methods.comparePassword = function (password, hashedPassword) {
+    return bcrypt.compareSync(password, hashedPassword);
+};
+
 module.exports = mongoose.model('User', userSchema);

@@ -5,11 +5,10 @@ exports.sendSMS = async (body, mobile) => {
 
     console.log(mobile);
 
-    const res = await client.messages
-        .create({
-            body,
-            from: '+12564459282',
-            to: '+8801766637772'
-        })
+    const res = await client.messages.create({
+        body,
+        from: '+12564459282',
+        to: '+8801766637772',
+    });
     return res;
-}
+};

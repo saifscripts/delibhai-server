@@ -11,3 +11,9 @@ exports.updateUserByIdService = async (id, data) =>
             $set: data,
         },
     );
+
+exports.getUserByMobileService = async (mobile, fields) => {
+    const user = await User.findOne({ mobile }).select(fields);
+
+    return user;
+};
