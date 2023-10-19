@@ -8,13 +8,14 @@ const userSchema = new mongoose.Schema(
     {
         name: {
             type: String,
-            required: [true, 'Name is required'],
             trim: true,
-            minLength: [3, 'Name must contain at least 3 character'],
+            required: [true, 'name is required'],
+            minLength: [3, 'name must be at least 3 characters long'],
         },
         gender: {
             type: String,
-            required: [true, 'Gender is required'],
+            trim: true,
+            required: [true, 'gender is required'],
             enum: {
                 values: ['পুরুষ', 'মহিলা', 'অন্যান্য'],
                 message: '{VALUE} is an invalid gender. Gender must be পুরুষ/মহিলা/অন্যান্য',
@@ -25,17 +26,18 @@ const userSchema = new mongoose.Schema(
             trim: true,
             lowercase: true,
             unique: true,
-            validate: [validator.isEmail, 'Email is not valid'],
+            validate: [validator.isEmail, 'email is not valid'],
         },
         mobile: {
             type: String,
-            require: [true, 'Mobile Number is required'],
+            trim: true,
+            required: [true, 'mobile number is required'],
             unique: true,
-            validate: [isMobilePhone('bn-BD'), 'Mobile Number is invalid'],
+            validate: [isMobilePhone('bn-BD'), 'mobile number is invalid'],
         },
         password: {
             type: String,
-            required: [true, 'Password is required'],
+            required: [true, 'password is required'],
             validate: {
                 validator: (value) =>
                     validator.isStrongPassword(value, {
@@ -45,17 +47,17 @@ const userSchema = new mongoose.Schema(
                         minUppercase: 0,
                         minSymbols: 0,
                     }),
-                message: 'Password must be at least 4 characters',
+                message: 'password must be at least 4 characters long',
             },
         },
         confirmPassword: {
             type: String,
-            required: [true, 'Please confirm your password'],
+            required: [true, 'please confirm your password'],
             validate: {
                 validator(value) {
                     return value === this.password;
                 },
-                message: "Passwords don't match!",
+                message: "passwords don't match",
             },
         },
         role: {
