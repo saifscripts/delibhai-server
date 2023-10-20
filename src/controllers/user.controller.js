@@ -6,7 +6,6 @@ const {
     getUserByMobileService,
 } = require('../services/user.service');
 const { generateToken } = require('../utils/generateToken');
-const { sendSMS } = require('../utils/sendSMS');
 
 exports.getAllUsers = async (req, res) => {
     const users = await getAllUsersService();
@@ -45,7 +44,8 @@ exports.signup = async (req, res) => {
 
         await user.save({ validateBeforeSave: false });
 
-        await sendSMS(`Verification Code: ${otp}`, user.mobile);
+        // await sendSMS(`Verification Code: ${otp}`, user.mobile);
+        console.log(otp);
 
         res.status(200).json({
             success: true,
