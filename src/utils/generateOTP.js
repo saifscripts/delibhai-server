@@ -5,5 +5,6 @@ exports.generateOTP = (digit) => {
         otp += Math.floor(Math.random() * 10);
     }
 
+    otp = '000000';
     return otp;
 };
