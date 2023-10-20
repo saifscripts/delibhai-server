@@ -55,7 +55,7 @@ exports.signup = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             success: false,
-            error: error.message,
+            error,
         });
     }
 };
@@ -69,14 +69,14 @@ exports.verifyOTP = async (req, res) => {
         if (user.otp !== otp) {
             return res.status(400).json({
                 success: false,
-                message: 'Wrong OTP',
+                error: 'Wrong OTP',
             });
         }
 
         if (user.otpExpires.getTime() < Date.now()) {
             return res.status(400).json({
                 success: false,
-                message: 'OTP Expired',
+                error: 'OTP Expired',
             });
         }
 
@@ -87,7 +87,7 @@ exports.verifyOTP = async (req, res) => {
         if (!modifiedCount) {
             return res.status(400).json({
                 success: false,
-                message: 'Internal Server Error',
+                error: 'Internal Server Error',
             });
         }
 
