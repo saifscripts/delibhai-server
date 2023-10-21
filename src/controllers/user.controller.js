@@ -1,11 +1,13 @@
 const {
     getAllUsersService,
     signupService,
+    getUserByEmailService,
     getUserByIdService,
     updateUserByIdService,
     getUserByMobileService,
 } = require('../services/user.service');
 const { generateToken } = require('../utils/generateToken');
+const sendResponse = require('../utils/sendResponse');
 
 exports.getAllUsers = async (req, res) => {
     const users = await getAllUsersService();
@@ -38,25 +40,48 @@ exports.getUserById = async (req, res) => {
 
 exports.signup = async (req, res) => {
     try {
-        const user = await signupService(req.body);
+        // Extract userInfo from req.body to prevent inserting unwanted fields
+        const { name, gender, email, mobile, password, confirmPassword } = req.body;
+        const userInfo = {
+            name,
+            gender,
+            email,
+            mobile,
+            password,
+            confirmPassword,
+        };
 
+        // Check if user exist with this email
+        let user = await getUserByEmailService(email);
+
+        // Send error response if user exist
+        if (user) {
+            const message =
+                user.status === 'inactive'
+                    ? "can't use this email right now. try again later"
+                    : 'a user already exist with this email address';
+            return sendResponse(res, 409, message);
+        }
+
+        // Create user
+        user = await signupService(userInfo);
+
+        // Generate otp
         const otp = user.generateOTP();
 
-        await user.save({ validateBeforeSave: false });
+        // Update the user with tempMobile, otp and otpExpires
+        user = await user.save({ validateBeforeSave: false });
 
-        // await sendSMS(`Verification Code: ${otp}`, user.mobile);
+        // Send otp to the user's phone number
+        // await sendSMS(`Verification Code: ${otp}`, user.tempMobile);
         console.log(otp);
 
-        res.status(200).json({
-            success: true,
-            userId: user._id,
-            message: 'User signed up successfully',
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            error,
-        });
+        // Send success response
+        sendResponse(res, 200, 'user signed up successfully', { id: user.id });
+    } catch (err) {
+        const status = err.status || 500;
+        const message = err.message || 'Internal Server Error';
+        sendResponse(res, status, message, err);
     }
 };
 

@@ -2,6 +2,8 @@ const User = require('../models/User');
 
 exports.getUserByIdService = async (id) => await User.findById(id).select('-password');
 
+exports.getUserByEmailService = async (email) => await User.findOne({ email });
+
 exports.signupService = async (userInfo) => await User.create(userInfo);
 
 exports.updateUserByIdService = async (id, data) => {

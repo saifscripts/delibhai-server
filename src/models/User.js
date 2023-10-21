@@ -25,7 +25,6 @@ const userSchema = new mongoose.Schema(
             type: String,
             trim: true,
             lowercase: true,
-            unique: true,
             validate: [validator.isEmail, 'email is not valid'],
         },
         mobile: {
@@ -33,6 +32,12 @@ const userSchema = new mongoose.Schema(
             trim: true,
             required: [true, 'mobile number is required'],
             unique: true,
+            sparse: true,
+            validate: [isMobilePhone('bn-BD'), 'mobile number is invalid'],
+        },
+        tempMobile: {
+            type: String,
+            trim: true,
             validate: [isMobilePhone('bn-BD'), 'mobile number is invalid'],
         },
         password: {
@@ -77,23 +82,24 @@ const userSchema = new mongoose.Schema(
 
         otp: String,
         otpExpires: Date,
+        otpSessionExpires: Date,
 
-        passwordChangedAt: Date,
-        passwordResetToken: String,
-        passwordResetExpires: Date,
+        // passwordChangedAt: Date,
+        // passwordResetToken: String,
+        // passwordResetExpires: Date,
     },
     {
         timestamps: true,
     },
 );
 
+// Generate hashedPassword and remove confirmPassword
 userSchema.pre('save', function (next) {
     if (!this.isModified('password')) {
-        //  only run if password is modified, otherwise it will change every time we save the user!
-        return next();
+        return next(); // Escape this method when password isn't modified
     }
-    const { password } = this;
 
+    const { password } = this;
     const hashedPassword = bcrypt.hashSync(password);
 
     this.password = hashedPassword;
@@ -102,44 +108,14 @@ userSchema.pre('save', function (next) {
     next();
 });
 
-// Set default role (this stops users updating the role directly);
-userSchema.pre('save', function (next) {
-    if (!this.isModified('role')) {
-        //  only run if role is modified, otherwise it will change every time we save the user!
-        return next();
-    }
-    this.role = 'hero';
-
-    next();
-});
-
-// Set default status (this stops users updating the status directly);
-userSchema.pre('save', function (next) {
-    if (!this.isModified('status')) {
-        //  only run if role is modified, otherwise it will change every time we save the user!
-        return next();
-    }
-    this.status = 'inactive';
-
-    next();
-});
-
-// Set default status (this stops users updating the status directly);
+// Remove Country Code from Mobile Number
 userSchema.pre('save', function (next) {
     if (!this.isModified('mobile')) {
-        //  only run if role is modified, otherwise it will change every time we save the user!
-        return next();
+        return next(); // Escape this method when mobile isn't modified
     }
 
-    let { mobile } = this;
-
-    if (mobile.startsWith('+88')) {
-        mobile = mobile.slice(3);
-    } else if (mobile.startsWith('88')) {
-        mobile = mobile.slice(2);
-    }
-
-    this.mobile = mobile;
+    this.tempMobile = this.mobile.slice(-11);
+    this.mobile = undefined;
 
     next();
 });
@@ -149,10 +125,13 @@ userSchema.methods.generateOTP = function () {
 
     this.otp = otp;
 
-    const date = new Date();
+    const otpExpires = new Date();
+    otpExpires.setMinutes(otpExpires.getMinutes() + 1);
+    this.otpExpires = otpExpires;
 
-    date.setMinutes(date.getMinutes() + 1);
-    this.otpExpires = date;
+    const otpSessionExpires = new Date();
+    otpSessionExpires.setMinutes(otpSessionExpires.getMinutes() + 2);
+    this.otpSessionExpires = otpSessionExpires;
 
     return otp;
 };
@@ -160,7 +139,13 @@ userSchema.methods.generateOTP = function () {
 userSchema.methods.removeOTP = function () {
     this.otp = undefined;
     this.otpExpires = undefined;
+    // this.otpSessionExpires = undefined;
 };
+
+// userSchema.methods.otpExpired = function () {
+//     if (!this.otpExpired) return false;
+//     return this.otpExpires?.getTime() < Date.now();
+// };
 
 userSchema.methods.comparePassword = function (password, hashedPassword) {
     return bcrypt.compareSync(password, hashedPassword);
