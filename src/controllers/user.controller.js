@@ -143,7 +143,8 @@ exports.login = async (req, res) => {
             return sendResponse(res, { status: 400, message: 'Please provide your credentials.' });
         }
 
-        const user = await getUserByMobileService(mobile);
+        // Slice mobile to remove Country Code and find the user
+        const user = await getUserByMobileService(mobile.slice(-11));
 
         if (!user) {
             return sendResponse(res, {
