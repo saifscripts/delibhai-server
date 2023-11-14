@@ -99,44 +99,39 @@ exports.verifyOTP = async (req, res) => {
 
         const user = await getUserByIdService(id);
 
-        if (user.otp !== otp) {
-            return res.status(400).json({
-                success: false,
-                error: 'Wrong OTP',
+        if (!user) {
+            return sendResponse(res, {
+                status: 400,
+                message: "User ID doesn't exist!",
             });
+        }
+
+        if (user.otp !== otp) {
+            return sendResponse(res, { status: 400, message: 'Wrong OTP!' });
         }
 
         if (user.otpExpires.getTime() < Date.now()) {
-            return res.status(400).json({
-                success: false,
-                error: 'OTP Expired',
-            });
+            return sendResponse(res, { status: 400, message: 'OTP Expired!' });
         }
 
+        // Make user status 'active'
         const { modifiedCount } = await updateUserByIdService(id, {
             status: 'active',
         });
 
         if (!modifiedCount) {
-            return res.status(400).json({
-                success: false,
-                error: 'Internal Server Error',
-            });
+            return sendResponse(res, { status: 500, message: 'Internal Server Error!' });
         }
 
         user.removeOTP();
-        user.removeTempMobile();
+        user.removeTempMobile(); // Add mobile field and remove tempMobile field
         await user.save({ validateBeforeSave: false });
 
-        res.status(200).json({
-            success: true,
-            message: 'OTP verified',
-        });
+        sendResponse(res, { status: 200, message: 'OTP verified!' });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message,
-        });
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
     }
 };
 
