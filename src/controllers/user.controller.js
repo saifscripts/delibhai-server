@@ -1,10 +1,13 @@
 const {
     getAllUsersService,
     signupService,
+    getUserByEmailService,
     getUserByIdService,
     updateUserByIdService,
+    getUserByMobileService,
 } = require('../services/user.service');
-const { sendSMS } = require('../utils/sendSMS');
+const { generateToken } = require('../utils/generateToken');
+const sendResponse = require('../utils/sendResponse');
 
 exports.getAllUsers = async (req, res) => {
     const users = await getAllUsersService();
@@ -37,25 +40,56 @@ exports.getUserById = async (req, res) => {
 
 exports.signup = async (req, res) => {
     try {
-        const user = await signupService(req.body);
+        // Extract userInfo from req.body to prevent inserting unwanted fields
+        const { name, gender, email, mobile, password, confirmPassword } = req.body;
+        const userInfo = {
+            name,
+            gender,
+            email,
+            mobile,
+            password,
+            confirmPassword,
+        };
 
+        // Check if user already exist with this email
+        let user = await getUserByEmailService(email);
+
+        // Send error response if user exist
+        if (user) {
+            const message =
+                user.status === 'inactive'
+                    ? "can't use this email right now. try again later"
+                    : 'a user already exist with this email address';
+
+            return sendResponse(res, { status: 409, message, code: 'duplicateEmail' });
+        }
+
+        // Create user
+        user = await signupService(userInfo);
+
+        // Generate otp
         const otp = user.generateOTP();
 
-        await user.save({ validateBeforeSave: false });
+        // Save the mobile number as tempMobile
+        user.saveTempMobile();
 
-        const { sid } = await sendSMS(`Verification Code: ${otp}`, user.mobile);
-        console.log(sid);
+        // Update the user with tempMobile, otp and otpExpires
+        user = await user.save({ validateBeforeSave: false });
 
-        res.status(200).json({
-            success: true,
-            userId: user._id,
-            message: 'User signed up successfully',
+        // Send otp to the user's phone number
+        // await sendSMS(`Verification Code: ${otp}`, user.tempMobile);
+        console.log(otp);
+
+        // Send success response
+        sendResponse(res, {
+            status: 200,
+            message: 'user signed up successfully',
+            data: { id: user.id },
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message,
-        });
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error';
+        sendResponse(res, { status, message, error });
     }
 };
 
@@ -68,14 +102,14 @@ exports.verifyOTP = async (req, res) => {
         if (user.otp !== otp) {
             return res.status(400).json({
                 success: false,
-                message: 'Wrong OTP',
+                error: 'Wrong OTP',
             });
         }
 
         if (user.otpExpires.getTime() < Date.now()) {
             return res.status(400).json({
                 success: false,
-                message: 'OTP Expired',
+                error: 'OTP Expired',
             });
         }
 
@@ -86,16 +120,91 @@ exports.verifyOTP = async (req, res) => {
         if (!modifiedCount) {
             return res.status(400).json({
                 success: false,
-                message: 'Internal Server Error',
+                error: 'Internal Server Error',
             });
         }
 
         user.removeOTP();
+        user.removeTempMobile();
         await user.save({ validateBeforeSave: false });
 
         res.status(200).json({
             success: true,
             message: 'OTP verified',
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message,
+        });
+    }
+};
+
+exports.login = async (req, res) => {
+    try {
+        const { mobile, password } = req.body;
+
+        if (!mobile || !password) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please provide your credentials',
+            });
+        }
+
+        const user = await getUserByMobileService(mobile);
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "User doesn't exist with this mobile number",
+            });
+        }
+
+        const isPasswordMatched = user.comparePassword(password, user.password);
+
+        if (!isPasswordMatched) {
+            return res.status(400).json({
+                success: false,
+                message: 'Incorrect Mobile/Password',
+            });
+        }
+
+        if (user.status === 'inactive') {
+            return res.status(400).json({
+                success: false,
+                message: 'Your mobile number is not verified. Please verify your mobile number',
+            });
+        }
+
+        const token = generateToken(user);
+
+        // remove password before sending
+        user.password = undefined;
+
+        res.status(200).json({
+            success: true,
+            message: 'Successfully logged in',
+            data: {
+                user,
+                token,
+            },
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message,
+        });
+    }
+};
+
+exports.getMe = async (req, res) => {
+    try {
+        const user = await getUserByIdService(req.user._id);
+
+        res.status(200).json({
+            success: true,
+            message: 'Successfully logged in',
+            data: user,
         });
     } catch (error) {
         res.status(500).json({
