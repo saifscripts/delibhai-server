@@ -23,7 +23,7 @@ exports.getUserById = async (req, res) => {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                message: 'No user found with this id',
+                message: 'No user found with this id!',
             });
         }
         res.status(200).json({
@@ -58,8 +58,8 @@ exports.signup = async (req, res) => {
         if (user) {
             const message =
                 user.status === 'inactive'
-                    ? "can't use this email right now. try again later"
-                    : 'a user already exist with this email address';
+                    ? "Can't use this email right now. Please Try again later."
+                    : 'A user already exist with this email address.';
 
             return sendResponse(res, { status: 409, message, code: 'duplicateEmail' });
         }
@@ -83,12 +83,12 @@ exports.signup = async (req, res) => {
         // Send success response
         sendResponse(res, {
             status: 200,
-            message: 'user signed up successfully',
+            message: 'User signed up successfully!',
             data: { id: user.id },
         });
     } catch (error) {
         const status = error.status || 500;
-        const message = error.message || 'Internal Server Error';
+        const message = error.message || 'Internal Server Error!';
         sendResponse(res, { status, message, error });
     }
 };
@@ -192,7 +192,7 @@ exports.getMe = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'Successfully logged in',
+            message: 'Successfully logged in!',
             data: user,
         });
     } catch (error) {
