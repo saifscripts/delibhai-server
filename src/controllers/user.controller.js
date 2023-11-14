@@ -11,30 +11,29 @@ const sendResponse = require('../utils/sendResponse');
 
 exports.getAllUsers = async (req, res) => {
     const users = await getAllUsersService();
-    res.json(users);
+    sendResponse(res, { status: 200, data: users });
 };
 
 exports.getUserById = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log(id);
         const user = await getUserByIdService(id);
 
         if (!user) {
-            return res.status(400).json({
-                success: false,
+            return sendResponse(res, {
+                status: 400,
                 message: 'No user found with this id!',
             });
         }
-        res.status(200).json({
-            success: true,
+
+        sendResponse(res, {
+            status: 200,
             data: user,
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message,
-        });
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
     }
 };
 
@@ -190,15 +189,14 @@ exports.getMe = async (req, res) => {
     try {
         const user = await getUserByIdService(req.user._id);
 
-        res.status(200).json({
-            success: true,
+        sendResponse(res, {
+            status: 200,
             message: 'Successfully logged in!',
             data: user,
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message,
-        });
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
     }
 };
