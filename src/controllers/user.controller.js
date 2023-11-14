@@ -51,7 +51,7 @@ exports.signup = async (req, res) => {
             confirmPassword,
         };
 
-        // Check if user exist with this email
+        // Check if user already exist with this email
         let user = await getUserByEmailService(email);
 
         // Send error response if user exist
@@ -60,7 +60,8 @@ exports.signup = async (req, res) => {
                 user.status === 'inactive'
                     ? "can't use this email right now. try again later"
                     : 'a user already exist with this email address';
-            return sendResponse(res, 409, message);
+
+            return sendResponse(res, { status: 409, message, code: 'duplicateEmail' });
         }
 
         // Create user
@@ -68,6 +69,9 @@ exports.signup = async (req, res) => {
 
         // Generate otp
         const otp = user.generateOTP();
+
+        // Save the mobile number as tempMobile
+        user.saveTempMobile();
 
         // Update the user with tempMobile, otp and otpExpires
         user = await user.save({ validateBeforeSave: false });
@@ -77,11 +81,15 @@ exports.signup = async (req, res) => {
         console.log(otp);
 
         // Send success response
-        sendResponse(res, 200, 'user signed up successfully', { id: user.id });
-    } catch (err) {
-        const status = err.status || 500;
-        const message = err.message || 'Internal Server Error';
-        sendResponse(res, status, message, err);
+        sendResponse(res, {
+            status: 200,
+            message: 'user signed up successfully',
+            data: { id: user.id },
+        });
+    } catch (error) {
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error';
+        sendResponse(res, { status, message, error });
     }
 };
 
@@ -117,6 +125,7 @@ exports.verifyOTP = async (req, res) => {
         }
 
         user.removeOTP();
+        user.removeTempMobile();
         await user.save({ validateBeforeSave: false });
 
         res.status(200).json({

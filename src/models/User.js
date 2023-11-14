@@ -108,17 +108,27 @@ userSchema.pre('save', function (next) {
     next();
 });
 
-// Remove Country Code from Mobile Number
-userSchema.pre('save', function (next) {
-    if (!this.isModified('mobile')) {
-        return next(); // Escape this method when mobile isn't modified
-    }
+// // Remove Country Code from Mobile Number
+// userSchema.pre('save', function (next) {
+//     if (!this.isModified('mobile')) {
+//         return next(); // Escape this method when mobile isn't modified
+//     }
 
+//     this.tempMobile = this.mobile.slice(-11);
+//     this.mobile = undefined;
+
+//     next();
+// });
+
+userSchema.methods.saveTempMobile = function () {
     this.tempMobile = this.mobile.slice(-11);
     this.mobile = undefined;
+};
 
-    next();
-});
+userSchema.methods.removeTempMobile = function () {
+    this.mobile = this.tempMobile;
+    this.tempMobile = undefined;
+};
 
 userSchema.methods.generateOTP = function () {
     const otp = generateOTP(6);
@@ -139,7 +149,7 @@ userSchema.methods.generateOTP = function () {
 userSchema.methods.removeOTP = function () {
     this.otp = undefined;
     this.otpExpires = undefined;
-    // this.otpSessionExpires = undefined;
+    this.otpSessionExpires = undefined;
 };
 
 // userSchema.methods.otpExpired = function () {

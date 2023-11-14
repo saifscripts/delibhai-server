@@ -4,6 +4,8 @@ exports.getUserByIdService = async (id) => await User.findById(id).select('-pass
 
 exports.getUserByEmailService = async (email) => await User.findOne({ email });
 
+exports.getUserByMobileService = async (mobile) => await User.findOne({ mobile });
+
 exports.signupService = async (userInfo) => await User.create(userInfo);
 
 exports.updateUserByIdService = async (id, data) => {

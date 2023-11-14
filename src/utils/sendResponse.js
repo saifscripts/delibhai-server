@@ -1,10 +1,12 @@
-const sendResponse = (res, status, message, data) => {
-    const success = status >= 200 && status < 400;
+const sendResponse = (res, resData) => {
+    const { status, message, data, error, code } = resData;
+
     res.status(status).json({
-        success,
+        success: status >= 200 && status < 400,
         message,
-        data: success ? data : undefined,
-        error: success ? undefined : data,
+        data,
+        error,
+        code,
     });
 };
 
