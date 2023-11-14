@@ -145,55 +145,48 @@ exports.login = async (req, res) => {
         const { mobile, password } = req.body;
 
         if (!mobile || !password) {
-            return res.status(400).json({
-                success: false,
-                message: 'Please provide your credentials',
-            });
+            return sendResponse(res, { status: 400, message: 'Please provide your credentials.' });
         }
 
         const user = await getUserByMobileService(mobile);
 
         if (!user) {
-            return res.status(400).json({
-                success: false,
-                message: "User doesn't exist with this mobile number",
+            return sendResponse(res, {
+                status: 400,
+                message: "User doesn't exist with this mobile number.",
             });
         }
 
         const isPasswordMatched = user.comparePassword(password, user.password);
 
         if (!isPasswordMatched) {
-            return res.status(400).json({
-                success: false,
-                message: 'Incorrect Mobile/Password',
+            return sendResponse(res, {
+                status: 400,
+                message: 'Incorrect Mobile/Password.',
             });
         }
 
         if (user.status === 'inactive') {
-            return res.status(400).json({
-                success: false,
-                message: 'Your mobile number is not verified. Please verify your mobile number',
+            return sendResponse(res, {
+                status: 400,
+                message: 'Your mobile number is not verified. Please verify your mobile number.',
             });
         }
 
         const token = generateToken(user);
 
-        // remove password before sending
+        // remove password before sending response
         user.password = undefined;
 
-        res.status(200).json({
-            success: true,
-            message: 'Successfully logged in',
-            data: {
-                user,
-                token,
-            },
+        sendResponse(res, {
+            status: 200,
+            message: 'Successfully logged in!',
+            data: { user, token },
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message,
-        });
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
     }
 };
 
