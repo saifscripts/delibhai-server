@@ -149,6 +149,7 @@ exports.login = async (req, res) => {
             return sendResponse(res, {
                 status: 400,
                 message: "User doesn't exist with this mobile number.",
+                code: 'mobileNotExist',
             });
         }
 
