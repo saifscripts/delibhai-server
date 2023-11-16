@@ -11,30 +11,29 @@ const sendResponse = require('../utils/sendResponse');
 
 exports.getAllUsers = async (req, res) => {
     const users = await getAllUsersService();
-    res.json(users);
+    sendResponse(res, { status: 200, data: users });
 };
 
 exports.getUserById = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log(id);
         const user = await getUserByIdService(id);
 
         if (!user) {
-            return res.status(400).json({
-                success: false,
-                message: 'No user found with this id',
+            return sendResponse(res, {
+                status: 400,
+                message: 'No user found with this id!',
             });
         }
-        res.status(200).json({
-            success: true,
+
+        sendResponse(res, {
+            status: 200,
             data: user,
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message,
-        });
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
     }
 };
 
@@ -58,8 +57,8 @@ exports.signup = async (req, res) => {
         if (user) {
             const message =
                 user.status === 'inactive'
-                    ? "can't use this email right now. try again later"
-                    : 'a user already exist with this email address';
+                    ? "Can't use this email right now. Please Try again later."
+                    : 'A user already exist with this email address.';
 
             return sendResponse(res, { status: 409, message, code: 'duplicateEmail' });
         }
@@ -83,12 +82,12 @@ exports.signup = async (req, res) => {
         // Send success response
         sendResponse(res, {
             status: 200,
-            message: 'user signed up successfully',
+            message: 'User signed up successfully!',
             data: { id: user.id },
         });
     } catch (error) {
         const status = error.status || 500;
-        const message = error.message || 'Internal Server Error';
+        const message = error.message || 'Internal Server Error!';
         sendResponse(res, { status, message, error });
     }
 };
@@ -99,44 +98,39 @@ exports.verifyOTP = async (req, res) => {
 
         const user = await getUserByIdService(id);
 
-        if (user.otp !== otp) {
-            return res.status(400).json({
-                success: false,
-                error: 'Wrong OTP',
+        if (!user) {
+            return sendResponse(res, {
+                status: 400,
+                message: "User ID doesn't exist!",
             });
+        }
+
+        if (user.otp !== otp) {
+            return sendResponse(res, { status: 400, message: 'Wrong OTP!' });
         }
 
         if (user.otpExpires.getTime() < Date.now()) {
-            return res.status(400).json({
-                success: false,
-                error: 'OTP Expired',
-            });
+            return sendResponse(res, { status: 400, message: 'OTP Expired!' });
         }
 
+        // Make user status 'active'
         const { modifiedCount } = await updateUserByIdService(id, {
             status: 'active',
         });
 
         if (!modifiedCount) {
-            return res.status(400).json({
-                success: false,
-                error: 'Internal Server Error',
-            });
+            return sendResponse(res, { status: 500, message: 'Internal Server Error!' });
         }
 
         user.removeOTP();
-        user.removeTempMobile();
+        user.removeTempMobile(); // Add mobile field and remove tempMobile field
         await user.save({ validateBeforeSave: false });
 
-        res.status(200).json({
-            success: true,
-            message: 'OTP verified',
-        });
+        sendResponse(res, { status: 200, message: 'OTP verified!' });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message,
-        });
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
     }
 };
 
@@ -145,55 +139,50 @@ exports.login = async (req, res) => {
         const { mobile, password } = req.body;
 
         if (!mobile || !password) {
-            return res.status(400).json({
-                success: false,
-                message: 'Please provide your credentials',
-            });
+            return sendResponse(res, { status: 400, message: 'Please provide your credentials.' });
         }
 
-        const user = await getUserByMobileService(mobile);
+        // Slice mobile to remove Country Code and find the user
+        const user = await getUserByMobileService(mobile.slice(-11));
 
         if (!user) {
-            return res.status(400).json({
-                success: false,
-                message: "User doesn't exist with this mobile number",
+            return sendResponse(res, {
+                status: 400,
+                message: "User doesn't exist with this mobile number.",
+                code: 'mobileNotExist',
             });
         }
 
         const isPasswordMatched = user.comparePassword(password, user.password);
 
         if (!isPasswordMatched) {
-            return res.status(400).json({
-                success: false,
-                message: 'Incorrect Mobile/Password',
+            return sendResponse(res, {
+                status: 400,
+                message: 'Incorrect Mobile/Password.',
             });
         }
 
         if (user.status === 'inactive') {
-            return res.status(400).json({
-                success: false,
-                message: 'Your mobile number is not verified. Please verify your mobile number',
+            return sendResponse(res, {
+                status: 400,
+                message: 'Your mobile number is not verified. Please verify your mobile number.',
             });
         }
 
         const token = generateToken(user);
 
-        // remove password before sending
+        // remove password before sending response
         user.password = undefined;
 
-        res.status(200).json({
-            success: true,
-            message: 'Successfully logged in',
-            data: {
-                user,
-                token,
-            },
+        sendResponse(res, {
+            status: 200,
+            message: 'Successfully logged in!',
+            data: { user, token },
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message,
-        });
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
     }
 };
 
@@ -201,15 +190,14 @@ exports.getMe = async (req, res) => {
     try {
         const user = await getUserByIdService(req.user._id);
 
-        res.status(200).json({
-            success: true,
-            message: 'Successfully logged in',
+        sendResponse(res, {
+            status: 200,
+            message: 'Successfully logged in!',
             data: user,
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: error.message,
-        });
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
     }
 };

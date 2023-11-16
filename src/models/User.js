@@ -9,40 +9,40 @@ const userSchema = new mongoose.Schema(
         name: {
             type: String,
             trim: true,
-            required: [true, 'name is required'],
-            minLength: [3, 'name must be at least 3 characters long'],
+            required: [true, 'Name is required.'],
+            minLength: [3, 'Name must be at least 3 characters long.'],
         },
         gender: {
             type: String,
             trim: true,
-            required: [true, 'gender is required'],
+            required: [true, 'Gender is required.'],
             enum: {
                 values: ['পুরুষ', 'মহিলা', 'অন্যান্য'],
-                message: '{VALUE} is an invalid gender. Gender must be পুরুষ/মহিলা/অন্যান্য',
+                message: '{VALUE} is an invalid gender. Gender must be পুরুষ/মহিলা/অন্যান্য.',
             },
         },
         email: {
             type: String,
             trim: true,
             lowercase: true,
-            validate: [validator.isEmail, 'email is not valid'],
+            validate: [validator.isEmail, 'Email is not valid.'],
         },
         mobile: {
             type: String,
             trim: true,
-            required: [true, 'mobile number is required'],
+            required: [true, 'Mobile number is required.'],
             unique: true,
             sparse: true,
-            validate: [isMobilePhone('bn-BD'), 'mobile number is invalid'],
+            validate: [isMobilePhone('bn-BD'), 'Mobile number is invalid.'],
         },
         tempMobile: {
             type: String,
             trim: true,
-            validate: [isMobilePhone('bn-BD'), 'mobile number is invalid'],
+            validate: [isMobilePhone('bn-BD'), 'Mobile number is invalid.'],
         },
         password: {
             type: String,
-            required: [true, 'password is required'],
+            required: [true, 'Password is required.'],
             validate: {
                 validator: (value) =>
                     validator.isStrongPassword(value, {
@@ -52,17 +52,17 @@ const userSchema = new mongoose.Schema(
                         minUppercase: 0,
                         minSymbols: 0,
                     }),
-                message: 'password must be at least 4 characters long',
+                message: 'Password must be at least 4 characters long.',
             },
         },
         confirmPassword: {
             type: String,
-            required: [true, 'please confirm your password'],
+            required: [true, 'Please confirm your password.'],
             validate: {
                 validator(value) {
                     return value === this.password;
                 },
-                message: "passwords don't match",
+                message: "Passwords don't match.",
             },
         },
         role: {
@@ -77,7 +77,7 @@ const userSchema = new mongoose.Schema(
         },
         image: {
             type: String,
-            validate: [validator.isURL, 'Please provide a valid url'],
+            validate: [validator.isURL, 'Please provide a valid url.'],
         },
 
         otp: String,
@@ -107,18 +107,6 @@ userSchema.pre('save', function (next) {
 
     next();
 });
-
-// // Remove Country Code from Mobile Number
-// userSchema.pre('save', function (next) {
-//     if (!this.isModified('mobile')) {
-//         return next(); // Escape this method when mobile isn't modified
-//     }
-
-//     this.tempMobile = this.mobile.slice(-11);
-//     this.mobile = undefined;
-
-//     next();
-// });
 
 userSchema.methods.saveTempMobile = function () {
     this.tempMobile = this.mobile.slice(-11);
@@ -151,11 +139,6 @@ userSchema.methods.removeOTP = function () {
     this.otpExpires = undefined;
     this.otpSessionExpires = undefined;
 };
-
-// userSchema.methods.otpExpired = function () {
-//     if (!this.otpExpired) return false;
-//     return this.otpExpires?.getTime() < Date.now();
-// };
 
 userSchema.methods.comparePassword = function (password, hashedPassword) {
     return bcrypt.compareSync(password, hashedPassword);
