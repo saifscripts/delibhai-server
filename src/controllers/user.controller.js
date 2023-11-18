@@ -98,10 +98,20 @@ exports.verifyOTP = async (req, res) => {
 
         const user = await getUserByIdService(id);
 
+        // Send error response if no user found
         if (!user) {
             return sendResponse(res, {
                 status: 400,
-                message: "User ID doesn't exist!",
+                message: 'User not found!',
+            });
+        }
+
+        // If tempMobile field is not available, there is nothing to verify
+        if (!user?.tempMobile) {
+            return sendResponse(res, {
+                status: 400,
+                message: 'OTP already verified.',
+                code: 'OTP_ALREADY_VERIFIED',
             });
         }
 
