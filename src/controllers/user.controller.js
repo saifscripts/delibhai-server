@@ -79,11 +79,17 @@ exports.signup = async (req, res) => {
         // await sendSMS(`Verification Code: ${otp}`, user.tempMobile);
         console.log(otp);
 
+        // Generate Auth Token
+        const token = generateToken(user);
+
+        // remove password before sending response
+        user.password = undefined;
+
         // Send success response
         sendResponse(res, {
             status: 200,
             message: 'User signed up successfully!',
-            data: { id: user.id },
+            data: { user, token },
         });
     } catch (error) {
         const status = error.status || 500;
