@@ -201,3 +201,55 @@ exports.getMe = async (req, res) => {
         sendResponse(res, { status, message, error });
     }
 };
+
+exports.resendOTP = async (req, res) => {
+    try {
+        console.log('here');
+        // Get the corresponding user to resend OTP
+        const { id } = req.params;
+        let user = await getUserByIdService(id);
+
+        // Send error response if no user found
+        if (!user) {
+            return sendResponse(res, {
+                status: 400,
+                message: 'User not found!',
+            });
+        }
+
+        // If tempMobile field is not available, there is nothing to verify
+        if (!user?.tempMobile) {
+            return sendResponse(res, {
+                status: 400,
+                message: 'OTP already verified.',
+                code: 'OTP_ALREADY_VERIFIED',
+            });
+        }
+
+        // Previous OTP must be expired to resend a new OTP
+        if (user.otpExpires.getTime() > Date.now()) {
+            return sendResponse(res, { status: 400, message: "Previous OTP isn't expired yet!" });
+        }
+
+        // Generate otp
+        const otp = user.generateOTP();
+
+        // Update the user with otp and otpExpires
+        user = await user.save({ validateBeforeSave: false });
+
+        // Send otp to the user's phone number
+        // await sendSMS(`Verification Code: ${otp}`, user.tempMobile);
+        console.log(otp);
+
+        // Send success response
+        sendResponse(res, {
+            status: 200,
+            message: 'OTP sent!',
+            data: { id: user.id },
+        });
+    } catch (error) {
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
+    }
+};
