@@ -128,7 +128,7 @@ userSchema.methods.generateOTP = function () {
     this.otpExpires = otpExpires;
 
     const otpSessionExpires = new Date();
-    otpSessionExpires.setMinutes(otpSessionExpires.getMinutes() + 2);
+    otpSessionExpires.setMinutes(otpSessionExpires.getMinutes() + 10);
     this.otpSessionExpires = otpSessionExpires;
 
     return otp;
