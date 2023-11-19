@@ -1,14 +1,15 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
+const sendResponse = require('../utils/sendResponse');
 
 const verifyToken = async (req, res, next) => {
     try {
         const token = req.headers?.authorization?.split(' ')[1];
 
         if (!token) {
-            return res.send(401).json({
-                success: false,
-                message: 'You are not logged in',
+            return sendResponse(res, {
+                status: 401,
+                message: 'You are not logged in.',
             });
         }
 
@@ -17,10 +18,9 @@ const verifyToken = async (req, res, next) => {
 
         next();
     } catch (error) {
-        res.status(403).json({
-            success: false,
-            error,
-        });
+        const status = 403;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
     }
 };
 
