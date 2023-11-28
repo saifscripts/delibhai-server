@@ -10,6 +10,9 @@ router.post('/login', userControllers.login);
 router.get('/me', verifyToken, userControllers.getMe);
 router.get('/resend-otp/:id', userControllers.resendOTP);
 
-router.get('/:id', userControllers.getUserById);
+router
+    .route('/:id')
+    .get(userControllers.getUserById)
+    .patch(verifyToken, userControllers.updateUserById);
 
 module.exports = router;

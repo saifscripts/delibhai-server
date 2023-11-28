@@ -269,3 +269,37 @@ exports.resendOTP = async (req, res) => {
         sendResponse(res, { status, message, error });
     }
 };
+
+exports.updateUserById = async (req, res) => {
+    try {
+        const { id } = req.params; // userId sent via params
+        const { _id } = req.user; // userId decoded from auth token
+
+        // Mismatching the userIds indicate the user trying to update another user's data
+        if (!(id === _id)) {
+            return sendResponse(res, { status: 403, message: 'Access denied!' });
+        }
+
+        // Extract valid fields from the request body and create userInfo object
+        const { name, fatherName, gender, bloodGroup, age, nid, nidURL } = req.body;
+        const userInfo = { name, fatherName, gender, bloodGroup, age, nid, nidURL };
+
+        const response = await updateUserByIdService(id, userInfo);
+
+        if (!response.modifiedCount) {
+            return sendResponse(res, { status: 500, message: 'Internal Server Error!' });
+        }
+
+        const user = await getUserByIdService(id);
+
+        sendResponse(res, {
+            status: 200,
+            message: 'Successfully updated!',
+            data: user,
+        });
+    } catch (error) {
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
+    }
+};

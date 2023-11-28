@@ -14,6 +14,9 @@ exports.updateUserByIdService = async (id, data) => {
         {
             $set: data,
         },
+        {
+            runValidators: true,
+        },
     );
 
     return result;

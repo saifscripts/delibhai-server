@@ -12,14 +12,43 @@ const userSchema = new mongoose.Schema(
             required: [true, 'Name is required.'],
             minLength: [3, 'Name must be at least 3 characters long.'],
         },
-        gender: {
+        fatherName: {
             type: String,
             trim: true,
+            minLength: [3, 'Name must be at least 3 characters long.'],
+        },
+        gender: {
+            type: String,
             required: [true, 'Gender is required.'],
             enum: {
                 values: ['পুরুষ', 'মহিলা', 'অন্যান্য'],
                 message: '{VALUE} is an invalid gender. Gender must be পুরুষ/মহিলা/অন্যান্য.',
             },
+        },
+        bloodGroup: {
+            type: String,
+            enum: {
+                values: ['এ+', 'বি+', 'এবি+', 'ও+', 'এ-', 'বি-', 'এবি-', 'ও-'],
+                message: '{VALUE} is an invalid blood group.',
+            },
+        },
+        age: {
+            type: Number,
+            validate: {
+                validator: Number.isInteger,
+                message: '{VALUE} is not an integer value',
+            },
+        },
+        nid: {
+            type: Number,
+            validate: {
+                validator: Number.isInteger,
+                message: '{VALUE} is not an integer value',
+            },
+        },
+        nidURL: {
+            type: String,
+            validate: [validator.isURL, 'Please provide a valid url.'],
         },
         email: {
             type: String,
@@ -75,7 +104,7 @@ const userSchema = new mongoose.Schema(
             enum: ['inactive', 'active', 'verified'],
             default: 'inactive',
         },
-        image: {
+        photoURL: {
             type: String,
             validate: [validator.isURL, 'Please provide a valid url.'],
         },
