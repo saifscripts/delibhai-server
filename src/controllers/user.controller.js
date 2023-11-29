@@ -281,8 +281,19 @@ exports.updateUserById = async (req, res) => {
         }
 
         // Extract valid fields from the request body and create userInfo object
-        const { name, fatherName, gender, bloodGroup, age, nid, nidURL } = req.body;
-        const userInfo = { name, fatherName, gender, bloodGroup, age, nid, nidURL };
+        const { name, fatherName, gender, bloodGroup, age, nid, nidURL, altMobile, facebookURL } =
+            req.body;
+        const userInfo = {
+            name,
+            fatherName,
+            gender,
+            bloodGroup,
+            age,
+            nid,
+            nidURL,
+            altMobile,
+            facebookURL,
+        };
 
         const response = await updateUserByIdService(id, userInfo);
 

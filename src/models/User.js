@@ -48,12 +48,6 @@ const userSchema = new mongoose.Schema(
             type: String,
             validate: [validator.isURL, 'Please provide a valid url.'],
         },
-        email: {
-            type: String,
-            trim: true,
-            lowercase: true,
-            validate: [validator.isEmail, 'Email is not valid.'],
-        },
         mobile: {
             type: String,
             trim: true,
@@ -61,6 +55,21 @@ const userSchema = new mongoose.Schema(
             unique: true,
             sparse: true,
             validate: [isMobilePhone('bn-BD'), 'Mobile number is invalid.'],
+        },
+        altMobile: {
+            type: String,
+            trim: true,
+            validate: [isMobilePhone('bn-BD'), 'Mobile number is invalid.'],
+        },
+        email: {
+            type: String,
+            trim: true,
+            lowercase: true,
+            validate: [validator.isEmail, 'Email is not valid.'],
+        },
+        facebookURL: {
+            type: String,
+            validate: [validator.isURL, 'Please provide a valid url.'],
         },
         tempMobile: {
             type: String,
