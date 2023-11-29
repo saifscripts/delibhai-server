@@ -3,6 +3,7 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const { isMobilePhone } = require('../utils/isMobilePhone');
 const { generateOTP } = require('../utils/generateOTP');
+const { isNID } = require('../utils/isNID');
 
 const userSchema = new mongoose.Schema(
     {
@@ -40,11 +41,8 @@ const userSchema = new mongoose.Schema(
             },
         },
         nid: {
-            type: Number,
-            validate: {
-                validator: Number.isInteger,
-                message: '{VALUE} is not an integer value',
-            },
+            type: String,
+            validate: [isNID, 'NID is not valid.'],
         },
         nidURL: {
             type: String,
