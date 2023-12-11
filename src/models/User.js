@@ -71,6 +71,18 @@ const userSchema = new mongoose.Schema(
             type: String,
             validate: [validator.isURL, 'Please provide a valid url.'],
         },
+        presentAddress: {
+            division: String,
+            district: String,
+            upazila: String,
+            union: String,
+        },
+        permanentAddress: {
+            division: String,
+            district: String,
+            upazila: String,
+            union: String,
+        },
         tempMobile: {
             type: String,
             trim: true,
