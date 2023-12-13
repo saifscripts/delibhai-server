@@ -83,6 +83,48 @@ const userSchema = new mongoose.Schema(
             upazila: String,
             union: String,
         },
+        vehicleType: {
+            type: String,
+            trim: true,
+        },
+        vehicleBrand: {
+            type: String,
+            trim: true,
+        },
+        vehicleModel: {
+            type: String,
+            trim: true,
+        },
+        vehicleNumber: {
+            type: String,
+            trim: true,
+        },
+        vehicleName: {
+            type: String,
+            trim: true,
+        },
+        ownerName: {
+            type: String,
+            trim: true,
+            minLength: [3, 'Name must be at least 3 characters long.'],
+        },
+        ownerAddress: {
+            division: String,
+            district: String,
+            upazila: String,
+            union: String,
+        },
+        ownerMobile: {
+            type: String,
+            trim: true,
+            validate: [isMobilePhone('bn-BD'), 'Mobile number is invalid.'],
+        },
+        ownerEmail: {
+            type: String,
+            trim: true,
+            lowercase: true,
+            validate: [validator.isEmail, 'Email is not valid.'],
+        },
         tempMobile: {
             type: String,
             trim: true,

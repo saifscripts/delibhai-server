@@ -293,6 +293,15 @@ exports.updateUserById = async (req, res) => {
             facebookURL,
             presentAddress,
             permanentAddress,
+            vehicleType,
+            vehicleBrand,
+            vehicleModel,
+            vehicleNumber,
+            vehicleName,
+            ownerName,
+            ownerAddress,
+            ownerMobile,
+            ownerEmail,
         } = req.body;
         const userInfo = {
             name,
@@ -306,6 +315,15 @@ exports.updateUserById = async (req, res) => {
             facebookURL,
             presentAddress,
             permanentAddress,
+            vehicleType,
+            vehicleBrand,
+            vehicleModel,
+            vehicleNumber,
+            vehicleName,
+            ownerName,
+            ownerAddress,
+            ownerMobile,
+            ownerEmail,
         };
 
         const response = await updateUserByIdService(id, userInfo);
@@ -313,6 +331,8 @@ exports.updateUserById = async (req, res) => {
         if (!response.modifiedCount) {
             return sendResponse(res, { status: 500, message: 'Internal Server Error!' });
         }
+
+        console.log(response);
 
         const user = await getUserByIdService(id);
 
