@@ -7,6 +7,7 @@ const { isNID } = require('../utils/isNID');
 
 const userSchema = new mongoose.Schema(
     {
+        // PERSONAL INFO
         name: {
             type: String,
             trim: true,
@@ -48,6 +49,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             validate: [validator.isURL, 'Please provide a valid url.'],
         },
+        // CONTACT INFO
         mobile: {
             type: String,
             trim: true,
@@ -71,6 +73,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             validate: [validator.isURL, 'Please provide a valid url.'],
         },
+        // ADDRESS INFO
         presentAddress: {
             division: String,
             district: String,
@@ -83,6 +86,7 @@ const userSchema = new mongoose.Schema(
             upazila: String,
             union: String,
         },
+        // VEHICLE INFO
         vehicleType: {
             type: String,
             trim: true,
@@ -103,6 +107,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             trim: true,
         },
+        // OWNER INFO
         ownerName: {
             type: String,
             trim: true,
@@ -125,11 +130,36 @@ const userSchema = new mongoose.Schema(
             lowercase: true,
             validate: [validator.isEmail, 'Email is not valid.'],
         },
-        tempMobile: {
+        // SERVICE INFO
+        serviceUsage: {
             type: String,
-            trim: true,
-            validate: [isMobilePhone('bn-BD'), 'Mobile number is invalid.'],
+            enum: {
+                values: ['ব্যক্তিগত', 'ভাড়ায় চালিত'],
+                message: '{VALUE} is an invalid service usage.',
+            },
         },
+        serviceType: {
+            type: String,
+            enum: {
+                values: ['লোকাল ভাড়া', 'রিজার্ভ ভাড়া', 'লোকাল ও রিজার্ভ ভাড়া', 'কন্টাক্ট ভাড়া'],
+                message: '{VALUE} is an invalid service type.',
+            },
+        },
+        serviceAddress: {
+            division: String,
+            district: String,
+            upazila: String,
+            union: String,
+        },
+        serviceTime: {
+            type: [
+                {
+                    start: String,
+                    end: String,
+                },
+            ],
+        },
+        // OTHERS
         password: {
             type: String,
             required: [true, 'Password is required.'],

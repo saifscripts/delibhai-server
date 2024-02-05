@@ -302,6 +302,10 @@ exports.updateUserById = async (req, res) => {
             ownerAddress,
             ownerMobile,
             ownerEmail,
+            serviceUsage,
+            serviceType,
+            serviceAddress,
+            serviceTime,
         } = req.body;
         const userInfo = {
             name,
@@ -324,6 +328,10 @@ exports.updateUserById = async (req, res) => {
             ownerAddress,
             ownerMobile,
             ownerEmail,
+            serviceUsage,
+            serviceType,
+            serviceAddress,
+            serviceTime,
         };
 
         const response = await updateUserByIdService(id, userInfo);
