@@ -159,6 +159,14 @@ const userSchema = new mongoose.Schema(
                 },
             ],
         },
+        // LOCATION INFO
+        manualLocation: {
+            division: String,
+            district: String,
+            upazila: String,
+            union: String,
+            station: String,
+        },
         // OTHERS
         password: {
             type: String,
