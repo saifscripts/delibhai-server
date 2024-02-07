@@ -130,6 +130,13 @@ const userSchema = new mongoose.Schema(
             lowercase: true,
             validate: [validator.isEmail, 'Email is not valid.'],
         },
+        // VEHICLE PHOTOS
+        vehiclePhotos: [
+            {
+                type: String,
+                validate: [validator.isURL, 'Please provide a valid url.'],
+            },
+        ],
         // SERVICE INFO
         serviceUsage: {
             type: String,
