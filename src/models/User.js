@@ -131,13 +131,19 @@ const userSchema = new mongoose.Schema(
             validate: [validator.isEmail, 'Email is not valid.'],
         },
         // VEHICLE PHOTOS
-        vehiclePhotos: [
-            {
-                type: String,
-                validate: [validator.isURL, 'Please provide a valid url.'],
+        vehiclePhotos: {
+            type: [
+                {
+                    type: String,
+                    validate: [validator.isURL, 'Please provide a valid url.'],
+                },
+            ],
+            validate: {
+                validator: (value) => value.length <= 4,
+                message: '{PATH} exceeds the limit of 4',
             },
-        ],
-        // SERVICE INFO
+        },
+        // SERVICE INFO{}
         serviceUsage: {
             type: String,
             enum: {
