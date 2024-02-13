@@ -308,6 +308,7 @@ exports.updateUserById = async (req, res) => {
             serviceTime,
             manualLocation,
             vehiclePhotos,
+            videoURL,
         } = req.body;
         const userInfo = {
             name,
@@ -336,6 +337,7 @@ exports.updateUserById = async (req, res) => {
             serviceTime,
             manualLocation,
             vehiclePhotos,
+            videoURL,
         };
 
         const response = await updateUserByIdService(id, userInfo);

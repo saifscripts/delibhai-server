@@ -180,6 +180,11 @@ const userSchema = new mongoose.Schema(
             union: String,
             station: String,
         },
+        // VIDEO URL
+        videoURL: {
+            type: String,
+            validate: [validator.isURL, 'Please provide a valid url.'],
+        },
         // OTHERS
         password: {
             type: String,
