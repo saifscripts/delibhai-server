@@ -60,7 +60,11 @@ exports.signup = async (req, res) => {
                     ? "Can't use this email right now. Please Try again later."
                     : 'A user already exist with this email address.';
 
-            return sendResponse(res, { status: 409, message, code: 'duplicateEmail' });
+            return sendResponse(res, {
+                status: 409,
+                message,
+                code: 'duplicateEmail',
+            });
         }
 
         // Create user
@@ -135,7 +139,10 @@ exports.verifyOTP = async (req, res) => {
         });
 
         if (!modifiedCount) {
-            return sendResponse(res, { status: 500, message: 'Internal Server Error!' });
+            return sendResponse(res, {
+                status: 500,
+                message: 'Internal Server Error!',
+            });
         }
 
         user.removeOTP();
@@ -155,7 +162,10 @@ exports.login = async (req, res) => {
         const { mobile, password } = req.body;
 
         if (!mobile || !password) {
-            return sendResponse(res, { status: 400, message: 'Please provide your credentials.' });
+            return sendResponse(res, {
+                status: 400,
+                message: 'Please provide your credentials.',
+            });
         }
 
         // Slice mobile to remove Country Code and find the user
@@ -244,7 +254,10 @@ exports.resendOTP = async (req, res) => {
 
         // Previous OTP must be expired to resend a new OTP
         if (user.otpExpires.getTime() > Date.now()) {
-            return sendResponse(res, { status: 400, message: "Previous OTP isn't expired yet!" });
+            return sendResponse(res, {
+                status: 400,
+                message: "Previous OTP isn't expired yet!",
+            });
         }
 
         // Generate otp
@@ -309,6 +322,9 @@ exports.updateUserById = async (req, res) => {
             manualLocation,
             vehiclePhotos,
             videoURL,
+            avatarURL,
+            avatarSrcURL,
+            avatarCropData,
         } = req.body;
         const userInfo = {
             name,
@@ -338,12 +354,18 @@ exports.updateUserById = async (req, res) => {
             manualLocation,
             vehiclePhotos,
             videoURL,
+            avatarURL,
+            avatarSrcURL,
+            avatarCropData,
         };
 
         const response = await updateUserByIdService(id, userInfo);
 
         if (!response.modifiedCount) {
-            return sendResponse(res, { status: 500, message: 'Internal Server Error!' });
+            return sendResponse(res, {
+                status: 500,
+                message: 'Internal Server Error!',
+            });
         }
 
         console.log(response);

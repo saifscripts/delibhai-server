@@ -221,9 +221,35 @@ const userSchema = new mongoose.Schema(
             enum: ['inactive', 'active', 'verified'],
             default: 'inactive',
         },
-        photoURL: {
+        avatarURL: {
             type: String,
             validate: [validator.isURL, 'Please provide a valid url.'],
+        },
+        avatarSrcURL: {
+            type: String,
+            validate: [validator.isURL, 'Please provide a valid url.'],
+        },
+        avatarCropData: {
+            unit: {
+                type: String,
+                required: true,
+            },
+            x: {
+                type: Number,
+                required: true,
+            },
+            y: {
+                type: Number,
+                required: true,
+            },
+            width: {
+                type: Number,
+                required: true,
+            },
+            height: {
+                type: Number,
+                required: true,
+            },
         },
 
         otp: String,
