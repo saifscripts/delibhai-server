@@ -22,6 +22,17 @@ exports.updateUserByIdService = async (id, data) => {
     return result;
 };
 
+exports.removeUserFieldsByIdService = async (id, fields) => {
+    const result = await User.updateOne(
+        { _id: id },
+        {
+            $unset: fields,
+        },
+    );
+
+    return result;
+};
+
 exports.getUserByMobileService = async (mobile, fields) => {
     const user = await User.findOne({ mobile }).select(fields);
 

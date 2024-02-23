@@ -9,6 +9,7 @@ router.post('/verify-otp', userControllers.verifyOTP);
 router.post('/login', userControllers.login);
 router.get('/me', verifyToken, userControllers.getMe);
 router.get('/resend-otp/:id', userControllers.resendOTP);
+router.patch('/remove-fields/:id', verifyToken, userControllers.removeUserFieldsById);
 
 router
     .route('/:id')
