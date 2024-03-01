@@ -230,26 +230,11 @@ const userSchema = new mongoose.Schema(
             validate: [validator.isURL, 'Please provide a valid url.'],
         },
         avatarCropData: {
-            unit: {
-                type: String,
-                required: true,
-            },
-            x: {
-                type: Number,
-                required: true,
-            },
-            y: {
-                type: Number,
-                required: true,
-            },
-            width: {
-                type: Number,
-                required: true,
-            },
-            height: {
-                type: Number,
-                required: true,
-            },
+            unit: String,
+            x: Number,
+            y: Number,
+            width: Number,
+            height: Number,
         },
 
         otp: String,

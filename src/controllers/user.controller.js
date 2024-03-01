@@ -53,7 +53,6 @@ exports.signup = async (req, res) => {
 
         // Check if user already exist with this email
         let user = await getUserByEmailService(email);
-
         // Send error response if user exist
         if (user) {
             const message =
@@ -97,6 +96,7 @@ exports.signup = async (req, res) => {
             data: { user, token },
         });
     } catch (error) {
+        console.log(error);
         const status = error.status || 500;
         const message = error.message || 'Internal Server Error!';
         sendResponse(res, { status, message, error });
