@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cors());
 
 // Connect to MongoDB using Mongoose
-mongoose.connect(process.env.DATABASE_ATLAS).then(() => {
+mongoose.connect(process.env.DATABASE_URI).then(() => {
     const port = process.env.PORT || 5000;
 
     app.listen(port, () => {
