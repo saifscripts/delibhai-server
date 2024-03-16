@@ -38,3 +38,12 @@ exports.getUserByMobileService = async (mobile, fields) => {
 
     return user;
 };
+
+exports.getHerosService = async (query) => {
+    const { vehicle, ...manualLocation } = query;
+
+    console.log({ vehicleType: vehicle, manualLocation });
+
+    const heros = await User.find({ vehicleType: vehicle, manualLocation });
+    return heros;
+};

@@ -6,6 +6,7 @@ const {
     updateUserByIdService,
     getUserByMobileService,
     removeUserFieldsByIdService,
+    getHerosService,
 } = require('../services/user.service');
 const { generateToken } = require('../utils/generateToken');
 const sendResponse = require('../utils/sendResponse');
@@ -13,6 +14,17 @@ const sendResponse = require('../utils/sendResponse');
 exports.getAllUsers = async (req, res) => {
     const users = await getAllUsersService();
     sendResponse(res, { status: 200, data: users });
+};
+
+exports.getHeros = async (req, res) => {
+    console.log(req.query);
+
+    const heros = await getHerosService(req.query);
+
+    sendResponse(res, {
+        status: 200,
+        data: heros,
+    });
 };
 
 exports.getUserById = async (req, res) => {
