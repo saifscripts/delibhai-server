@@ -58,6 +58,13 @@ const userSchema = new mongoose.Schema(
             sparse: true,
             validate: [isMobilePhone('bn-BD'), 'Mobile number is invalid.'],
         },
+        tempMobile: {
+            type: String,
+            trim: true,
+            unique: true,
+            sparse: true,
+            validate: [isMobilePhone('bn-BD'), 'Mobile number is invalid.'],
+        },
         altMobile: {
             type: String,
             trim: true,
