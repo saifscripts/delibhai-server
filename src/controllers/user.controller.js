@@ -331,7 +331,7 @@ exports.updateUserById = async (req, res) => {
             serviceUsage,
             serviceType,
             serviceAddress,
-            serviceTime,
+            serviceTimes,
             manualLocation,
             vehiclePhotos,
             videoURL,
@@ -363,7 +363,7 @@ exports.updateUserById = async (req, res) => {
             serviceUsage,
             serviceType,
             serviceAddress,
-            serviceTime,
+            serviceTimes,
             manualLocation,
             vehiclePhotos,
             videoURL,
@@ -371,6 +371,7 @@ exports.updateUserById = async (req, res) => {
             avatarSrcURL,
             avatarCropData,
         };
+
         const response = await updateUserByIdService(id, userInfo);
 
         if (!response.modifiedCount) {
