@@ -17,8 +17,6 @@ exports.getAllUsers = async (req, res) => {
 };
 
 exports.getHeros = async (req, res) => {
-    console.log(req.query);
-
     const heros = await getHerosService(req.query);
 
     sendResponse(res, {
