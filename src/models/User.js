@@ -171,7 +171,7 @@ const userSchema = new mongoose.Schema(
             upazila: String,
             union: String,
         },
-        serviceTime: {
+        serviceTimes: {
             type: [
                 {
                     start: String,
