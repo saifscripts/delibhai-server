@@ -42,7 +42,7 @@ exports.getUserByMobileService = async (mobile, fields) => {
 exports.getHerosService = async (query) => {
     const { vehicleType, destination } = query;
     const heros = await User.find({ vehicleType, serviceAddress: JSON.parse(destination) }).select(
-        'name avatarURL mobile serviceTimes',
+        'name avatarURL mobile serviceTimes liveLocation',
     );
 
     return heros;
