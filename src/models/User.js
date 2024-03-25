@@ -180,6 +180,11 @@ const userSchema = new mongoose.Schema(
             ],
         },
         // LOCATION INFO
+        liveLocation: {
+            latitude: Number,
+            longitude: Number,
+            timestamp: Number,
+        },
         manualLocation: {
             division: String,
             district: String,
