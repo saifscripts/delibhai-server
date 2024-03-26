@@ -183,7 +183,7 @@ const userSchema = new mongoose.Schema(
         liveLocation: {
             latitude: Number,
             longitude: Number,
-            timestamp: Number,
+            timestamp: { type: Number, default: () => Date.now() },
         },
         manualLocation: {
             division: String,
