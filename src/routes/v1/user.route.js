@@ -11,7 +11,11 @@ router.get('/me', verifyToken, userControllers.getMe);
 router.get('/heros', userControllers.getHeros);
 router.get('/resend-otp/:id', userControllers.resendOTP);
 router.patch('/remove-fields/:id', verifyToken, userControllers.removeUserFieldsById);
-router.get('/location/:id', userControllers.getUserLocationById);
+
+router
+    .route('/location/:id')
+    .get(userControllers.getUserLocationById)
+    .patch(verifyToken, userControllers.updateUserLocationById);
 
 router
     .route('/:id')
