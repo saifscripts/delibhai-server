@@ -8,6 +8,7 @@ const {
     removeUserFieldsByIdService,
     getHerosService,
 } = require('../services/user.service');
+const { addLocationTimestamp } = require('../utils/addLocationTimestamp');
 const { generateToken } = require('../utils/generateToken');
 const sendResponse = require('../utils/sendResponse');
 
@@ -338,7 +339,8 @@ exports.updateUserById = async (req, res) => {
             avatarSrcURL,
             avatarCropData,
         } = req.body;
-        const userInfo = {
+
+        let userInfo = {
             name,
             fatherName,
             gender,
@@ -371,6 +373,8 @@ exports.updateUserById = async (req, res) => {
             avatarSrcURL,
             avatarCropData,
         };
+
+        userInfo = addLocationTimestamp(userInfo);
 
         const response = await updateUserByIdService(id, userInfo);
 
