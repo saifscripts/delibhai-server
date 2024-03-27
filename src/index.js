@@ -5,6 +5,8 @@ const dotenv = require('dotenv');
 
 // route imports
 const userRoutes = require('./routes/v1/user.route');
+const wardRoutes = require('./routes/v1/ward.route');
+const villageRoutes = require('./routes/v1/village.route');
 
 dotenv.config();
 const app = express();
@@ -26,3 +28,5 @@ mongoose.connect(process.env.DATABASE_URI).then(() => {
 });
 
 app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/ward', wardRoutes);
+app.use('/api/v1/village', villageRoutes);

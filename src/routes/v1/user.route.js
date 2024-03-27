@@ -17,6 +17,8 @@ router
     .get(userControllers.getUserLocationById)
     .patch(verifyToken, userControllers.updateUserLocationById);
 
+router.route('/role').get(verifyToken, userControllers.getUserRole);
+
 router
     .route('/:id')
     .get(userControllers.getUserById)

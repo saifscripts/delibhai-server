@@ -491,3 +491,26 @@ exports.updateUserLocationById = async (req, res) => {
         sendResponse(res, { status, message, error });
     }
 };
+
+exports.getUserRole = async (req, res) => {
+    try {
+        const { _id } = req.user; // userId decoded from auth token
+        const user = await getUserByIdService(_id);
+
+        if (!user) {
+            return sendResponse(res, {
+                status: 400,
+                message: 'No user found with this id!',
+            });
+        }
+
+        sendResponse(res, {
+            status: 200,
+            data: user?.role,
+        });
+    } catch (error) {
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
+    }
+};
