@@ -13,4 +13,4 @@ const auth =
         next();
     };
 
-exports = auth;
+module.exports = auth;

@@ -1,4 +1,8 @@
-const { getVillagesByUnionValueService } = require('../services/village.service');
+const {
+    getVillagesByUnionValueService,
+    getAllVillagesService,
+    createVillagesService,
+} = require('../services/village.service');
 const sendResponse = require('../utils/sendResponse');
 
 exports.getVillagesByUnionValue = async (req, res) => {
@@ -16,6 +20,30 @@ exports.getVillagesByUnionValue = async (req, res) => {
         sendResponse(res, {
             status: 200,
             data: villages,
+        });
+    } catch (error) {
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
+    }
+};
+
+exports.createVillages = async (req, res) => {
+    try {
+        // find existing villages to calculate max value
+        const existingVillages = await getAllVillagesService();
+        const values = existingVillages.map((village) => village.value);
+        const maxValue = Math.max(...values);
+
+        // add value dynamically based on the previous max value
+        let villages = req.body;
+        villages = villages.map((village, index) => ({ ...village, value: maxValue + index + 1 }));
+
+        const result = await createVillagesService(villages);
+
+        sendResponse(res, {
+            status: 200,
+            data: result,
         });
     } catch (error) {
         const status = error.status || 500;
