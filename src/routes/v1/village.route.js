@@ -3,6 +3,6 @@ const villageControllers = require('../../controllers/village.controller');
 
 const router = express.Router();
 
-router.get('/:wardCode', villageControllers.getVillagesByWardCode);
+router.get('/:unionValue', villageControllers.getVillagesByUnionValue);
 
 module.exports = router;

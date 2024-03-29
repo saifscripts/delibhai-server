@@ -1,4 +1,4 @@
 const Village = require('../models/Village');
 
-exports.getVillagesByWardCodeService = async (wardCode) =>
-    await Village.find({ wardCode }).select('-wardCode');
+exports.getVillagesByUnionValueService = async (unionValue) =>
+    await Village.find({ unionValue }).select('-unionValue');

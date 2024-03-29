@@ -1,15 +1,15 @@
-const { getVillagesByWardCodeService } = require('../services/village.service');
+const { getVillagesByUnionValueService } = require('../services/village.service');
 const sendResponse = require('../utils/sendResponse');
 
-exports.getVillagesByWardCode = async (req, res) => {
+exports.getVillagesByUnionValue = async (req, res) => {
     try {
-        const { wardCode } = req.params;
-        const villages = await getVillagesByWardCodeService(wardCode);
+        const { unionValue } = req.params;
+        const villages = await getVillagesByUnionValueService(unionValue);
 
         if (!villages) {
             return sendResponse(res, {
                 status: 400,
-                message: 'No village found with this id!',
+                message: 'No village found with this union value!',
             });
         }
 
