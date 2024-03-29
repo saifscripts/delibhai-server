@@ -2,9 +2,10 @@ const mongoose = require('mongoose');
 
 const villageSchema = new mongoose.Schema(
     {
-        wardCode: String,
-        villageCode: String,
-        villageName: String,
+        unionValue: String,
+        wardValue: String,
+        value: String,
+        title: String,
     },
     {
         timestamps: true,
