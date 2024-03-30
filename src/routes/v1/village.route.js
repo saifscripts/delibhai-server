@@ -5,8 +5,8 @@ const auth = require('../../middlewares/auth');
 
 const router = express.Router();
 
-router.get('/:unionValue', villageControllers.getVillagesByUnionValue);
 router.post('/create', verifyToken, auth('admin'), villageControllers.createVillages);
-router.patch('/:value', verifyToken, auth('admin'), villageControllers.updateVillageByValue);
+router.patch('/update/:value', verifyToken, auth('admin'), villageControllers.updateVillageByValue);
+router.get('/:unionValue', villageControllers.getVillagesByUnionValue);
 
 module.exports = router;
