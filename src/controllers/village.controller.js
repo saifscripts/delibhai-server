@@ -2,6 +2,7 @@ const {
     getVillagesByUnionValueService,
     getAllVillagesService,
     createVillagesService,
+    updateVillageByValueService,
 } = require('../services/village.service');
 const sendResponse = require('../utils/sendResponse');
 
@@ -44,6 +45,31 @@ exports.createVillages = async (req, res) => {
         sendResponse(res, {
             status: 200,
             data: result,
+        });
+    } catch (error) {
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
+    }
+};
+
+exports.updateVillageByValue = async (req, res) => {
+    try {
+        const { value } = req.params;
+
+        const response = await updateVillageByValueService(value, req.body);
+
+        if (!response.modifiedCount) {
+            return sendResponse(res, {
+                status: 500,
+                message: 'Internal Server Error!',
+            });
+        }
+
+        sendResponse(res, {
+            status: 200,
+            message: 'Successfully updated!',
+            data: response,
         });
     } catch (error) {
         const status = error.status || 500;
