@@ -3,6 +3,7 @@ const {
     getAllVillagesService,
     createVillagesService,
     updateVillageByValueService,
+    deleteVillageByValueService,
 } = require('../services/village.service');
 const sendResponse = require('../utils/sendResponse');
 
@@ -56,7 +57,6 @@ exports.createVillages = async (req, res) => {
 exports.updateVillageByValue = async (req, res) => {
     try {
         const { value } = req.params;
-        console.log(value);
 
         const response = await updateVillageByValueService(value, req.body);
 
@@ -70,6 +70,31 @@ exports.updateVillageByValue = async (req, res) => {
         sendResponse(res, {
             status: 200,
             message: 'Successfully updated!',
+            data: response,
+        });
+    } catch (error) {
+        const status = error.status || 500;
+        const message = error.message || 'Internal Server Error!';
+        sendResponse(res, { status, message, error });
+    }
+};
+
+exports.deleteVillageByValue = async (req, res) => {
+    try {
+        const { value } = req.params;
+
+        const response = await deleteVillageByValueService(value);
+
+        if (!response.deletedCount) {
+            return sendResponse(res, {
+                status: 500,
+                message: 'Internal Server Error!',
+            });
+        }
+
+        sendResponse(res, {
+            status: 200,
+            message: 'Successfully deleted!',
             data: response,
         });
     } catch (error) {

@@ -20,3 +20,8 @@ exports.updateVillageByValueService = async (value, data) => {
 
     return result;
 };
+
+exports.deleteVillageByValueService = async (value) => {
+    const result = await Village.deleteOne({ value });
+    return result;
+};
