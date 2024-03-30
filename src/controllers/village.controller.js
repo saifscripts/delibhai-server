@@ -56,6 +56,7 @@ exports.createVillages = async (req, res) => {
 exports.updateVillageByValue = async (req, res) => {
     try {
         const { value } = req.params;
+        console.log(value);
 
         const response = await updateVillageByValueService(value, req.body);
 
