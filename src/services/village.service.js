@@ -1,15 +1,13 @@
 const Village = require('../models/Village');
 
-exports.getVillagesByUnionValueService = async (unionValue) =>
-    await Village.find({ unionValue }).select('-unionValue');
-
-exports.getAllVillagesService = async () => await Village.find();
+exports.getVillagesByUnionIdService = async (unionId) =>
+    await Village.find({ unionId }).select('-unionId');
 
 exports.createVillagesService = async (villages) => await Village.insertMany(villages);
 
-exports.updateVillageByValueService = async (value, data) => {
+exports.updateVillageByIdService = async (id, data) => {
     const result = await Village.updateOne(
-        { value },
+        { _id: id },
         {
             $set: data,
         },
@@ -21,7 +19,7 @@ exports.updateVillageByValueService = async (value, data) => {
     return result;
 };
 
-exports.deleteVillageByValueService = async (value) => {
-    const result = await Village.deleteOne({ value });
+exports.deleteVillageByIdService = async (id) => {
+    const result = await Village.deleteOne({ _id: id });
     return result;
 };

@@ -6,13 +6,8 @@ const auth = require('../../middlewares/auth');
 const router = express.Router();
 
 router.post('/create', verifyToken, auth('admin'), villageControllers.createVillages);
-router.patch('/update/:value', verifyToken, auth('admin'), villageControllers.updateVillageByValue);
-router.delete(
-    '/delete/:value',
-    verifyToken,
-    auth('admin'),
-    villageControllers.deleteVillageByValue,
-);
-router.get('/:unionValue', villageControllers.getVillagesByUnionValue);
+router.patch('/update/:id', verifyToken, auth('admin'), villageControllers.updateVillageById);
+router.delete('/delete/:id', verifyToken, auth('admin'), villageControllers.deleteVillageById);
+router.get('/:unionId', villageControllers.getVillagesByUnionId);
 
 module.exports = router;

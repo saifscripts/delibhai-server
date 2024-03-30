@@ -1,21 +1,20 @@
 const {
-    getVillagesByUnionValueService,
-    getAllVillagesService,
+    getVillagesByUnionIdService,
     createVillagesService,
-    updateVillageByValueService,
-    deleteVillageByValueService,
+    updateVillageByIdService,
+    deleteVillageByIdService,
 } = require('../services/village.service');
 const sendResponse = require('../utils/sendResponse');
 
-exports.getVillagesByUnionValue = async (req, res) => {
+exports.getVillagesByUnionId = async (req, res) => {
     try {
-        const { unionValue } = req.params;
-        const villages = await getVillagesByUnionValueService(unionValue);
+        const { unionId } = req.params;
+        const villages = await getVillagesByUnionIdService(unionId);
 
         if (!villages) {
             return sendResponse(res, {
                 status: 400,
-                message: 'No village found with this union value!',
+                message: 'No village found with this union id!',
             });
         }
 
@@ -32,16 +31,7 @@ exports.getVillagesByUnionValue = async (req, res) => {
 
 exports.createVillages = async (req, res) => {
     try {
-        // find existing villages to calculate max value
-        const existingVillages = await getAllVillagesService();
-        const values = existingVillages.map((village) => village.value);
-        const maxValue = Math.max(...values);
-
-        // add value dynamically based on the previous max value
-        let villages = req.body;
-        villages = villages.map((village, index) => ({ ...village, value: maxValue + index + 1 }));
-
-        const result = await createVillagesService(villages);
+        const result = await createVillagesService(req.body);
 
         sendResponse(res, {
             status: 200,
@@ -54,11 +44,11 @@ exports.createVillages = async (req, res) => {
     }
 };
 
-exports.updateVillageByValue = async (req, res) => {
+exports.updateVillageById = async (req, res) => {
     try {
-        const { value } = req.params;
+        const { id } = req.params;
 
-        const response = await updateVillageByValueService(value, req.body);
+        const response = await updateVillageByIdService(id, req.body);
 
         if (!response.modifiedCount) {
             return sendResponse(res, {
@@ -79,11 +69,11 @@ exports.updateVillageByValue = async (req, res) => {
     }
 };
 
-exports.deleteVillageByValue = async (req, res) => {
+exports.deleteVillageById = async (req, res) => {
     try {
-        const { value } = req.params;
+        const { id } = req.params;
 
-        const response = await deleteVillageByValueService(value);
+        const response = await deleteVillageByIdService(id);
 
         if (!response.deletedCount) {
             return sendResponse(res, {

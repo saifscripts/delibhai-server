@@ -2,9 +2,8 @@ const mongoose = require('mongoose');
 
 const villageSchema = new mongoose.Schema(
     {
-        unionValue: String,
-        wardValue: String,
-        value: String,
+        unionId: String,
+        wardId: String,
         title: String,
     },
     {
