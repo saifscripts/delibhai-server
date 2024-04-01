@@ -5,6 +5,10 @@ const dotenv = require('dotenv');
 
 // route imports
 const userRoutes = require('./routes/v1/user.route');
+const divisionRoutes = require('./routes/v1/division.route');
+const districtRoutes = require('./routes/v1/district.route');
+const upazilaRoutes = require('./routes/v1/upazila.route');
+const unionRoutes = require('./routes/v1/union.route');
 const wardRoutes = require('./routes/v1/ward.route');
 const villageRoutes = require('./routes/v1/village.route');
 
@@ -28,5 +32,9 @@ mongoose.connect(process.env.DATABASE_URI).then(() => {
 });
 
 app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/division', divisionRoutes);
+app.use('/api/v1/district', districtRoutes);
+app.use('/api/v1/upazila', upazilaRoutes);
+app.use('/api/v1/union', unionRoutes);
 app.use('/api/v1/ward', wardRoutes);
 app.use('/api/v1/village', villageRoutes);

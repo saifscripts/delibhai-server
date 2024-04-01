@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const villageSchema = new mongoose.Schema(
     {
-        unionId: String,
+        unionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Union' },
         wardId: String,
         title: String,
     },
