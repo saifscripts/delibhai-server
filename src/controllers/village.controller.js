@@ -84,7 +84,6 @@ exports.deleteVillageById = async (req, res) => {
 
         sendResponse(res, {
             status: 200,
-            message: 'Successfully deleted!',
             data: response,
         });
     } catch (error) {
@@ -93,3 +92,28 @@ exports.deleteVillageById = async (req, res) => {
         sendResponse(res, { status, message, error });
     }
 };
+
+// exports.getVillageTitleById = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+
+//         const village = await getVillageByIdService(id);
+
+//         if (!village) {
+//             return sendResponse(res, {
+//                 status: 404,
+//                 message: 'Village Not Found!',
+//             });
+//         }
+
+//         sendResponse(res, {
+//             status: 200,
+//             message: 'Successfully deleted!',
+//             data: village.title,
+//         });
+//     } catch (error) {
+//         const status = error.status || 500;
+//         const message = error.message || 'Internal Server Error!';
+//         sendResponse(res, { status, message, error });
+//     }
+// };
