@@ -5,6 +5,8 @@ const { isMobilePhone } = require('../utils/isMobilePhone');
 const { generateOTP } = require('../utils/generateOTP');
 const { isNID } = require('../utils/isNID');
 
+const { ObjectId } = mongoose.Schema.Types;
+
 const userSchema = new mongoose.Schema(
     {
         // PERSONAL INFO
@@ -82,18 +84,18 @@ const userSchema = new mongoose.Schema(
         },
         // ADDRESS INFO
         presentAddress: {
-            division: { type: mongoose.Schema.Types.ObjectId, ref: 'Division' },
-            district: { type: mongoose.Schema.Types.ObjectId, ref: 'District' },
-            upazila: { type: mongoose.Schema.Types.ObjectId, ref: 'Upazila' },
-            union: { type: mongoose.Schema.Types.ObjectId, ref: 'Union' },
-            village: { type: mongoose.Schema.Types.ObjectId, ref: 'Village' },
+            division: { type: ObjectId, ref: 'Division', title: String },
+            district: { type: ObjectId, ref: 'District', title: String },
+            upazila: { type: ObjectId, ref: 'Upazila', title: String },
+            union: { type: ObjectId, ref: 'Union', title: String },
+            village: { type: ObjectId, ref: 'Village', title: String },
         },
         permanentAddress: {
-            division: { type: mongoose.Schema.Types.ObjectId, ref: 'Division' },
-            district: { type: mongoose.Schema.Types.ObjectId, ref: 'District' },
-            upazila: { type: mongoose.Schema.Types.ObjectId, ref: 'Upazila' },
-            union: { type: mongoose.Schema.Types.ObjectId, ref: 'Union' },
-            village: { type: mongoose.Schema.Types.ObjectId, ref: 'Village' },
+            division: { type: ObjectId, ref: 'Division', title: String },
+            district: { type: ObjectId, ref: 'District', title: String },
+            upazila: { type: ObjectId, ref: 'Upazila', title: String },
+            union: { type: ObjectId, ref: 'Union', title: String },
+            village: { type: ObjectId, ref: 'Village', title: String },
         },
         // VEHICLE INFO
         vehicleType: {
@@ -123,11 +125,11 @@ const userSchema = new mongoose.Schema(
             minLength: [3, 'Name must be at least 3 characters long.'],
         },
         ownerAddress: {
-            division: { type: mongoose.Schema.Types.ObjectId, ref: 'Division' },
-            district: { type: mongoose.Schema.Types.ObjectId, ref: 'District' },
-            upazila: { type: mongoose.Schema.Types.ObjectId, ref: 'Upazila' },
-            union: { type: mongoose.Schema.Types.ObjectId, ref: 'Union' },
-            village: { type: mongoose.Schema.Types.ObjectId, ref: 'Village' },
+            division: { type: ObjectId, ref: 'Division', title: String },
+            district: { type: ObjectId, ref: 'District', title: String },
+            upazila: { type: ObjectId, ref: 'Upazila', title: String },
+            union: { type: ObjectId, ref: 'Union', title: String },
+            village: { type: ObjectId, ref: 'Village', title: String },
         },
         ownerMobile: {
             type: String,
@@ -170,11 +172,11 @@ const userSchema = new mongoose.Schema(
         },
         serviceAddress: [
             {
-                division: { type: mongoose.Schema.Types.ObjectId, ref: 'Division' },
-                district: { type: mongoose.Schema.Types.ObjectId, ref: 'District' },
-                upazila: { type: mongoose.Schema.Types.ObjectId, ref: 'Upazila' },
-                union: { type: mongoose.Schema.Types.ObjectId, ref: 'Union' },
-                village: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Village' }],
+                division: { type: ObjectId, ref: 'Division', title: String },
+                district: { type: ObjectId, ref: 'District', title: String },
+                upazila: { type: ObjectId, ref: 'Upazila', title: String },
+                union: { type: ObjectId, ref: 'Union', title: String },
+                village: [{ type: ObjectId, ref: 'Village', title: String }],
             },
         ],
         serviceTimes: {
@@ -192,11 +194,11 @@ const userSchema = new mongoose.Schema(
             timestamp: Number,
         },
         manualLocation: {
-            division: { type: mongoose.Schema.Types.ObjectId, ref: 'Division' },
-            district: { type: mongoose.Schema.Types.ObjectId, ref: 'District' },
-            upazila: { type: mongoose.Schema.Types.ObjectId, ref: 'Upazila' },
-            union: { type: mongoose.Schema.Types.ObjectId, ref: 'Union' },
-            village: { type: mongoose.Schema.Types.ObjectId, ref: 'Village' },
+            division: { type: ObjectId, ref: 'Division' },
+            district: { type: ObjectId, ref: 'District' },
+            upazila: { type: ObjectId, ref: 'Upazila' },
+            union: { type: ObjectId, ref: 'Union' },
+            village: { type: ObjectId, ref: 'Village' },
         },
         // VIDEO URL
         videoURL: {
