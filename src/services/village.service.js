@@ -23,3 +23,5 @@ exports.deleteVillageByIdService = async (id) => {
     const result = await Village.deleteOne({ _id: id });
     return result;
 };
+
+// exports.getVillageByIdService = async (id) => await Village.findById(id);

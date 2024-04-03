@@ -82,16 +82,18 @@ const userSchema = new mongoose.Schema(
         },
         // ADDRESS INFO
         presentAddress: {
-            division: String,
-            district: String,
-            upazila: String,
-            union: String,
+            division: { type: mongoose.Schema.Types.ObjectId, ref: 'Division' },
+            district: { type: mongoose.Schema.Types.ObjectId, ref: 'District' },
+            upazila: { type: mongoose.Schema.Types.ObjectId, ref: 'Upazila' },
+            union: { type: mongoose.Schema.Types.ObjectId, ref: 'Union' },
+            village: { type: mongoose.Schema.Types.ObjectId, ref: 'Village' },
         },
         permanentAddress: {
-            division: String,
-            district: String,
-            upazila: String,
-            union: String,
+            division: { type: mongoose.Schema.Types.ObjectId, ref: 'Division' },
+            district: { type: mongoose.Schema.Types.ObjectId, ref: 'District' },
+            upazila: { type: mongoose.Schema.Types.ObjectId, ref: 'Upazila' },
+            union: { type: mongoose.Schema.Types.ObjectId, ref: 'Union' },
+            village: { type: mongoose.Schema.Types.ObjectId, ref: 'Village' },
         },
         // VEHICLE INFO
         vehicleType: {
@@ -121,10 +123,11 @@ const userSchema = new mongoose.Schema(
             minLength: [3, 'Name must be at least 3 characters long.'],
         },
         ownerAddress: {
-            division: String,
-            district: String,
-            upazila: String,
-            union: String,
+            division: { type: mongoose.Schema.Types.ObjectId, ref: 'Division' },
+            district: { type: mongoose.Schema.Types.ObjectId, ref: 'District' },
+            upazila: { type: mongoose.Schema.Types.ObjectId, ref: 'Upazila' },
+            union: { type: mongoose.Schema.Types.ObjectId, ref: 'Union' },
+            village: { type: mongoose.Schema.Types.ObjectId, ref: 'Village' },
         },
         ownerMobile: {
             type: String,
@@ -165,12 +168,15 @@ const userSchema = new mongoose.Schema(
                 message: '{VALUE} is an invalid service type.',
             },
         },
-        serviceAddress: {
-            division: String,
-            district: String,
-            upazila: String,
-            union: String,
-        },
+        serviceAddress: [
+            {
+                division: { type: mongoose.Schema.Types.ObjectId, ref: 'Division' },
+                district: { type: mongoose.Schema.Types.ObjectId, ref: 'District' },
+                upazila: { type: mongoose.Schema.Types.ObjectId, ref: 'Upazila' },
+                union: { type: mongoose.Schema.Types.ObjectId, ref: 'Union' },
+                village: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Village' }],
+            },
+        ],
         serviceTimes: {
             type: [
                 {
@@ -186,11 +192,11 @@ const userSchema = new mongoose.Schema(
             timestamp: Number,
         },
         manualLocation: {
-            division: String,
-            district: String,
-            upazila: String,
-            union: String,
-            station: String,
+            division: { type: mongoose.Schema.Types.ObjectId, ref: 'Division' },
+            district: { type: mongoose.Schema.Types.ObjectId, ref: 'District' },
+            upazila: { type: mongoose.Schema.Types.ObjectId, ref: 'Upazila' },
+            union: { type: mongoose.Schema.Types.ObjectId, ref: 'Union' },
+            village: { type: mongoose.Schema.Types.ObjectId, ref: 'Village' },
         },
         // VIDEO URL
         videoURL: {

@@ -1,6 +1,17 @@
 const User = require('../models/User');
 
-exports.getUserByIdService = async (id) => await User.findById(id).select('-password');
+exports.getUserByIdService = async (id) => {
+    const user = await User.findById(id)
+        .select('-password')
+        .populate({
+            path: 'presentAddress permanentAddress ownerAddress serviceAddress manualLocation',
+            populate: {
+                path: 'division district upazila union village',
+                select: 'title unionId wardId',
+            },
+        });
+    return user;
+};
 
 exports.getUserByEmailService = async (email) => await User.findOne({ email });
 

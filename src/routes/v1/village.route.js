@@ -8,6 +8,7 @@ const router = express.Router();
 router.post('/create', verifyToken, auth('admin'), villageControllers.createVillages);
 router.patch('/update/:id', verifyToken, auth('admin'), villageControllers.updateVillageById);
 router.delete('/delete/:id', verifyToken, auth('admin'), villageControllers.deleteVillageById);
-router.get('/:unionId', villageControllers.getVillagesByUnionId);
+router.delete('/title/:id', villageControllers.getVillageTitleById);
+// router.get('/:unionId', villageControllers.getVillagesByUnionId);
 
 module.exports = router;
