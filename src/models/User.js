@@ -84,18 +84,18 @@ const userSchema = new mongoose.Schema(
         },
         // ADDRESS INFO
         presentAddress: {
-            division: { type: ObjectId, ref: 'Division', title: String },
-            district: { type: ObjectId, ref: 'District', title: String },
-            upazila: { type: ObjectId, ref: 'Upazila', title: String },
-            union: { type: ObjectId, ref: 'Union', title: String },
-            village: { type: ObjectId, ref: 'Village', title: String },
+            division: { type: ObjectId, ref: 'Division' },
+            district: { type: ObjectId, ref: 'District' },
+            upazila: { type: ObjectId, ref: 'Upazila' },
+            union: { type: ObjectId, ref: 'Union' },
+            village: { type: ObjectId, ref: 'Village' },
         },
         permanentAddress: {
-            division: { type: ObjectId, ref: 'Division', title: String },
-            district: { type: ObjectId, ref: 'District', title: String },
-            upazila: { type: ObjectId, ref: 'Upazila', title: String },
-            union: { type: ObjectId, ref: 'Union', title: String },
-            village: { type: ObjectId, ref: 'Village', title: String },
+            division: { type: ObjectId, ref: 'Division' },
+            district: { type: ObjectId, ref: 'District' },
+            upazila: { type: ObjectId, ref: 'Upazila' },
+            union: { type: ObjectId, ref: 'Union' },
+            village: { type: ObjectId, ref: 'Village' },
         },
         // VEHICLE INFO
         vehicleType: {
@@ -125,11 +125,11 @@ const userSchema = new mongoose.Schema(
             minLength: [3, 'Name must be at least 3 characters long.'],
         },
         ownerAddress: {
-            division: { type: ObjectId, ref: 'Division', title: String },
-            district: { type: ObjectId, ref: 'District', title: String },
-            upazila: { type: ObjectId, ref: 'Upazila', title: String },
-            union: { type: ObjectId, ref: 'Union', title: String },
-            village: { type: ObjectId, ref: 'Village', title: String },
+            division: { type: ObjectId, ref: 'Division' },
+            district: { type: ObjectId, ref: 'District' },
+            upazila: { type: ObjectId, ref: 'Upazila' },
+            union: { type: ObjectId, ref: 'Union' },
+            village: { type: ObjectId, ref: 'Village' },
         },
         ownerMobile: {
             type: String,
@@ -172,11 +172,11 @@ const userSchema = new mongoose.Schema(
         },
         serviceAddress: [
             {
-                division: { type: ObjectId, ref: 'Division', title: String },
-                district: { type: ObjectId, ref: 'District', title: String },
-                upazila: { type: ObjectId, ref: 'Upazila', title: String },
-                union: { type: ObjectId, ref: 'Union', title: String },
-                village: [{ type: ObjectId, ref: 'Village', title: String }],
+                division: { type: ObjectId, ref: 'Division' },
+                district: { type: ObjectId, ref: 'District' },
+                upazila: { type: ObjectId, ref: 'Upazila' },
+                union: { type: ObjectId, ref: 'Union' },
+                village: [{ type: ObjectId, ref: 'Village' }],
             },
         ],
         serviceTimes: {
