@@ -5,6 +5,7 @@ const {
     deleteVillageByIdService,
 } = require('../services/village.service');
 const sendResponse = require('../utils/sendResponse');
+const Village = require('../models/Village');
 
 exports.getVillagesByUnionId = async (req, res) => {
     try {
@@ -31,6 +32,31 @@ exports.getVillagesByUnionId = async (req, res) => {
 
 exports.createVillages = async (req, res) => {
     try {
+        const villages = req.body;
+
+        const promises = [];
+        villages.forEach((village) => {
+            promises.push(
+                Village.findOne({
+                    unionId: village?.unionId,
+                    title: village?.title,
+                }),
+            );
+        });
+
+        const existingVillages = (await Promise.all(promises)).filter(
+            (item) => item !== null && item !== undefined,
+        );
+
+        if (existingVillages?.length > 0) {
+            return sendResponse(res, {
+                status: 403,
+                code: 'ALREADY_EXIST',
+                data: { titles: existingVillages?.map(({ title }) => title) },
+                message: 'Village already exist!',
+            });
+        }
+
         const result = await createVillagesService(req.body);
 
         sendResponse(res, {
