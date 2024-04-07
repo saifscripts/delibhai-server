@@ -1,7 +1,6 @@
 const Village = require('../models/Village');
 
-exports.getVillagesByUnionIdService = async (unionId) =>
-    await Village.find({ unionId }).select('-unionId');
+exports.getVillagesByUnionIdService = async (unionId) => await Village.find({ unionId });
 
 exports.createVillagesService = async (villages) => await Village.insertMany(villages);
 
