@@ -74,6 +74,20 @@ exports.updateVillageById = async (req, res) => {
     try {
         const { id } = req.params;
 
+        const village = await Village.findOne({
+            title: req.body.title.trim(),
+            unionId: req.body.unionId,
+        });
+
+        if (village) {
+            return sendResponse(res, {
+                status: 403,
+                code: 'ALREADY_EXIST',
+                data: { title: village?.title },
+                message: 'Village already exist!',
+            });
+        }
+
         const response = await updateVillageByIdService(id, req.body);
 
         if (!response.modifiedCount) {
