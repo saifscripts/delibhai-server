@@ -94,7 +94,7 @@ exports.signup = async (req, res) => {
         console.log(otp);
 
         // Generate Auth Token
-        const token = generateToken(user);
+        // const token = generateToken(user);
 
         // remove password before sending response
         user.password = undefined;
@@ -103,7 +103,7 @@ exports.signup = async (req, res) => {
         sendResponse(res, {
             status: 200,
             message: 'User signed up successfully!',
-            data: { user, token },
+            data: { user },
         });
     } catch (error) {
         console.log(error);
@@ -117,7 +117,7 @@ exports.verifyOTP = async (req, res) => {
     try {
         const { id, otp } = req.body;
 
-        const user = await getUserByIdService(id);
+        let user = await getUserByIdService(id);
 
         // Send error response if no user found
         if (!user) {
@@ -156,11 +156,15 @@ exports.verifyOTP = async (req, res) => {
             });
         }
 
+        // Generate Auth Token
+        const token = generateToken(user);
+
+        // remove otp and temp mobile
         user.removeOTP();
         user.removeTempMobile(); // Add mobile field and remove tempMobile field
-        await user.save({ validateBeforeSave: false });
+        user = await user.save({ validateBeforeSave: false });
 
-        sendResponse(res, { status: 200, message: 'OTP verified!' });
+        sendResponse(res, { status: 200, message: 'OTP verified!', data: { user, token }});
     } catch (error) {
         const status = error.status || 500;
         const message = error.message || 'Internal Server Error!';
