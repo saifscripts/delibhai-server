@@ -200,11 +200,8 @@ const userSchema = new mongoose.Schema(
       timestamp: Number,
     },
     manualLocation: {
-      division: { type: ObjectId, ref: 'Division' },
-      district: { type: ObjectId, ref: 'District' },
-      upazila: { type: ObjectId, ref: 'Upazila' },
-      union: { type: ObjectId, ref: 'Union' },
-      village: { type: ObjectId, ref: 'Village' },
+      latitude: Number,
+      longitude: Number,
     },
     // VIDEO URL
     videoURL: {
