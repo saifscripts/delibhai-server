@@ -6,7 +6,7 @@ exports.getUserByIdService = async (id) => {
   const user = await User.findById(id)
     .select('-password')
     .populate({
-      path: 'presentAddress permanentAddress ownerAddress serviceAddress manualLocation',
+      path: 'presentAddress permanentAddress ownerAddress serviceAddress manualLocation mainStation',
       populate: {
         path: 'division district upazila union village',
         select: 'title unionId wardId',

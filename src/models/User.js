@@ -176,6 +176,13 @@ const userSchema = new mongoose.Schema(
         message: '{VALUE} is an invalid service type.',
       },
     },
+    mainStation: {
+      division: { type: ObjectId, ref: 'Division' },
+      district: { type: ObjectId, ref: 'District' },
+      upazila: { type: ObjectId, ref: 'Upazila' },
+      union: { type: ObjectId, ref: 'Union' },
+      village: { type: ObjectId, ref: 'Village' },
+    },
     serviceAddress: [
       {
         division: { type: ObjectId, ref: 'Division' },

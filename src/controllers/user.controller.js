@@ -349,6 +349,7 @@ exports.updateUserById = async (req, res) => {
       avatarURL,
       avatarSrcURL,
       avatarCropData,
+      mainStation,
     } = req.body;
 
     const userInfo = {
@@ -382,6 +383,7 @@ exports.updateUserById = async (req, res) => {
       avatarURL,
       avatarSrcURL,
       avatarCropData,
+      mainStation,
     };
 
     const response = await updateUserByIdService(id, userInfo);
