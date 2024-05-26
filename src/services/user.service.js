@@ -59,13 +59,22 @@ exports.getHerosService = async (query) => {
   const heros = await User.aggregate([
     {
       $match: {
-        vehicleType: vehicle,
-        'serviceAddress.village': new ObjectId(dVil),
-        $or: [
-          { 'liveLocation.timestamp': { $gt: Date.now() - 5000 } },
+        $and: [
+          { vehicleType: vehicle },
           {
-            'manualLocation.latitude': { $exists: true },
-            'manualLocation.longitude': { $exists: true },
+            $or: [
+              { 'serviceAddress.village': new ObjectId(dVil) },
+              { 'mainStation.village': new ObjectId(dVil) },
+            ],
+          },
+          {
+            $or: [
+              { 'liveLocation.timestamp': { $gt: Date.now() - 5000 } },
+              {
+                'manualLocation.latitude': { $exists: true },
+                'manualLocation.longitude': { $exists: true },
+              },
+            ],
           },
         ],
       },
@@ -79,6 +88,7 @@ exports.getHerosService = async (query) => {
         manualLocation: 1,
         liveLocation: 1,
         serviceAddress: 1,
+        mainStation: 1,
       },
     },
   ]);
