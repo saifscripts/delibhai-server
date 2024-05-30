@@ -89,6 +89,13 @@ exports.getHerosService = async (query) => {
         liveLocation: 1,
         serviceAddress: 1,
         mainStation: 1,
+        isLive: {
+          $cond: {
+            if: { $gt: ['$liveLocation.timestamp', Date.now() - 5000] },
+            then: true,
+            else: false,
+          },
+        },
       },
     },
   ]);
