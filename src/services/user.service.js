@@ -126,6 +126,27 @@ exports.getHerosService = async (query) => {
       },
     },
     {
+      $lookup: {
+        from: 'villages',
+        localField: 'mainStation.village',
+        foreignField: '_id',
+        as: 'mainStation.village',
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              title: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: {
+        path: '$mainStation.village',
+      },
+    },
+    {
       $project: {
         name: 1,
         avatarURL: 1,
@@ -139,7 +160,6 @@ exports.getHerosService = async (query) => {
             else: undefined,
           },
         },
-        serviceAddress: 1,
         mainStation: 1,
         isLive: {
           $cond: {
