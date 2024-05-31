@@ -3,7 +3,53 @@ const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Types;
 
 exports.getUserByIdService = async (id) => {
-  const user = await User.findById(id)
+  let user;
+
+  // START: logic for removing invalid field values
+  // N.B.: This codeblock should remove in the future
+  user = await User.findById(id).lean();
+
+  const fields = {};
+
+  if (
+    user?.presentAddress?.division &&
+    !ObjectId.isValid(user?.presentAddress?.division)
+  ) {
+    fields.presentAddress = 1;
+  }
+
+  if (
+    user?.permanentAddress?.division &&
+    !ObjectId.isValid(user?.permanentAddress?.division)
+  ) {
+    fields.permanentAddress = 1;
+  }
+
+  if (
+    user?.serviceAddress?.division &&
+    !ObjectId.isValid(user?.serviceAddress?.division)
+  ) {
+    fields.serviceAddress = 1;
+  }
+
+  if (
+    user?.ownerAddress?.division &&
+    !ObjectId.isValid(user?.ownerAddress?.division)
+  ) {
+    fields.ownerAddress = 1;
+  }
+
+  if (
+    user?.manualLocation?.division &&
+    !ObjectId.isValid(user?.manualLocation?.division)
+  ) {
+    fields.manualLocation = 1;
+  }
+
+  await User.updateOne({ _id: id }, { $unset: fields });
+  // END: logic for removing invalid field values
+
+  user = await User.findById(id)
     .select('-password')
     .populate({
       path: 'presentAddress permanentAddress ownerAddress serviceAddress manualLocation mainStation',

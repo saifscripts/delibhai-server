@@ -28,6 +28,7 @@ exports.getHeros = async (req, res) => {
 exports.getUserById = async (req, res) => {
   try {
     const { id } = req.params;
+
     const user = await getUserByIdService(id);
 
     if (!user) {
