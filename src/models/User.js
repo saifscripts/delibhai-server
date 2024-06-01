@@ -200,6 +200,14 @@ const userSchema = new mongoose.Schema(
         },
       ],
     },
+    serviceStatus: {
+      type: String,
+      enum: {
+        values: ['off', 'scheduled', 'on'],
+        message: '{VALUE} is an invalid service status.',
+      },
+      default: 'scheduled',
+    },
     // LOCATION INFO
     liveLocation: {
       latitude: Number,

@@ -168,6 +168,7 @@ exports.getHerosService = async (query) => {
             else: false,
           },
         },
+        serviceStatus: 1,
       },
     },
   ]);
