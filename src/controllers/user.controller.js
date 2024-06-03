@@ -52,34 +52,17 @@ exports.getUserById = async (req, res) => {
 exports.signup = async (req, res) => {
   try {
     // Extract userInfo from req.body to prevent inserting unwanted fields
-    const { name, gender, email, mobile, password, confirmPassword } = req.body;
+    const { name, gender, mobile, password, confirmPassword } = req.body;
     const userInfo = {
       name,
       gender,
-      email,
       mobile,
       password,
       confirmPassword,
     };
 
-    // Check if user already exist with this email
-    let user = await getUserByEmailService(email);
-    // Send error response if user exist
-    if (user) {
-      const message =
-        user.status === 'inactive'
-          ? "Can't use this email right now. Please Try again later."
-          : 'A user already exist with this email address.';
-
-      return sendResponse(res, {
-        status: 409,
-        message,
-        code: 'duplicateEmail',
-      });
-    }
-
     // Create user
-    user = await signupService(userInfo);
+    let user = await signupService(userInfo);
 
     // Generate otp
     const otp = user.generateOTP();
