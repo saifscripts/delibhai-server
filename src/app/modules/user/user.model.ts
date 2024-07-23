@@ -8,7 +8,7 @@ const userSchema = new Schema<IUser, UserModel>(
         id: { type: String, required: true, unique: true },
         name: { type: String, required: true },
         gender: { type: String, enum: ['পুরুষ', 'মহিলা', 'অন্যান্য'] },
-        phone: { type: String, unique: true },
+        mobile: { type: String, unique: true },
         password: { type: String, required: true, select: 0 },
         status: {
             type: String,
@@ -23,7 +23,7 @@ const userSchema = new Schema<IUser, UserModel>(
         otp: String,
         otpExpires: Date,
         otpSessionExpires: Date,
-        tempPhone: String,
+        tempMobile: String,
         passwordChangedAt: Date,
         isDeleted: { type: Boolean, default: false },
     },

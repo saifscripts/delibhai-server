@@ -7,12 +7,12 @@ export interface IUser {
     id: string;
     name: string;
     gender: 'পুরুষ' | 'মহিলা' | 'অন্যান্য';
-    phone: string;
+    mobile: string;
     password: string;
     passwordChangedAt?: Date;
     status: 'in-progress' | 'active' | 'blocked';
     role: IUserRole;
-    tempPhone?: string;
+    tempMobile: string;
     otp: string;
     otpExpires: Date;
     otpSessionExpires: Date;
