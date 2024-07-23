@@ -9,8 +9,20 @@ import catchAsync from '../utils/catchAsync';
 
 const auth = (...authorizedRoles: IUserRole[]): RequestHandler => {
     return catchAsync(async (req, _res, next) => {
-        const token = req.headers.authorization;
+        const authHeader = req.headers.authorization;
 
+        // check if auth header is sent
+        if (!authHeader) {
+            throw new AppError(
+                httpStatus.UNAUTHORIZED,
+                'You are not authorized!',
+            );
+        }
+
+        // split and retrieve token
+        const token = authHeader.split(' ')[1];
+
+        // check if token is present
         if (!token) {
             throw new AppError(
                 httpStatus.UNAUTHORIZED,
@@ -18,6 +30,7 @@ const auth = (...authorizedRoles: IUserRole[]): RequestHandler => {
             );
         }
 
+        // decode the token
         const decoded = jwt.verify(
             token,
             config.jwt_access_secret as string,
@@ -25,24 +38,29 @@ const auth = (...authorizedRoles: IUserRole[]): RequestHandler => {
 
         const { id, role, iat } = decoded;
 
-        const user = await User.findOne({ id });
+        // find the decoded user
+        const user = await User.findById(id);
 
+        // check if user exists
         if (!user) {
             throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
         }
 
+        // check if user is deleted
         const isDeleted = user?.isDeleted;
 
         if (isDeleted) {
-            throw new AppError(httpStatus.FORBIDDEN, 'User is deleted');
+            throw new AppError(httpStatus.FORBIDDEN, 'User is deleted!');
         }
 
+        // check if user is blocked
         const userStatus = user?.status;
 
-        if (userStatus === 'block') {
-            throw new AppError(httpStatus.FORBIDDEN, 'User is blocked');
+        if (userStatus === 'blocked') {
+            throw new AppError(httpStatus.FORBIDDEN, 'User is blocked!');
         }
 
+        // check if the token is issued before password changed
         if (
             user.passwordChangedAt &&
             User.isJWTIssuedBeforePasswordChange(
@@ -52,14 +70,15 @@ const auth = (...authorizedRoles: IUserRole[]): RequestHandler => {
         ) {
             throw new AppError(
                 httpStatus.UNAUTHORIZED,
-                'You are not authorized!!!',
+                'You are not authorized!',
             );
         }
 
+        // check if user is authorized based on the role
         if (authorizedRoles && !authorizedRoles.includes(role)) {
             throw new AppError(
                 httpStatus.UNAUTHORIZED,
-                'You are not authorized!!',
+                'You are not authorized!',
             );
         }
 
