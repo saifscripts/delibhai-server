@@ -19,6 +19,16 @@ const login = catchAsync(async (req, res) => {
     });
 });
 
+const getMe = catchAsync(async (req, res) => {
+    const result = await AuthServices.getMeFromDB(req.user.id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: 'Successfully fetched user data!',
+        data: result,
+    });
+});
+
 const refreshToken = catchAsync(async (req, res) => {
     const { refreshToken } = req.cookies;
 
@@ -43,6 +53,7 @@ const changePassword = catchAsync(async (req, res) => {
 
 export const AuthControllers = {
     login,
+    getMe,
     refreshToken,
     changePassword,
 };

@@ -3,6 +3,7 @@ import httpStatus from 'http-status';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import config from '../../config';
 import AppError from '../../errors/AppError';
+import { Rider } from '../rider/rider.model';
 import { User } from '../user/user.model';
 import { IChangePassword, ICredentials } from './auth.interface';
 import { createToken } from './auth.util';
@@ -64,6 +65,29 @@ const login = async (payload: ICredentials) => {
         refreshToken,
         user,
     };
+};
+
+const getMeFromDB = async (id: string) => {
+    const user = await User.findById(id).lean();
+
+    let profile;
+
+    if (user!.role === 'rider') {
+        profile = await Rider.findOne({ user: user!._id }).lean();
+        // .populate({
+        //     path: 'presentAddress permanentAddress ownerAddress serviceAddress manualLocation mainStation',
+        //     populate: {
+        //         path: 'division district upazila union village',
+        //         select: 'title unionId wardId',
+        //     },
+        // });
+    }
+
+    if (!profile) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
+    }
+
+    return { ...user, ...profile };
 };
 
 const refreshToken = async (token: string) => {
@@ -176,6 +200,7 @@ const changePassword = async (
 
 export const AuthServices = {
     login,
+    getMeFromDB,
     refreshToken,
     changePassword,
 };

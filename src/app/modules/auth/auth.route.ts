@@ -13,6 +13,12 @@ router.post(
     AuthControllers.login,
 );
 
+router.get(
+    '/me',
+    auth(USER_ROLE.admin, USER_ROLE.rider),
+    AuthControllers.getMe,
+);
+
 router.post(
     '/refresh-token',
     validateRequest(AuthValidations.refreshTokenValidationSchema),
