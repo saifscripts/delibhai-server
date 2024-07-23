@@ -29,7 +29,7 @@ const createRiderIntoDB = async (payload: IUser) => {
         otpExpires: generateExpiryDate(1), // 1 minute from the current time
         otpSessionExpires: generateExpiryDate(10), // 10 minutes from the current time
         mobile: generateRandomNumber(11), // 11 digit random number for in-progress user
-        tempMobile: payload.mobile.slice(-11), // save actual phone number as tempPhone
+        tempMobile: payload.mobile.slice(-11), // save actual mobile number as tempMobile
     };
 
     const newUser = await User.create(userData);
