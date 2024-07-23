@@ -8,7 +8,9 @@ import { IChangePassword, ICredentials } from './auth.interface';
 import { createToken } from './auth.util';
 
 const login = async (payload: ICredentials) => {
-    const user = await User.findOne({ id: payload?.id }).select('+password');
+    const user = await User.findOne({ mobile: payload?.mobile }).select(
+        '+password',
+    );
 
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
@@ -17,13 +19,13 @@ const login = async (payload: ICredentials) => {
     const isDeleted = user?.isDeleted;
 
     if (isDeleted) {
-        throw new AppError(httpStatus.FORBIDDEN, 'User is deleted');
+        throw new AppError(httpStatus.FORBIDDEN, 'User is deleted!');
     }
 
     const userStatus = user?.status;
 
     if (userStatus === 'blocked') {
-        throw new AppError(httpStatus.FORBIDDEN, 'User is blocked');
+        throw new AppError(httpStatus.FORBIDDEN, 'User is blocked!');
     }
 
     const isPasswordMatched = await User.comparePassword(
@@ -32,11 +34,14 @@ const login = async (payload: ICredentials) => {
     );
 
     if (!isPasswordMatched) {
-        throw new AppError(httpStatus.BAD_REQUEST, 'Wrong user id or password');
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            'Wrong mobile number or password!',
+        );
     }
 
     const jwtPayload = {
-        id: user.id,
+        id: user._id,
         role: user.role,
     };
 
@@ -52,10 +57,12 @@ const login = async (payload: ICredentials) => {
         config.jwt_refresh_exp_in as string,
     );
 
+    user.password = '';
+
     return {
         accessToken,
         refreshToken,
-        needsPasswordChange: user.needsPasswordChange,
+        user,
     };
 };
 
@@ -81,7 +88,7 @@ const refreshToken = async (token: string) => {
 
     const userStatus = user?.status;
 
-    if (userStatus === 'block') {
+    if (userStatus === 'blocked') {
         throw new AppError(httpStatus.FORBIDDEN, 'User is blocked');
     }
 
@@ -134,7 +141,7 @@ const changePassword = async (
 
     const userStatus = user?.status;
 
-    if (userStatus === 'block') {
+    if (userStatus === 'blocked') {
         throw new AppError(httpStatus.FORBIDDEN, 'User is blocked');
     }
 

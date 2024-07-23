@@ -5,8 +5,7 @@ import sendResponse from '../../utils/sendResponse';
 import { AuthServices } from './auth.service';
 
 const login = catchAsync(async (req, res) => {
-    const { accessToken, refreshToken, needsPasswordChange } =
-        await AuthServices.login(req.body);
+    const { refreshToken, ...restData } = await AuthServices.login(req.body);
 
     res.cookie('refreshToken', refreshToken, {
         secure: config.NODE_ENV === 'production',
@@ -16,7 +15,7 @@ const login = catchAsync(async (req, res) => {
     sendResponse(res, {
         statusCode: httpStatus.OK,
         message: 'Successfully logged in!',
-        data: { accessToken, needsPasswordChange },
+        data: restData,
     });
 });
 

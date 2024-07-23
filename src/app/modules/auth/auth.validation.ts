@@ -2,11 +2,13 @@ import { z } from 'zod';
 
 const credentialValidationSchema = z.object({
     body: z.object({
-        id: z.string({
-            required_error: 'ID is required',
-        }),
+        mobile: z
+            .string({
+                required_error: 'Mobile number is required!',
+            })
+            .transform((value) => value.slice(-11)),
         password: z.string({
-            required_error: 'Password is required',
+            required_error: 'Password is required!',
         }),
     }),
 });
@@ -14,7 +16,7 @@ const credentialValidationSchema = z.object({
 const refreshTokenValidationSchema = z.object({
     cookies: z.object({
         refreshToken: z.string({
-            required_error: 'Refresh token is required',
+            required_error: 'Refresh token is required!',
         }),
     }),
 });
@@ -22,10 +24,10 @@ const refreshTokenValidationSchema = z.object({
 const changePasswordValidationSchema = z.object({
     body: z.object({
         oldPassword: z.string({
-            required_error: 'Old password is required',
+            required_error: 'Old password is required!',
         }),
         newPassword: z.string({
-            required_error: 'New password is required',
+            required_error: 'New password is required!',
         }),
     }),
 });

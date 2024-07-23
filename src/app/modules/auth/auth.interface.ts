@@ -1,5 +1,5 @@
 export interface ICredentials {
-    id: string;
+    mobile: string;
     password: string;
 }
 
