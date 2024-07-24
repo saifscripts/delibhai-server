@@ -7,7 +7,24 @@ const userSchema = new Schema<IUser, UserModel>(
     {
         id: { type: String, required: true, unique: true },
         name: { type: String, required: true },
+        fatherName: String,
         gender: { type: String, enum: ['পুরুষ', 'মহিলা', 'অন্যান্য'] },
+        bloodGroup: {
+            type: String,
+            enum: ['এ+', 'বি+', 'এবি+', 'ও+', 'এ-', 'বি-', 'এবি-', 'ও-'],
+        },
+        dateOfBirth: String,
+        nid: String,
+        nidURL: String,
+        avatarURL: String,
+        avatarOriginURL: String,
+        avatarCropData: {
+            unit: String,
+            x: Number,
+            y: Number,
+            width: Number,
+            height: Number,
+        },
         mobile: { type: String, unique: true },
         password: { type: String, required: true, select: 0 },
         status: {

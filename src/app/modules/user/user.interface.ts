@@ -3,19 +3,35 @@ import { USER_ROLE } from './user.constant';
 
 export type IUserRole = keyof typeof USER_ROLE;
 
+interface ICropData {
+    unit: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}
+
 export interface IUser {
     id: string;
     name: string;
+    fatherName: string;
     gender: 'পুরুষ' | 'মহিলা' | 'অন্যান্য';
+    bloodGroup: 'এ+' | 'বি+' | 'এবি+' | 'ও+' | 'এ-' | 'বি-' | 'এবি-' | 'ও-';
+    dateOfBirth: string;
+    nid: string;
+    nidURL: string;
+    avatarURL: string;
+    avatarOriginURL: string;
+    avatarCropData: ICropData;
     mobile: string;
     password: string;
-    passwordChangedAt?: Date;
     status: 'in-progress' | 'active' | 'blocked';
     role: IUserRole;
-    tempMobile: string;
     otp: string;
     otpExpires: Date;
     otpSessionExpires: Date;
+    tempMobile: string;
+    passwordChangedAt: Date;
     isDeleted: boolean;
 }
 
