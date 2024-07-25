@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import config from '../../config';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
+import { UserServices } from '../user/user.service';
 import { AuthServices } from './auth.service';
 
 const login = catchAsync(async (req, res) => {
@@ -20,7 +21,7 @@ const login = catchAsync(async (req, res) => {
 });
 
 const getMe = catchAsync(async (req, res) => {
-    const result = await AuthServices.getMeFromDB(req.user.id);
+    const result = await UserServices.getUserFromDB(req.user.id);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,

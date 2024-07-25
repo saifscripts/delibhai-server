@@ -43,7 +43,7 @@ export interface IRider {
     vehicleName: string;
     ownerName: string;
     ownerAddress: IAddress;
-    ownerMobile: string;
+    ownerContactNo: string;
     ownerEmail: string;
     vehiclePhotos: string[];
     serviceType: 'ব্যক্তিগত' | 'ভাড়ায় চালিত';

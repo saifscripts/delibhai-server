@@ -25,28 +25,22 @@ const areaSchema = new Schema<IArea>(
 
 const riderSchema = new Schema<IRider>(
     {
-        // CONTACT INFO
         contactNo1: String,
         contactNo2: String,
         email: String,
         facebookURL: String,
-        // ADDRESS INFO
         presentAddress: addressSchema,
         permanentAddress: addressSchema,
-        // VEHICLE INFO
         vehicleType: String,
         vehicleBrand: String,
         vehicleModel: String,
         vehicleNumber: String,
         vehicleName: String,
-        // OWNER INFO
         ownerName: String,
         ownerAddress: addressSchema,
-        ownerMobile: String,
+        ownerContactNo: String,
         ownerEmail: String,
-        // VEHICLE PHOTOS
         vehiclePhotos: [String],
-        // SERVICE INFO
         serviceType: {
             type: String,
             enum: ['ব্যক্তিগত', 'ভাড়ায় চালিত'],
@@ -73,7 +67,6 @@ const riderSchema = new Schema<IRider>(
             enum: ['off', 'scheduled', 'on'],
             default: 'scheduled',
         },
-        // LOCATION INFO
         liveLocation: {
             latitude: Number,
             longitude: Number,
@@ -83,9 +76,7 @@ const riderSchema = new Schema<IRider>(
             latitude: Number,
             longitude: Number,
         },
-        // VIDEO URL
         videoURL: String,
-        // OTHERS
         id: { type: String, required: true, unique: true },
         user: {
             type: Schema.Types.ObjectId,

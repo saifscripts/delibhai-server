@@ -33,14 +33,11 @@ const verifyOTP = catchAsync(async (req, res) => {
 });
 
 const updateRider = catchAsync(async (req, res) => {
-    const result = await RiderServices.updateRiderIntoDB(
-        req.params.id,
-        req.body,
-    );
+    const result = await RiderServices.updateRiderIntoDB(req.user.id, req.body);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
-        message: 'Rider created successfully!',
+        message: 'Rider updated successfully!',
         data: result,
     });
 });

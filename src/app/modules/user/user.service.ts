@@ -33,7 +33,7 @@ const updateUserIntoDB = async (id: string, payload: Partial<IUser>) => {
     });
 
     if (!updatedUser) {
-        throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
+        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update user!');
     }
 
     return await getUserFromDB(id);

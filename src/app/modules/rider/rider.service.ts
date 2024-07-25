@@ -6,6 +6,7 @@ import generateRandomNumber from '../../utils/generateRandomNumber';
 import { createToken } from '../auth/auth.util';
 import { IUser, IVerifyOTP } from '../user/user.interface';
 import { User } from '../user/user.model';
+import { UserServices } from '../user/user.service';
 import { generateInProgressUserId } from '../user/user.util';
 import { IRider } from './rider.interface';
 import { Rider } from './rider.model';
@@ -99,7 +100,7 @@ const verifyOTPFromDB = async (payload: IVerifyOTP) => {
     const newRider = await Rider.create({
         id: updatedUser?.id,
         user: updatedUser?._id,
-        contactNo: updatedUser?.mobile,
+        contactNo1: updatedUser?.mobile,
     });
     // end transaction
 
@@ -107,7 +108,7 @@ const verifyOTPFromDB = async (payload: IVerifyOTP) => {
 };
 
 const updateRiderIntoDB = async (id: string, payload: IRider) => {
-    const updatedRider = await Rider.findByIdAndUpdate(id, payload, {
+    const updatedRider = await Rider.findOneAndUpdate({ user: id }, payload, {
         new: true,
     });
 
@@ -115,7 +116,7 @@ const updateRiderIntoDB = async (id: string, payload: IRider) => {
         throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update rider!');
     }
 
-    return updatedRider;
+    return await UserServices.getUserFromDB(id);
 };
 
 export const RiderServices = {
