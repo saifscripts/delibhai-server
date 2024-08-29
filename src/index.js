@@ -20,7 +20,16 @@ const app = express();
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      'http://localhost:5173',
+      'https://delibhai.com',
+      'https://delibhai.vercel.app',
+    ],
+    credentials: true,
+  })
+);
 
 // Connect to MongoDB using Mongoose
 mongoose.connect(process.env.DATABASE_URI).then(() => {
