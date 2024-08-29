@@ -38,3 +38,9 @@ app.use('/api/v1/upazila', upazilaRoutes);
 app.use('/api/v1/union', unionRoutes);
 app.use('/api/v1/ward', wardRoutes);
 app.use('/api/v1/village', villageRoutes);
+
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'App is running successfully!',
+  });
+});
