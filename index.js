@@ -4,13 +4,13 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
 // route imports
-const userRoutes = require('./routes/v1/user.route');
-const divisionRoutes = require('./routes/v1/division.route');
-const districtRoutes = require('./routes/v1/district.route');
-const upazilaRoutes = require('./routes/v1/upazila.route');
-const unionRoutes = require('./routes/v1/union.route');
-const wardRoutes = require('./routes/v1/ward.route');
-const villageRoutes = require('./routes/v1/village.route');
+const userRoutes = require('./src/routes/v1/user.route');
+const divisionRoutes = require('./src/routes/v1/division.route');
+const districtRoutes = require('./src/routes/v1/district.route');
+const upazilaRoutes = require('./src/routes/v1/upazila.route');
+const unionRoutes = require('./src/routes/v1/union.route');
+const wardRoutes = require('./src/routes/v1/ward.route');
+const villageRoutes = require('./src/routes/v1/village.route');
 
 dotenv.config();
 const app = express();
