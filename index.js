@@ -24,6 +24,7 @@ app.use(
   cors({
     origin: [
       //   'http://localhost:5173',
+      'https://www.delibhai.com',
       'https://delibhai.com',
       'https://delibhai.vercel.app',
     ],
