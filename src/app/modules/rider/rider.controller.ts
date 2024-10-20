@@ -10,7 +10,7 @@ const createRider = catchAsync(async (req, res) => {
 
     sendResponse(res, {
         statusCode: httpStatus.CREATED,
-        message: 'Rider created successfully!',
+        message: 'Rider registered successfully!',
         data: result,
     });
 });

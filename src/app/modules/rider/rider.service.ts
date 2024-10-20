@@ -36,7 +36,10 @@ const createRiderIntoDB = async (payload: IUser) => {
     const newUser = await User.create(userData);
 
     if (!newUser) {
-        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create rider!');
+        throw new AppError(
+            httpStatus.INTERNAL_SERVER_ERROR,
+            'Failed to create rider!',
+        );
     }
 
     return newUser;
