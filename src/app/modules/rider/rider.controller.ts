@@ -10,7 +10,7 @@ const createRider = catchAsync(async (req, res) => {
 
     sendResponse(res, {
         statusCode: httpStatus.CREATED,
-        message: 'Rider registered successfully!',
+        message: 'Rider created successfully!',
         data: result,
     });
 });
@@ -27,7 +27,7 @@ const verifyOTP = catchAsync(async (req, res) => {
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
-        message: 'OTP verified successfully!',
+        message: 'Registration successful!',
         data: restData,
     });
 });

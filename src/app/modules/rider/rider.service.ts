@@ -42,6 +42,8 @@ const createRiderIntoDB = async (payload: IUser) => {
         );
     }
 
+    // TODO: stop sending whole User Data
+    // Only _id should be sent and OTP must be stopped sending
     return newUser;
 };
 
@@ -81,7 +83,6 @@ const verifyOTPFromDB = async (payload: IVerifyOTP) => {
         config.jwt_refresh_exp_in as string,
     );
 
-    // start transaction
     const updatedUser = await User.findByIdAndUpdate(
         payload._id,
         {
@@ -94,20 +95,14 @@ const verifyOTPFromDB = async (payload: IVerifyOTP) => {
             $set: {
                 id: await generateRiderId(),
                 mobile: user.tempMobile,
+                contactNo1: user.tempMobile,
                 status: 'active',
             },
         },
         { new: true, runValidators: true },
     );
 
-    const newRider = await Rider.create({
-        id: updatedUser?.id,
-        user: updatedUser?._id,
-        contactNo1: updatedUser?.mobile,
-    });
-    // end transaction
-
-    return { user: updatedUser, rider: newRider, accessToken, refreshToken };
+    return { user: updatedUser, accessToken, refreshToken };
 };
 
 const updateRiderIntoDB = async (id: string, payload: IRider) => {
