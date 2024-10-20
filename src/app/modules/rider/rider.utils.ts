@@ -1,12 +1,13 @@
-import { Rider } from './rider.model';
+import { USER_ROLE } from '../user/user.constant';
+import { User } from '../user/user.model';
 
 const findLastRiderId = async () => {
-    const lastRider = await Rider.findOne(
-        {},
+    const lastRider = await User.findOne(
+        { role: USER_ROLE.rider, status: { $ne: 'in-progress' } },
         { id: 1 },
         { getDeletedDocs: true },
     ).sort({
-        id: -1,
+        createdAt: -1,
     });
 
     return lastRider?.id ? lastRider.id.substring(2) : undefined;

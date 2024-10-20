@@ -1,4 +1,50 @@
+import { Types } from 'mongoose';
 import { z } from 'zod';
+import { isMobilePhone, isStrongPassword } from '../../utils/validators';
+
+const createRiderValidationSchema = z.object({
+    body: z.object({
+        name: z
+            .string({ required_error: 'Name is required!' })
+            .trim()
+            .min(3, 'Name must be at least 3 characters long!'),
+        gender: z
+            .enum(['পুরুষ', 'মহিলা', 'অন্যান্য'], {
+                invalid_type_error: 'Gender must be পুরুষ/মহিলা/অন্যান্য!',
+            })
+            .optional(),
+        mobile: z
+            .string({ required_error: 'Mobile number is required!' })
+            .trim()
+            .refine((value) => isMobilePhone(value, 'bn-BD'), {
+                message: 'Invalid mobile number!',
+            }),
+        password: z.string({ required_error: 'Password is required!' }).refine(
+            (value) =>
+                isStrongPassword(value, {
+                    minLength: 4,
+                    minLowercase: 0,
+                    minNumbers: 0,
+                    minUppercase: 0,
+                    minSymbols: 0,
+                }),
+            {
+                message: 'Password must be at least 4 characters long!',
+            },
+        ),
+    }),
+});
+
+const verifyOTPValidationSchema = z.object({
+    body: z.object({
+        _id: z
+            .string({ required_error: 'ID is required!' })
+            .refine((value) => Types.ObjectId.isValid(value), {
+                message: 'Invalid ObjectId',
+            }),
+        otp: z.string({ required_error: 'OTP is required!' }),
+    }),
+});
 
 const credentialValidationSchema = z.object({
     body: z.object({
@@ -33,6 +79,8 @@ const changePasswordValidationSchema = z.object({
 });
 
 export const AuthValidations = {
+    createRiderValidationSchema,
+    verifyOTPValidationSchema,
     credentialValidationSchema,
     refreshTokenValidationSchema,
     changePasswordValidationSchema,

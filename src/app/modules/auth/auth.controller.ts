@@ -5,6 +5,33 @@ import sendResponse from '../../utils/sendResponse';
 import { UserServices } from '../user/user.service';
 import { AuthServices } from './auth.service';
 
+const createRider = catchAsync(async (req, res) => {
+    const result = await AuthServices.createRider(req.body);
+
+    sendResponse(res, {
+        statusCode: httpStatus.CREATED,
+        message: 'Rider created successfully!',
+        data: result,
+    });
+});
+
+const verifyOTP = catchAsync(async (req, res) => {
+    const { refreshToken, ...restData } = await AuthServices.verifyOTP(
+        req.body,
+    );
+
+    res.cookie('refreshToken', refreshToken, {
+        secure: config.NODE_ENV === 'production',
+        httpOnly: true,
+    });
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: 'Registration successful!',
+        data: restData,
+    });
+});
+
 const login = catchAsync(async (req, res) => {
     const { refreshToken, ...restData } = await AuthServices.login(req.body);
 
@@ -53,6 +80,8 @@ const changePassword = catchAsync(async (req, res) => {
 });
 
 export const AuthControllers = {
+    createRider,
+    verifyOTP,
     login,
     getMe,
     refreshToken,

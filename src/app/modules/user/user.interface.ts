@@ -64,11 +64,6 @@ export interface IUser {
     isDeleted: boolean;
 }
 
-export interface IVerifyOTP {
-    _id: string;
-    otp: string;
-}
-
 export interface IAddress {
     division: Types.ObjectId;
     district: Types.ObjectId;

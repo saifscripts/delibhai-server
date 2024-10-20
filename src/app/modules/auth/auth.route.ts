@@ -7,6 +7,20 @@ import { AuthValidations } from './auth.validation';
 
 const router = express.Router();
 
+router
+    .route('/create-rider')
+    .post(
+        validateRequest(AuthValidations.createRiderValidationSchema),
+        AuthControllers.createRider,
+    );
+
+router
+    .route('/verify-otp')
+    .post(
+        validateRequest(AuthValidations.verifyOTPValidationSchema),
+        AuthControllers.verifyOTP,
+    );
+
 router.post(
     '/login',
     validateRequest(AuthValidations.credentialValidationSchema),
