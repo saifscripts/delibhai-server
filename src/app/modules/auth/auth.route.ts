@@ -23,7 +23,7 @@ router
 
 router.post(
     '/login',
-    validateRequest(AuthValidations.credentialValidationSchema),
+    validateRequest(AuthValidations.loginValidationSchema),
     AuthControllers.login,
 );
 

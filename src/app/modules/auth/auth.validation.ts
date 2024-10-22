@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
+import validator from 'validator';
 import { z } from 'zod';
-import { isMobilePhone, isStrongPassword } from '../../utils/validators';
 
 const createRiderValidationSchema = z.object({
     body: z.object({
@@ -16,16 +16,17 @@ const createRiderValidationSchema = z.object({
         mobile: z
             .string({ required_error: 'Mobile number is required!' })
             .trim()
-            .refine((value) => isMobilePhone(value, 'bn-BD'), {
+            .refine((value) => validator.isMobilePhone(value, 'bn-BD'), {
                 message: 'Invalid mobile number!',
-            }),
+            })
+            .transform((value) => value.slice(-11)),
         password: z.string({ required_error: 'Password is required!' }).refine(
             (value) =>
-                isStrongPassword(value, {
+                validator.isStrongPassword(value, {
                     minLength: 4,
                     minLowercase: 0,
-                    minNumbers: 0,
                     minUppercase: 0,
+                    minNumbers: 0,
                     minSymbols: 0,
                 }),
             {
@@ -46,11 +47,13 @@ const verifyOTPValidationSchema = z.object({
     }),
 });
 
-const credentialValidationSchema = z.object({
+const loginValidationSchema = z.object({
     body: z.object({
         mobile: z
-            .string({
-                required_error: 'Mobile number is required!',
+            .string({ required_error: 'Mobile number is required!' })
+            .trim()
+            .refine((value) => validator.isMobilePhone(value, 'bn-BD'), {
+                message: 'Invalid mobile number!',
             })
             .transform((value) => value.slice(-11)),
         password: z.string({
@@ -81,7 +84,7 @@ const changePasswordValidationSchema = z.object({
 export const AuthValidations = {
     createRiderValidationSchema,
     verifyOTPValidationSchema,
-    credentialValidationSchema,
+    loginValidationSchema,
     refreshTokenValidationSchema,
     changePasswordValidationSchema,
 };
