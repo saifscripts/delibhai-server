@@ -57,24 +57,38 @@ const getMe = catchAsync(async (req, res) => {
 });
 
 const refreshToken = catchAsync(async (req, res) => {
-    const { refreshToken } = req.cookies;
+    const { refreshToken: oldRefreshToken } = req.cookies;
 
-    const result = await AuthServices.refreshToken(refreshToken);
+    const { refreshToken: newRefreshToken, ...restData } =
+        await AuthServices.refreshToken(oldRefreshToken);
+
+    res.cookie('refreshToken', newRefreshToken, {
+        secure: config.NODE_ENV === 'production',
+        httpOnly: true,
+    });
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
         message: 'Token refreshed successfully!',
-        data: result,
+        data: restData,
     });
 });
 
 const changePassword = catchAsync(async (req, res) => {
-    const result = await AuthServices.changePassword(req.user, req.body);
+    const { refreshToken, ...restData } = await AuthServices.changePassword(
+        req.user,
+        req.body,
+    );
+
+    res.cookie('refreshToken', refreshToken, {
+        secure: config.NODE_ENV === 'production',
+        httpOnly: true,
+    });
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
         message: 'Password changed successfully!',
-        data: result,
+        data: restData,
     });
 });
 

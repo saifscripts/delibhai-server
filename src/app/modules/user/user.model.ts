@@ -145,13 +145,14 @@ userSchema.statics.comparePassword = async function (
 };
 
 userSchema.statics.isJWTIssuedBeforePasswordChange = function (
-    jwtIssuedAt: number,
+    jwtIssuedTimeStamp: number,
     passwordChangedAt: Date,
 ) {
-    const passwordChangeTimeStamp = new Date(passwordChangedAt).getTime();
-    const jwtIssueTimeStamp = jwtIssuedAt * 1000;
+    const passwordChangeTimeStamp = Math.floor(
+        new Date(passwordChangedAt).getTime() / 1000,
+    );
 
-    return passwordChangeTimeStamp > jwtIssueTimeStamp;
+    return passwordChangeTimeStamp > jwtIssuedTimeStamp;
 };
 
 export const User = model<IUser, UserModel>('User', userSchema);

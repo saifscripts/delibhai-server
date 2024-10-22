@@ -39,7 +39,7 @@ router.post(
     AuthControllers.refreshToken,
 );
 
-router.post(
+router.put(
     '/change-password',
     auth(USER_ROLE.admin, USER_ROLE.rider),
     validateRequest(AuthValidations.changePasswordValidationSchema),

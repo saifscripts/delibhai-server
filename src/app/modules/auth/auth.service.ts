@@ -224,8 +224,15 @@ const refreshToken = async (token: string) => {
         config.jwt_access_exp_in as string,
     );
 
+    const refreshToken = createToken(
+        jwtPayload,
+        config.jwt_refresh_secret as string,
+        config.jwt_refresh_exp_in as string,
+    );
+
     return {
         accessToken,
+        refreshToken,
     };
 };
 
@@ -233,9 +240,7 @@ const changePassword = async (
     decodedUser: JwtPayload,
     payload: IChangePassword,
 ) => {
-    const user = await User.findOne({ id: decodedUser?.id }).select(
-        '+password',
-    );
+    const user = await User.findById(decodedUser?.id).select('+password');
 
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
@@ -244,7 +249,7 @@ const changePassword = async (
     const isDeleted = user?.isDeleted;
 
     if (isDeleted) {
-        throw new AppError(httpStatus.FORBIDDEN, 'User is deleted');
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
     }
 
     const userStatus = user?.status;
@@ -259,7 +264,7 @@ const changePassword = async (
     );
 
     if (!isPasswordMatched) {
-        throw new AppError(httpStatus.BAD_REQUEST, "Password didn't match!");
+        throw new AppError(httpStatus.BAD_REQUEST, 'Wrong password!');
     }
 
     const hashedPassword = await bcrypt.hash(
@@ -267,8 +272,8 @@ const changePassword = async (
         Number(config.bcrypt_salt_rounds),
     );
 
-    await User.findOneAndUpdate(
-        { id: decodedUser.id, role: decodedUser.role },
+    await User.findByIdAndUpdate(
+        user._id,
         {
             password: hashedPassword,
             needsPasswordChange: false,
@@ -279,7 +284,24 @@ const changePassword = async (
         },
     );
 
-    return null;
+    const jwtPayload = {
+        id: user._id,
+        role: user.role,
+    };
+
+    const accessToken = createToken(
+        jwtPayload,
+        config.jwt_access_secret as string,
+        config.jwt_access_exp_in as string,
+    );
+
+    const refreshToken = createToken(
+        jwtPayload,
+        config.jwt_refresh_secret as string,
+        config.jwt_refresh_exp_in as string,
+    );
+
+    return { accessToken, refreshToken };
 };
 
 export const AuthServices = {

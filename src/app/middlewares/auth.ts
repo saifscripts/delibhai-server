@@ -36,7 +36,7 @@ const auth = (...authorizedRoles: IUserRole[]): RequestHandler => {
             config.jwt_access_secret as string,
         ) as JwtPayload;
 
-        const { id, role, iat } = decoded;
+        const { id, iat } = decoded;
 
         // find the decoded user
         const user = await User.findById(id);
@@ -50,7 +50,7 @@ const auth = (...authorizedRoles: IUserRole[]): RequestHandler => {
         const isDeleted = user?.isDeleted;
 
         if (isDeleted) {
-            throw new AppError(httpStatus.FORBIDDEN, 'User is deleted!');
+            throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
         }
 
         // check if user is blocked
@@ -70,12 +70,12 @@ const auth = (...authorizedRoles: IUserRole[]): RequestHandler => {
         ) {
             throw new AppError(
                 httpStatus.UNAUTHORIZED,
-                'You are not authorized!',
+                'You are not authorized from here!',
             );
         }
 
         // check if user is authorized based on the role
-        if (authorizedRoles && !authorizedRoles.includes(role)) {
+        if (authorizedRoles && !authorizedRoles.includes(user.role)) {
             throw new AppError(
                 httpStatus.UNAUTHORIZED,
                 'You are not authorized!',
