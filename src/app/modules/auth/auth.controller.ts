@@ -2,7 +2,6 @@ import httpStatus from 'http-status';
 import config from '../../config';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
-import { UserServices } from '../user/user.service';
 import { AuthServices } from './auth.service';
 
 const createRider = catchAsync(async (req, res) => {
@@ -48,7 +47,7 @@ const login = catchAsync(async (req, res) => {
 });
 
 const getMe = catchAsync(async (req, res) => {
-    const result = await UserServices.getUserFromDB(req.user.id);
+    const result = await AuthServices.getMe(req.user.id);
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
@@ -64,7 +63,7 @@ const refreshToken = catchAsync(async (req, res) => {
 
     sendResponse(res, {
         statusCode: httpStatus.OK,
-        message: 'Successfully retrieved refresh token!',
+        message: 'Token refreshed successfully!',
         data: result,
     });
 });

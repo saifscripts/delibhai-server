@@ -117,7 +117,7 @@ const login = async (payload: ICredentials) => {
     const isDeleted = user?.isDeleted;
 
     if (isDeleted) {
-        throw new AppError(httpStatus.FORBIDDEN, 'User is deleted!');
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
     }
 
     const userStatus = user?.status;
@@ -164,6 +164,16 @@ const login = async (payload: ICredentials) => {
     };
 };
 
+const getMe = async (id: string) => {
+    const user = await User.findById(id);
+
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
+    }
+
+    return user;
+};
+
 const refreshToken = async (token: string) => {
     const decoded = jwt.verify(
         token,
@@ -172,7 +182,7 @@ const refreshToken = async (token: string) => {
 
     const { id, iat } = decoded;
 
-    const user = await User.findOne({ id });
+    const user = await User.findById(id);
 
     if (!user) {
         throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
@@ -181,7 +191,7 @@ const refreshToken = async (token: string) => {
     const isDeleted = user?.isDeleted;
 
     if (isDeleted) {
-        throw new AppError(httpStatus.FORBIDDEN, 'User is deleted');
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
     }
 
     const userStatus = user?.status;
@@ -204,7 +214,7 @@ const refreshToken = async (token: string) => {
     }
 
     const jwtPayload = {
-        id: user.id,
+        id: user._id,
         role: user.role,
     };
 
@@ -276,6 +286,7 @@ export const AuthServices = {
     createRider,
     verifyOTP,
     login,
+    getMe,
     refreshToken,
     changePassword,
 };
