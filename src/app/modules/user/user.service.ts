@@ -19,7 +19,35 @@ const updateAvatar = async (id: string, payload: Partial<IUser>) => {
     });
 
     if (!updatedUser) {
-        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update user!');
+        throw new AppError(
+            httpStatus.INTERNAL_SERVER_ERROR,
+            'Failed to update avatar!',
+        );
+    }
+
+    return updatedUser;
+};
+
+const deleteAvatar = async (id: string) => {
+    const updatedUser = await User.findByIdAndUpdate(
+        id,
+        {
+            $unset: {
+                avatarURL: 1,
+                avatarOriginURL: 1,
+                avatarCropData: 1,
+            },
+        },
+        {
+            new: true,
+        },
+    );
+
+    if (!updatedUser) {
+        throw new AppError(
+            httpStatus.INTERNAL_SERVER_ERROR,
+            'Failed to delete user!',
+        );
     }
 
     return updatedUser;
@@ -28,4 +56,5 @@ const updateAvatar = async (id: string, payload: Partial<IUser>) => {
 export const UserServices = {
     getUser,
     updateAvatar,
+    deleteAvatar,
 };

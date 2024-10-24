@@ -23,7 +23,18 @@ const updateAvatar = catchAsync(async (req, res) => {
     });
 });
 
+const deleteAvatar = catchAsync(async (req, res) => {
+    const result = await UserServices.deleteAvatar(req.user.id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: 'Successfully deleted avatar!',
+        data: result,
+    });
+});
+
 export const UserControllers = {
     getUser,
     updateAvatar,
+    deleteAvatar,
 };

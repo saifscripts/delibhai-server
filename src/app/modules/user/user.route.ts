@@ -13,6 +13,10 @@ router
         auth(USER_ROLE.rider, USER_ROLE.admin),
         validateRequest(UserValidations.updateAvatarValidationSchema),
         UserControllers.updateAvatar,
+    )
+    .delete(
+        auth(USER_ROLE.rider, USER_ROLE.admin),
+        UserControllers.deleteAvatar,
     );
 
 router.route('/:id').get(UserControllers.getUser);
