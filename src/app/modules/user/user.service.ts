@@ -3,7 +3,7 @@ import AppError from '../../errors/AppError';
 import { IUser } from './user.interface';
 import { User } from './user.model';
 
-const getUserFromDB = async (id: string) => {
+const getUser = async (id: string) => {
     const user = await User.findById(id);
 
     if (!user) {
@@ -22,10 +22,10 @@ const updateUserIntoDB = async (id: string, payload: Partial<IUser>) => {
         throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update user!');
     }
 
-    return await getUserFromDB(id);
+    return updatedUser;
 };
 
 export const UserServices = {
+    getUser,
     updateUserIntoDB,
-    getUserFromDB,
 };

@@ -15,4 +15,6 @@ router
         UserControllers.updateSingleUser,
     );
 
+router.route('/:id').get(UserControllers.getUser);
+
 export const UserRoutes = router;
