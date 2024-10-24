@@ -9,6 +9,7 @@ const router = express.Router();
 
 router
     .route('/')
+    .get(RiderControllers.getRiders)
     .put(
         auth(USER_ROLE.rider),
         validateRequest(RiderValidations.updateRiderValidationSchema),
