@@ -123,6 +123,33 @@ const userSchema = new Schema<IUser, UserModel>(
     },
 );
 
+// Query Middleware
+userSchema.pre('find', function (next) {
+    if (this.getOptions().getAll) {
+        return next();
+    }
+    this.find({ isDeleted: { $ne: true }, status: 'active' });
+    next();
+});
+
+userSchema.pre('findOne', function (next) {
+    if (this.getOptions().getAll) {
+        return next();
+    }
+    this.find({ isDeleted: { $ne: true }, status: 'active' });
+    next();
+});
+
+userSchema.pre('aggregate', function (next) {
+    if (this.options.getAll) {
+        return next();
+    }
+    this.pipeline().unshift({
+        $match: { isDeleted: { $ne: true }, status: 'active' },
+    });
+    next();
+});
+
 userSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(
         this.password,

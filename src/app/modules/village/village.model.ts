@@ -18,4 +18,30 @@ const villageSchema = new Schema<IVillage>(
     },
 );
 
+villageSchema.pre('find', function (next) {
+    if (this.getOptions().getAll) {
+        return next();
+    }
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+
+villageSchema.pre('findOne', function (next) {
+    if (this.getOptions().getAll) {
+        return next();
+    }
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+
+villageSchema.pre('aggregate', function (next) {
+    if (this.options.getAll) {
+        return next();
+    }
+    this.pipeline().unshift({
+        $match: { isDeleted: { $ne: true } },
+    });
+    next();
+});
+
 export const Village = model<IVillage>('Village', villageSchema);
