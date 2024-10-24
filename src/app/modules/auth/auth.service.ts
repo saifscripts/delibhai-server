@@ -105,6 +105,43 @@ const verifyOTP = async (payload: IVerifyOTP) => {
     return { user: updatedUser, accessToken, refreshToken };
 };
 
+const resendOTP = async (payload: { _id: string }) => {
+    const user = await User.findById(payload._id);
+
+    if (!user) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'Session expired!');
+    }
+
+    // tempMobile is always removed after otp verification
+    if (!user?.tempMobile) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'OTP already verified!');
+    }
+
+    // Previous OTP must be expired to resend a new OTP
+    if (user.otpExpires.getTime() > Date.now()) {
+        throw new AppError(
+            httpStatus.BAD_REQUEST,
+            "Previous OTP isn't expired yet!",
+        );
+    }
+
+    // generate new otp and update user data
+    const updatedUser = await User.findByIdAndUpdate(
+        user._id,
+        {
+            otp: generateRandomNumber(6), // 6 digits random otp
+            otpExpires: generateExpiryDate(1), // 1 minute from the current time
+            otpSessionExpires: generateExpiryDate(10), // 10 minutes from the current time
+        },
+        { new: true },
+    );
+
+    // Send otp to the user's phone number
+    // await sendSMS(`Verification Code: ${otp}`, user.tempMobile);
+
+    return updatedUser;
+};
+
 const login = async (payload: ICredentials) => {
     const user = await User.findOne({ mobile: payload?.mobile }).select(
         '+password',
@@ -307,6 +344,7 @@ const changePassword = async (
 export const AuthServices = {
     createRider,
     verifyOTP,
+    resendOTP,
     login,
     getMe,
     refreshToken,

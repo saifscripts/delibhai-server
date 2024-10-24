@@ -21,6 +21,13 @@ router
         AuthControllers.verifyOTP,
     );
 
+router
+    .route('/resend-otp')
+    .post(
+        validateRequest(AuthValidations.resendOTPValidationSchema),
+        AuthControllers.resendOTP,
+    );
+
 router.post(
     '/login',
     validateRequest(AuthValidations.loginValidationSchema),

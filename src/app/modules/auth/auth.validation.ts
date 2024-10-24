@@ -47,6 +47,16 @@ const verifyOTPValidationSchema = z.object({
     }),
 });
 
+const resendOTPValidationSchema = z.object({
+    body: z.object({
+        _id: z
+            .string({ required_error: 'ID is required!' })
+            .refine((value) => Types.ObjectId.isValid(value), {
+                message: 'Invalid ObjectId',
+            }),
+    }),
+});
+
 const loginValidationSchema = z.object({
     body: z.object({
         mobile: z
@@ -96,6 +106,7 @@ const changePasswordValidationSchema = z.object({
 export const AuthValidations = {
     createRiderValidationSchema,
     verifyOTPValidationSchema,
+    resendOTPValidationSchema,
     loginValidationSchema,
     refreshTokenValidationSchema,
     changePasswordValidationSchema,
