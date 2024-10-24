@@ -13,6 +13,17 @@ const getUser = catchAsync(async (req, res) => {
     });
 });
 
+const updateAvatar = catchAsync(async (req, res) => {
+    const result = await UserServices.updateAvatar(req.user.id, req.body);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: 'Successfully updated avatar!',
+        data: result,
+    });
+});
+
 export const UserControllers = {
     getUser,
+    updateAvatar,
 };
