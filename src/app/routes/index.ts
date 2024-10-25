@@ -1,5 +1,6 @@
 import express from 'express';
 import { AuthRoutes } from '../modules/auth/auth.route';
+import { DistrictRoutes } from '../modules/district/district.route';
 import { DivisionRoutes } from '../modules/division/division.route';
 import { RiderRoutes } from '../modules/rider/rider.route';
 import { UserRoutes } from '../modules/user/user.route';
@@ -12,6 +13,7 @@ const routes = [
     { path: '/user', route: UserRoutes },
     { path: '/rider', route: RiderRoutes },
     { path: '/division', route: DivisionRoutes },
+    { path: '/district', route: DistrictRoutes },
     { path: '/village', route: VillageRoutes },
 ];
 
