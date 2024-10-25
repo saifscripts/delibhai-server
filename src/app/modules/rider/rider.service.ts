@@ -2,8 +2,8 @@ import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import AppError from '../../errors/AppError';
 import { USER_ROLE } from '../user/user.constant';
+import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
-import { IRider } from './rider.interface';
 
 const getRiders = async (query: Record<string, unknown>) => {
     const { vehicle, dVil } = query;
@@ -96,7 +96,7 @@ const getRiders = async (query: Record<string, unknown>) => {
     return riders;
 };
 
-const updateRider = async (id: string, payload: IRider) => {
+const updateRider = async (id: string, payload: IUser) => {
     const updatedRider = await User.findByIdAndUpdate(id, payload, {
         new: true,
     });
@@ -108,7 +108,25 @@ const updateRider = async (id: string, payload: IRider) => {
     return updatedRider;
 };
 
+const updateLocation = async (
+    id: string,
+    payload: Pick<IUser, 'liveLocation'>,
+) => {
+    payload.liveLocation.timestamp = Date.now();
+
+    const updatedRider = await User.findByIdAndUpdate(id, payload, {
+        new: true,
+    });
+
+    if (!updatedRider) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update rider!');
+    }
+
+    return null;
+};
+
 export const RiderServices = {
     getRiders,
     updateRider,
+    updateLocation,
 };

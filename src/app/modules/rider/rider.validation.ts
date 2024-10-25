@@ -25,13 +25,7 @@ const areaSchema = z.object({
     village: z.array(objectId).optional(),
 });
 
-const liveLocationSchema = z.object({
-    latitude: z.number(),
-    longitude: z.number(),
-    timestamp: z.number(),
-});
-
-const manualLocationSchema = z.object({
+const locationSchema = z.object({
     latitude: z.number(),
     longitude: z.number(),
 });
@@ -135,12 +129,18 @@ const updateRiderValidationSchema = z.object({
                 invalid_type_error: 'Invalid service status!',
             })
             .optional(),
-        liveLocation: liveLocationSchema.optional(),
-        manualLocation: manualLocationSchema.optional(),
+        manualLocation: locationSchema.optional(),
         videoURL: z.string().url('Invalid URL!').optional(),
+    }),
+});
+
+const updateLocationValidationSchema = z.object({
+    body: z.object({
+        liveLocation: locationSchema,
     }),
 });
 
 export const RiderValidations = {
     updateRiderValidationSchema,
+    updateLocationValidationSchema,
 };

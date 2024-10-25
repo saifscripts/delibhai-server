@@ -16,4 +16,13 @@ router
         RiderControllers.updateRider,
     );
 
+router
+    .route('/location')
+    // .get(RiderControllers.getRiders)
+    .put(
+        auth(USER_ROLE.rider),
+        validateRequest(RiderValidations.updateLocationValidationSchema),
+        RiderControllers.updateLocation,
+    );
+
 export const RiderRoutes = router;

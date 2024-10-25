@@ -23,7 +23,18 @@ const updateRider = catchAsync(async (req, res) => {
     });
 });
 
+const updateLocation = catchAsync(async (req, res) => {
+    const result = await RiderServices.updateLocation(req.user.id, req.body);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: 'Rider location updated successfully!',
+        data: result,
+    });
+});
+
 export const RiderControllers = {
     getRiders,
     updateRider,
+    updateLocation,
 };
