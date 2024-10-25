@@ -13,7 +13,7 @@ const getRiders = async (query: Record<string, unknown>) => {
         {
             $match: {
                 $and: [
-                    { vehicleType: vehicle, status: USER_ROLE.rider },
+                    { vehicleType: vehicle, role: USER_ROLE.rider },
                     {
                         $or: [
                             {
