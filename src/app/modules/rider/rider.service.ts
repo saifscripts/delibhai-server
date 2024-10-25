@@ -125,8 +125,19 @@ const updateLocation = async (
     return null;
 };
 
+const getLocation = async (id: string) => {
+    const user = await User.findById(id);
+
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
+    }
+
+    return user?.liveLocation;
+};
+
 export const RiderServices = {
     getRiders,
     updateRider,
     updateLocation,
+    getLocation,
 };

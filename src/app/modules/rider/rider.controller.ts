@@ -33,8 +33,19 @@ const updateLocation = catchAsync(async (req, res) => {
     });
 });
 
+const getLocation = catchAsync(async (req, res) => {
+    const result = await RiderServices.getLocation(req.params.id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: 'Rider location retrieved successfully!',
+        data: result,
+    });
+});
+
 export const RiderControllers = {
     getRiders,
     updateRider,
     updateLocation,
+    getLocation,
 };

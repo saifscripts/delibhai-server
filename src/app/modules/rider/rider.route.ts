@@ -18,11 +18,12 @@ router
 
 router
     .route('/location')
-    // .get(RiderControllers.getRiders)
     .put(
         auth(USER_ROLE.rider),
         validateRequest(RiderValidations.updateLocationValidationSchema),
         RiderControllers.updateLocation,
     );
+
+router.route('/location/:id').get(RiderControllers.getLocation);
 
 export const RiderRoutes = router;
