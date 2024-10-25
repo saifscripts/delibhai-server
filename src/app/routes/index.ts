@@ -3,6 +3,7 @@ import { AuthRoutes } from '../modules/auth/auth.route';
 import { DistrictRoutes } from '../modules/district/district.route';
 import { DivisionRoutes } from '../modules/division/division.route';
 import { RiderRoutes } from '../modules/rider/rider.route';
+import { UpazilaRoutes } from '../modules/upazila/upazila.route';
 import { UserRoutes } from '../modules/user/user.route';
 import { VillageRoutes } from '../modules/village/village.route';
 
@@ -14,6 +15,7 @@ const routes = [
     { path: '/rider', route: RiderRoutes },
     { path: '/division', route: DivisionRoutes },
     { path: '/district', route: DistrictRoutes },
+    { path: '/upazila', route: UpazilaRoutes },
     { path: '/village', route: VillageRoutes },
 ];
 
