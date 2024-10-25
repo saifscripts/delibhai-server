@@ -1,5 +1,6 @@
 import { Types } from 'mongoose';
 import { z } from 'zod';
+import { hasDuplicateUnionIdAndTitle } from './village.utils';
 
 const createVillagesValidationSchema = z.object({
     body: z.object({
@@ -31,7 +32,11 @@ const createVillagesValidationSchema = z.object({
                         .min(1, 'Title is required!'),
                 }),
             )
-            .min(1, 'Village is required'),
+            .min(1, 'Village is required')
+            .refine(
+                (villages) => !hasDuplicateUnionIdAndTitle(villages),
+                'Duplicate village exists',
+            ),
     }),
 });
 
