@@ -31,20 +31,6 @@ const createVillages = async (villages: IVillage[]) => {
     return newVillages;
 };
 
-const getVillages = async (unionId: string, query: Record<string, unknown>) => {
-    const villageQuery = new QueryBuilder(Village.find({ unionId }), query)
-        .filter()
-        .fields();
-
-    const villages = await villageQuery.modelQuery;
-
-    if (!villages.length) {
-        throw new AppError(httpStatus.NOT_FOUND, 'No village found!');
-    }
-
-    return villages;
-};
-
 const updateVillage = async (id: string, payload: Pick<IVillage, 'title'>) => {
     const village = await Village.findById(id);
 
@@ -82,8 +68,39 @@ const updateVillage = async (id: string, payload: Pick<IVillage, 'title'>) => {
     return updatedVillage;
 };
 
+const deleteVillage = async (id: string) => {
+    const deletedVillage = await Village.findByIdAndUpdate(
+        id,
+        { isDeleted: true },
+        {
+            new: true,
+        },
+    );
+
+    if (!deletedVillage) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Village not found!');
+    }
+
+    return deletedVillage;
+};
+
+const getVillages = async (unionId: string, query: Record<string, unknown>) => {
+    const villageQuery = new QueryBuilder(Village.find({ unionId }), query)
+        .filter()
+        .fields();
+
+    const villages = await villageQuery.modelQuery;
+
+    if (!villages.length) {
+        throw new AppError(httpStatus.NOT_FOUND, 'No village found!');
+    }
+
+    return villages;
+};
+
 export const VillageServices = {
     createVillages,
-    getVillages,
     updateVillage,
+    deleteVillage,
+    getVillages,
 };

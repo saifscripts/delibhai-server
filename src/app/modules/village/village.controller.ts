@@ -13,6 +13,26 @@ const createVillages = catchAsync(async (req, res) => {
     });
 });
 
+const updateVillage = catchAsync(async (req, res) => {
+    const result = await VillageServices.updateVillage(req.params.id, req.body);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: 'Successfully updated the village!',
+        data: result,
+    });
+});
+
+const deleteVillage = catchAsync(async (req, res) => {
+    const result = await VillageServices.deleteVillage(req.params.id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: 'Successfully deleted the village!',
+        data: result,
+    });
+});
+
 const getVillages = catchAsync(async (req, res) => {
     const result = await VillageServices.getVillages(
         req.params.unionId,
@@ -26,18 +46,9 @@ const getVillages = catchAsync(async (req, res) => {
     });
 });
 
-const updateVillage = catchAsync(async (req, res) => {
-    const result = await VillageServices.updateVillage(req.params.id, req.body);
-
-    sendResponse(res, {
-        statusCode: httpStatus.OK,
-        message: 'Successfully updated the village!',
-        data: result,
-    });
-});
-
 export const VillageControllers = {
     createVillages,
-    getVillages,
     updateVillage,
+    deleteVillage,
+    getVillages,
 };

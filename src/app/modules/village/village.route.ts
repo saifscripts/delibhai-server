@@ -15,13 +15,15 @@ router
         VillageControllers.createVillages,
     );
 
-router.route('/:unionId').get(VillageControllers.getVillages);
 router
     .route('/:id')
     .put(
         auth(USER_ROLE.admin),
         validateRequest(VillageValidations.updateVillageValidationSchema),
         VillageControllers.updateVillage,
-    );
+    )
+    .delete(auth(USER_ROLE.admin), VillageControllers.deleteVillage);
+
+router.route('/:unionId').get(VillageControllers.getVillages);
 
 export const VillageRoutes = router;
