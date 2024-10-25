@@ -3,24 +3,35 @@ import { z } from 'zod';
 
 const createVillageValidationSchema = z.object({
     body: z.object({
-        unionId: z
-            .string({ required_error: 'ID is required!' })
-            .refine((value) => Types.ObjectId.isValid(value), {
-                message: 'Invalid ObjectId',
-            }),
-        wardNo: z
-            .string({
-                required_error: 'Ward is required!',
-            })
-            .min(1, 'Ward is required!')
-            .refine((val) => !Number.isNaN(Number(val)) && Number(val) > 0, {
-                message: 'Ward number must be a positive number',
-            }),
-        title: z
-            .string({
-                required_error: 'Title is required!',
-            })
-            .min(1, 'Title is required!'),
+        villages: z
+            .array(
+                z.object({
+                    unionId: z
+                        .string({ required_error: 'UnionID is required!' })
+                        .refine((value) => Types.ObjectId.isValid(value), {
+                            message: 'Invalid UnionID',
+                        }),
+                    wardId: z
+                        .string({
+                            required_error: 'WardID is required!',
+                        })
+                        .min(1, 'WardID is required!')
+                        .refine(
+                            (val) =>
+                                !Number.isNaN(Number(val)) && Number(val) > 0,
+                            {
+                                message: 'Invalid WardID',
+                            },
+                        ),
+                    title: z
+                        .string({
+                            required_error: 'Title is required!',
+                        })
+                        .trim()
+                        .min(1, 'Title is required!'),
+                }),
+            )
+            .min(1, 'Village is required'),
     }),
 });
 
