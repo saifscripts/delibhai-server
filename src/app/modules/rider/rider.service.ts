@@ -4,7 +4,6 @@ import AppError from '../../errors/AppError';
 import { USER_ROLE } from '../user/user.constant';
 import { User } from '../user/user.model';
 import { IRider } from './rider.interface';
-import { Rider } from './rider.model';
 
 const getRiders = async (query: Record<string, unknown>) => {
     const { vehicle, dVil } = query;
@@ -97,8 +96,8 @@ const getRiders = async (query: Record<string, unknown>) => {
     return riders;
 };
 
-const updateRiderIntoDB = async (id: string, payload: IRider) => {
-    const updatedRider = await Rider.findOneAndUpdate({ user: id }, payload, {
+const updateRider = async (id: string, payload: IRider) => {
+    const updatedRider = await User.findByIdAndUpdate(id, payload, {
         new: true,
     });
 
@@ -111,5 +110,5 @@ const updateRiderIntoDB = async (id: string, payload: IRider) => {
 
 export const RiderServices = {
     getRiders,
-    updateRiderIntoDB,
+    updateRider,
 };

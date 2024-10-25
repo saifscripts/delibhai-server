@@ -1,28 +1,15 @@
-// TODO: implement using regex
-export const isMobilePhone = (mobile: string, locale = 'bn-BD') => {
-    if (locale !== 'bn-BD') return false;
+export const isNID = (nid: string) => {
+    // Check if the NID is a string of 10, 13, or 17 digits
+    if (/^\d{10}$|^\d{13}$|^\d{17}$/.test(nid)) {
+        if (nid.length === 17) {
+            const birthYear = Number(nid.substring(0, 4));
 
-    const slicedMobile = mobile.slice(-11);
-
-    if (slicedMobile.startsWith('01') && isNaN(Number(slicedMobile))) {
+            if (!(birthYear >= 1900 && birthYear <= new Date().getFullYear())) {
+                return false;
+            }
+        }
         return true;
     }
-
-    return true;
-};
-
-// TODO: implement with full features
-export const isStrongPassword = (
-    password: string,
-    options: {
-        minLength: number;
-        minLowercase?: number;
-        minNumbers?: number;
-        minUppercase?: number;
-        minSymbols?: number;
-    } = { minLength: 4 },
-) => {
-    if (password.length >= options?.minLength) return true;
 
     return false;
 };
