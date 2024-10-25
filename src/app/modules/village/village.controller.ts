@@ -4,7 +4,10 @@ import sendResponse from '../../utils/sendResponse';
 import { VillageServices } from './village.service';
 
 const getVillages = catchAsync(async (req, res) => {
-    const result = await VillageServices.getVillagesFromDB(req.query);
+    const result = await VillageServices.getVillages(
+        req.params.unionId,
+        req.query,
+    );
 
     sendResponse(res, {
         statusCode: httpStatus.OK,

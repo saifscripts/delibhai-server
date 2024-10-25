@@ -3,6 +3,6 @@ import { VillageControllers } from './village.controller';
 
 const router = express.Router();
 
-router.route('/').get(VillageControllers.getVillages);
+router.route('/:unionId').get(VillageControllers.getVillages);
 
 export const VillageRoutes = router;

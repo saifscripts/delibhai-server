@@ -1,8 +1,8 @@
-import { Types } from 'mongoose';
+import mongoose from 'mongoose';
 
 export interface IVillage {
-    unionId: Types.ObjectId;
-    wardNo: string;
+    unionId: mongoose.Types.ObjectId;
+    wardId: string;
     title: string;
     isDeleted: boolean;
 }

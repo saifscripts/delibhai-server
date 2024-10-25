@@ -6,10 +6,9 @@ const villageSchema = new Schema<IVillage>(
         unionId: {
             type: Schema.Types.ObjectId,
             required: true,
-            unique: true,
-            // ref: 'Union',
+            ref: 'Union',
         },
-        wardNo: { type: String, required: true },
+        wardId: { type: String, required: true },
         title: { type: String, required: true },
         isDeleted: { type: Boolean, default: false },
     },
