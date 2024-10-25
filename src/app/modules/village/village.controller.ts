@@ -26,7 +26,18 @@ const getVillages = catchAsync(async (req, res) => {
     });
 });
 
+const updateVillage = catchAsync(async (req, res) => {
+    const result = await VillageServices.updateVillage(req.params.id, req.body);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: 'Successfully updated the village!',
+        data: result,
+    });
+});
+
 export const VillageControllers = {
     createVillages,
     getVillages,
+    updateVillage,
 };

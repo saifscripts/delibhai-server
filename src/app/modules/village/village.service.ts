@@ -45,7 +45,45 @@ const getVillages = async (unionId: string, query: Record<string, unknown>) => {
     return villages;
 };
 
+const updateVillage = async (id: string, payload: Pick<IVillage, 'title'>) => {
+    const village = await Village.findById(id);
+
+    if (!village) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Village not found!');
+    }
+
+    // if the title is same as before, should ignore updating in db
+    // THIS IS IMPORTANT to avoid conflict error.
+    if (village.title === payload.title) {
+        return village;
+    }
+
+    // check if same titled village exists with same unionId
+    const isVillageExists = await Village.findOne({
+        unionId: village.unionId,
+        title: payload.title,
+    });
+
+    if (isVillageExists) {
+        throw new AppError(httpStatus.CONFLICT, 'Village already exists!');
+    }
+
+    const updatedVillage = await Village.findByIdAndUpdate(id, payload, {
+        new: true,
+    });
+
+    if (!updatedVillage) {
+        throw new AppError(
+            httpStatus.INTERNAL_SERVER_ERROR,
+            'Failed to update village!',
+        );
+    }
+
+    return updatedVillage;
+};
+
 export const VillageServices = {
     createVillages,
     getVillages,
+    updateVillage,
 };

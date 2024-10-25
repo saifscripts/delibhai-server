@@ -11,10 +11,17 @@ router
     .route('/')
     .post(
         auth(USER_ROLE.admin),
-        validateRequest(VillageValidations.createVillageValidationSchema),
+        validateRequest(VillageValidations.createVillagesValidationSchema),
         VillageControllers.createVillages,
     );
 
 router.route('/:unionId').get(VillageControllers.getVillages);
+router
+    .route('/:id')
+    .put(
+        auth(USER_ROLE.admin),
+        validateRequest(VillageValidations.updateVillageValidationSchema),
+        VillageControllers.updateVillage,
+    );
 
 export const VillageRoutes = router;

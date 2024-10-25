@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 import { z } from 'zod';
 
-const createVillageValidationSchema = z.object({
+const createVillagesValidationSchema = z.object({
     body: z.object({
         villages: z
             .array(
@@ -35,6 +35,18 @@ const createVillageValidationSchema = z.object({
     }),
 });
 
+const updateVillageValidationSchema = z.object({
+    body: z.object({
+        title: z
+            .string({
+                required_error: 'Title is required!',
+            })
+            .trim()
+            .min(1, 'Title is required!'),
+    }),
+});
+
 export const VillageValidations = {
-    createVillageValidationSchema,
+    createVillagesValidationSchema,
+    updateVillageValidationSchema,
 };
