@@ -8,7 +8,7 @@ import { AuthValidations } from './auth.validation';
 const router = express.Router();
 
 router
-    .route('/create-rider')
+    .route('/register-rider')
     .post(
         validateRequest(AuthValidations.createRiderValidationSchema),
         AuthControllers.createRider,
