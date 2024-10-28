@@ -106,7 +106,7 @@ const verifyOTP = async (payload: IVerifyOTP) => {
 };
 
 const resendOTP = async (payload: { _id: string }) => {
-    const user = await User.findById(payload._id);
+    const user = await User.findById(payload._id, {}, { getAll: true });
 
     if (!user) {
         throw new AppError(httpStatus.BAD_REQUEST, 'Session expired!');
