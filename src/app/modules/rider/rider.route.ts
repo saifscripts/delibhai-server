@@ -11,7 +11,7 @@ router
     .route('/')
     .get(RiderControllers.getRiders)
     .put(
-        auth(USER_ROLE.rider),
+        auth(USER_ROLE.rider, USER_ROLE.admin),
         validateRequest(RiderValidations.updateRiderValidationSchema),
         RiderControllers.updateRider,
     );
