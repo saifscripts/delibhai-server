@@ -19,7 +19,7 @@ router
 router
     .route('/location')
     .put(
-        auth(USER_ROLE.rider),
+        auth(USER_ROLE.rider, USER_ROLE.admin),
         validateRequest(RiderValidations.updateLocationValidationSchema),
         RiderControllers.updateLocation,
     );
