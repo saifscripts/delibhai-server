@@ -3,6 +3,7 @@ import 'dotenv/config';
 export default {
     NODE_ENV: process.env.NODE_ENV,
     port: process.env.PORT,
+    client_base_url: process.env.CLIENT_BASE_URL,
     db_uri: process.env.DATABASE_URI,
     default_password: process.env.DEFAULT_PASSWORD,
     bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
