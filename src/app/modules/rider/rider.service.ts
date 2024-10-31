@@ -1,9 +1,171 @@
 import httpStatus from 'http-status';
-import mongoose from 'mongoose';
 import AppError from '../../errors/AppError';
 import { USER_ROLE } from '../user/user.constant';
 import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
+
+const getRiders = async (query: Record<string, unknown>) => {
+    const { vehicleType, latitude, longitude, limit = 10, page = 1 } = query;
+
+    const parsedLatitude = parseFloat(latitude as string);
+    const parsedLongitude = parseFloat(longitude as string);
+    const skip = (parseInt(page as string) - 1) * parseInt(limit as string);
+    const toRadians = Math.PI / 180;
+
+    // Aggregation pipeline
+    const riders = await User.aggregate([
+        // Step 1: Filter by vehicleType and role
+        {
+            $match: {
+                vehicleType,
+                role: { $in: [USER_ROLE.rider, USER_ROLE.admin] },
+            },
+        },
+        // Step 2: Add a field "location" which selects liveLocation if available, otherwise manualLocation
+        {
+            $addFields: {
+                location: {
+                    $cond: {
+                        if: {
+                            $and: [
+                                { $ifNull: ['$liveLocation', false] },
+                                {
+                                    $gte: [
+                                        '$liveLocation.timestamp',
+                                        Date.now() - 5 * 1000,
+                                    ],
+                                },
+                            ],
+                        },
+                        then: '$liveLocation',
+                        else: '$manualLocation',
+                    },
+                },
+            },
+        },
+        // Step 3: Filter out riders without a valid location
+        {
+            $match: {
+                location: { $exists: true, $ne: null },
+            },
+        },
+        // Step 4: Calculate the distance using the Haversine formula
+        {
+            $addFields: {
+                distance: {
+                    $let: {
+                        vars: {
+                            lat1: parsedLatitude * toRadians,
+                            lon1: parsedLongitude * toRadians,
+                            lat2: {
+                                $multiply: ['$location.latitude', toRadians],
+                            },
+                            lon2: {
+                                $multiply: ['$location.longitude', toRadians],
+                            },
+                        },
+                        in: {
+                            $multiply: [
+                                6371, // Earth radius in kilometers
+                                {
+                                    $acos: {
+                                        $add: [
+                                            {
+                                                $multiply: [
+                                                    { $sin: '$$lat1' },
+                                                    { $sin: '$$lat2' },
+                                                ],
+                                            },
+                                            {
+                                                $multiply: [
+                                                    { $cos: '$$lat1' },
+                                                    { $cos: '$$lat2' },
+                                                    {
+                                                        $cos: {
+                                                            $subtract: [
+                                                                '$$lon2',
+                                                                '$$lon1',
+                                                            ],
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        },
+        // Step 5: Sort by distance
+        {
+            $sort: { distance: 1 },
+        },
+        // Step 6: Paginate results
+        { $skip: skip },
+        { $limit: parseInt(limit as string) },
+        // Step 7: Project the fields to include in the response
+        {
+            $project: {
+                _id: 1,
+                name: 1,
+                vehicleType: 1,
+                location: 1,
+                distance: 1,
+            },
+        },
+    ]);
+
+    return riders;
+};
+
+const updateRider = async (id: string, payload: IUser) => {
+    const updatedRider = await User.findByIdAndUpdate(id, payload, {
+        new: true,
+    });
+
+    if (!updatedRider) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update rider!');
+    }
+
+    return updatedRider;
+};
+
+const updateLocation = async (
+    id: string,
+    payload: Pick<IUser, 'liveLocation'>,
+) => {
+    payload.liveLocation.timestamp = Date.now();
+
+    const updatedRider = await User.findByIdAndUpdate(id, payload, {
+        new: true,
+    });
+
+    if (!updatedRider) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update rider!');
+    }
+
+    return null;
+};
+
+const getLocation = async (id: string) => {
+    const user = await User.findById(id);
+
+    if (!user) {
+        throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
+    }
+
+    return user?.liveLocation;
+};
+
+export const RiderServices = {
+    getRiders,
+    updateRider,
+    updateLocation,
+    getLocation,
+};
 
 // const modifyCollection = async () => {
 //     const riders = await User.find().lean();
@@ -152,140 +314,3 @@ import { User } from '../user/user.model';
 
 //     return [];
 // };
-
-const getRiders = async (query: Record<string, unknown>) => {
-    const { vehicle, dVil } = query;
-
-    const riders = await User.aggregate([
-        {
-            $match: {
-                $and: [
-                    { vehicleType: vehicle, role: USER_ROLE.rider },
-                    {
-                        $or: [
-                            {
-                                'serviceAddress.village':
-                                    new mongoose.Types.ObjectId(dVil as string),
-                            },
-                            {
-                                'mainStation.village':
-                                    new mongoose.Types.ObjectId(dVil as string),
-                            },
-                        ],
-                    },
-                    {
-                        $or: [
-                            {
-                                'liveLocation.timestamp': {
-                                    $gt: Date.now() - 5000,
-                                },
-                            },
-                            {
-                                'manualLocation.latitude': { $exists: true },
-                                'manualLocation.longitude': { $exists: true },
-                            },
-                        ],
-                    },
-                ],
-            },
-        },
-        {
-            $lookup: {
-                from: 'villages',
-                localField: 'mainStation.village',
-                foreignField: '_id',
-                as: 'mainStation.village',
-                pipeline: [
-                    {
-                        $project: {
-                            _id: 1,
-                            title: 1,
-                        },
-                    },
-                ],
-            },
-        },
-        {
-            $unwind: {
-                path: '$mainStation.village',
-            },
-        },
-        {
-            $project: {
-                name: 1,
-                avatarURL: 1,
-                mobile: 1,
-                serviceTimes: 1,
-                manualLocation: 1,
-                liveLocation: {
-                    $cond: {
-                        if: {
-                            $gt: ['$liveLocation.timestamp', Date.now() - 5000],
-                        },
-                        then: '$liveLocation',
-                        else: undefined,
-                    },
-                },
-                mainStation: 1,
-                isLive: {
-                    $cond: {
-                        if: {
-                            $gt: ['$liveLocation.timestamp', Date.now() - 5000],
-                        },
-                        then: true,
-                        else: false,
-                    },
-                },
-                serviceStatus: 1,
-            },
-        },
-    ]);
-
-    return riders;
-};
-
-const updateRider = async (id: string, payload: IUser) => {
-    const updatedRider = await User.findByIdAndUpdate(id, payload, {
-        new: true,
-    });
-
-    if (!updatedRider) {
-        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update rider!');
-    }
-
-    return updatedRider;
-};
-
-const updateLocation = async (
-    id: string,
-    payload: Pick<IUser, 'liveLocation'>,
-) => {
-    payload.liveLocation.timestamp = Date.now();
-
-    const updatedRider = await User.findByIdAndUpdate(id, payload, {
-        new: true,
-    });
-
-    if (!updatedRider) {
-        throw new AppError(httpStatus.BAD_REQUEST, 'Failed to update rider!');
-    }
-
-    return null;
-};
-
-const getLocation = async (id: string) => {
-    const user = await User.findById(id);
-
-    if (!user) {
-        throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
-    }
-
-    return user?.liveLocation;
-};
-
-export const RiderServices = {
-    getRiders,
-    updateRider,
-    updateLocation,
-    getLocation,
-};

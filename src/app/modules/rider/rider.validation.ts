@@ -30,6 +30,18 @@ const locationSchema = z.object({
     longitude: z.number(),
 });
 
+const getRidersValidationSchema = z.object({
+    query: z.object({
+        vehicleType: z
+            .string({ required_error: 'Vehicle type is required!' })
+            .trim(),
+        latitude: z.number({ required_error: 'Latitude is required!' }),
+        longitude: z.number({ required_error: 'Longitude is required!' }),
+        limit: z.number().optional(),
+        page: z.number().optional(),
+    }),
+});
+
 const updateRiderValidationSchema = z.object({
     body: z.object({
         name: z
@@ -141,6 +153,7 @@ const updateLocationValidationSchema = z.object({
 });
 
 export const RiderValidations = {
+    getRidersValidationSchema,
     updateRiderValidationSchema,
     updateLocationValidationSchema,
 };
