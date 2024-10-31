@@ -1,9 +1,10 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express from 'express';
+import express, { Request, Response } from 'express';
+import httpStatus from 'http-status';
+import config from './app/config';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import notFound from './app/middlewares/notFound';
-import test from './app/middlewares/test';
 import router from './app/routes';
 
 const app = express();
@@ -16,8 +17,13 @@ app.use(cookieParser());
 // routes
 app.use('/api/v1/', router);
 
-// test route
-app.get('/', test);
+// home route
+app.get('/', (_req: Request, res: Response) => {
+    res.status(httpStatus.OK).json({
+        success: true,
+        message: `App is running on port ${config.port}!`,
+    });
+});
 
 // globalError handler
 app.use(globalErrorHandler);
