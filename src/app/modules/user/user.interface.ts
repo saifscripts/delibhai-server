@@ -65,19 +65,49 @@ export interface IUser {
 }
 
 export interface IAddress {
-    division: Types.ObjectId;
-    district: Types.ObjectId;
-    upazila: Types.ObjectId;
-    union: Types.ObjectId;
-    village: Types.ObjectId;
+    division: {
+        title: string;
+        _id: Types.ObjectId;
+    };
+    district: {
+        title: string;
+        _id: Types.ObjectId;
+    };
+    upazila: {
+        title: string;
+        _id: Types.ObjectId;
+    };
+    union: {
+        title: string;
+        _id: Types.ObjectId;
+    };
+    village: {
+        title: string;
+        _id: Types.ObjectId;
+    };
 }
 
 export interface IArea {
-    division: Types.ObjectId;
-    district: Types.ObjectId;
-    upazila: Types.ObjectId;
-    union: Types.ObjectId;
-    village: Types.ObjectId[];
+    division: {
+        title: string;
+        _id: Types.ObjectId;
+    };
+    district: {
+        title: string;
+        _id: Types.ObjectId;
+    };
+    upazila: {
+        title: string;
+        _id: Types.ObjectId;
+    };
+    union: {
+        title: string;
+        _id: Types.ObjectId;
+    };
+    village: {
+        title: string;
+        _id: Types.ObjectId;
+    }[];
 }
 
 export interface ITimeSlot {

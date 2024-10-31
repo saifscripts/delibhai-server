@@ -5,22 +5,54 @@ import { IAddress, IArea, IUser, UserModel } from './user.interface';
 
 const addressSchema = new Schema<IAddress>(
     {
-        division: { type: Schema.Types.ObjectId, ref: 'Division' },
-        district: { type: Schema.Types.ObjectId, ref: 'District' },
-        upazila: { type: Schema.Types.ObjectId, ref: 'Upazila' },
-        union: { type: Schema.Types.ObjectId, ref: 'Union' },
-        village: { type: Schema.Types.ObjectId, ref: 'Village' },
+        division: {
+            title: String,
+            _id: { type: Schema.Types.ObjectId, ref: 'Division' },
+        },
+        district: {
+            title: String,
+            _id: { type: Schema.Types.ObjectId, ref: 'District' },
+        },
+        upazila: {
+            title: String,
+            _id: { type: Schema.Types.ObjectId, ref: 'Upazila' },
+        },
+        union: {
+            title: String,
+            _id: { type: Schema.Types.ObjectId, ref: 'Union' },
+        },
+        village: {
+            title: String,
+            _id: { type: Schema.Types.ObjectId, ref: 'Village' },
+        },
     },
     { _id: false },
 );
 
 const areaSchema = new Schema<IArea>(
     {
-        division: { type: Schema.Types.ObjectId, ref: 'Division' },
-        district: { type: Schema.Types.ObjectId, ref: 'District' },
-        upazila: { type: Schema.Types.ObjectId, ref: 'Upazila' },
-        union: { type: Schema.Types.ObjectId, ref: 'Union' },
-        village: [{ type: Schema.Types.ObjectId, ref: 'Village' }],
+        division: {
+            title: String,
+            _id: { type: Schema.Types.ObjectId, ref: 'Division' },
+        },
+        district: {
+            title: String,
+            _id: { type: Schema.Types.ObjectId, ref: 'District' },
+        },
+        upazila: {
+            title: String,
+            _id: { type: Schema.Types.ObjectId, ref: 'Upazila' },
+        },
+        union: {
+            title: String,
+            _id: { type: Schema.Types.ObjectId, ref: 'Union' },
+        },
+        village: [
+            {
+                title: String,
+                _id: { type: Schema.Types.ObjectId, ref: 'Village' },
+            },
+        ],
     },
     { _id: false },
 );

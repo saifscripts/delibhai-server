@@ -10,19 +10,19 @@ const objectId = z
     });
 
 const addressSchema = z.object({
-    division: objectId,
-    district: objectId,
-    upazila: objectId,
-    union: objectId,
-    village: objectId,
+    division: z.object({ title: z.string(), _id: objectId }),
+    district: z.object({ title: z.string(), _id: objectId }),
+    upazila: z.object({ title: z.string(), _id: objectId }),
+    union: z.object({ title: z.string(), _id: objectId }),
+    village: z.object({ title: z.string(), _id: objectId }),
 });
 
 const areaSchema = z.object({
-    division: objectId.optional(),
-    district: objectId.optional(),
-    upazila: objectId.optional(),
-    union: objectId.optional(),
-    village: z.array(objectId).optional(),
+    division: z.object({ title: z.string(), _id: objectId }),
+    district: z.object({ title: z.string(), _id: objectId }),
+    upazila: z.object({ title: z.string(), _id: objectId }),
+    union: z.object({ title: z.string(), _id: objectId }),
+    village: z.array(z.object({ title: z.string(), _id: objectId })),
 });
 
 const locationSchema = z.object({
