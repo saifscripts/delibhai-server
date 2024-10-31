@@ -26,7 +26,7 @@ app.use('/api/v1/', router);
 app.get('/', (_req: Request, res: Response) => {
     res.status(httpStatus.OK).json({
         success: true,
-        message: `App is running on port ${config.port}!`,
+        message: `App is running successfully!`,
     });
 });
 
