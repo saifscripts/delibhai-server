@@ -4,6 +4,7 @@ import { USER_ROLE } from '../user/user.constant';
 import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
 
+// TODO: Add service area filter
 const getRiders = async (query: Record<string, unknown>) => {
     const { vehicleType, latitude, longitude, limit = 10, page = 1 } = query;
 
@@ -14,14 +15,14 @@ const getRiders = async (query: Record<string, unknown>) => {
 
     // Aggregation pipeline
     const riders = await User.aggregate([
-        // Step 1: Filter by vehicleType and role
+        // Filter by vehicleType and role
         {
             $match: {
                 vehicleType,
-                role: { $in: [USER_ROLE.rider, USER_ROLE.admin] },
+                role: USER_ROLE.rider,
             },
         },
-        // Step 2: Add a field "location" which selects liveLocation if available, otherwise manualLocation
+        // Add a field "location" which selects liveLocation if timestamp is within last 5 seconds, otherwise manualLocation
         {
             $addFields: {
                 location: {
@@ -43,13 +44,13 @@ const getRiders = async (query: Record<string, unknown>) => {
                 },
             },
         },
-        // Step 3: Filter out riders without a valid location
+        // Filter out riders without a valid location
         {
             $match: {
                 location: { $exists: true, $ne: null },
             },
         },
-        // Step 4: Calculate the distance using the Haversine formula
+        // Calculate the distance using the Haversine formula
         {
             $addFields: {
                 distance: {
@@ -99,14 +100,14 @@ const getRiders = async (query: Record<string, unknown>) => {
                 },
             },
         },
-        // Step 5: Sort by distance
+        // Sort by distance
         {
             $sort: { distance: 1 },
         },
-        // Step 6: Paginate results
+        // Paginate results
         { $skip: skip },
         { $limit: parseInt(limit as string) },
-        // Step 7: Project the fields to include in the response
+        // Project the fields to include in the response
         {
             $project: {
                 _id: 1,
