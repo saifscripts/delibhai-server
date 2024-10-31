@@ -5,6 +5,154 @@ import { USER_ROLE } from '../user/user.constant';
 import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
 
+// const modifyCollection = async () => {
+//     const riders = await User.find().lean();
+
+//     console.log({ riders: riders.length });
+
+//     const updatedRiders = [];
+
+//     for (let i = 0; i < riders.length; i++) {
+//         const rider = riders[i];
+
+//         const serviceArea = rider?.serviceArea;
+
+//         if (!serviceArea) {
+//             updatedRiders.push(rider);
+//             continue;
+//         }
+
+//         if (!Array.isArray(serviceArea)) {
+//             rider.serviceArea = [];
+//         } else {
+//             for (let j = 0; j < serviceArea.length; j++) {
+//                 const area = serviceArea[j];
+//                 const divisionId = area?.division;
+
+//                 if (Types.ObjectId.isValid(divisionId)) {
+//                     const division = await Division.findById(divisionId);
+//                     area.division = {
+//                         title: division?.title,
+//                         _id: division?._id,
+//                     };
+//                 } else if (typeof divisionId === 'string') {
+//                     const division = await Division.findOne({
+//                         title: divisionId,
+//                     });
+//                     area.division = {
+//                         title: division?.title,
+//                         _id: division?._id,
+//                     };
+//                     console.log({ division });
+//                 } else {
+//                     // area.division = undefined;
+//                     console.log({ divisionId });
+//                 }
+
+//                 const districtId = area?.district;
+
+//                 if (Types.ObjectId.isValid(districtId)) {
+//                     const district = await District.findById(districtId);
+//                     area.district = {
+//                         title: district?.title,
+//                         _id: district?._id,
+//                     };
+//                 } else if (typeof districtId === 'string') {
+//                     const district = await District.findOne({
+//                         title: districtId,
+//                     });
+//                     area.district = {
+//                         title: district?.title,
+//                         _id: district?._id,
+//                     };
+//                 } else {
+//                     // area.district = undefined;
+//                     console.log({ districtId });
+//                 }
+
+//                 const upazilaId = area?.upazila;
+
+//                 if (Types.ObjectId.isValid(upazilaId)) {
+//                     const upazila = await Upazila.findById(upazilaId);
+//                     area.upazila = {
+//                         title: upazila?.title,
+//                         _id: upazila?._id,
+//                     };
+//                 } else if (typeof upazilaId === 'string') {
+//                     const upazila = await Upazila.findOne({ title: upazilaId });
+//                     area.upazila = {
+//                         title: upazila?.title,
+//                         _id: upazila?._id,
+//                     };
+//                 } else {
+//                     // area.upazila = undefined;
+//                     console.log({ upazilaId });
+//                 }
+
+//                 const unionId = area?.union;
+
+//                 if (Types.ObjectId.isValid(unionId)) {
+//                     const union = await Union.findById(unionId);
+//                     area.union = {
+//                         title: union?.title,
+//                         _id: union?._id,
+//                     };
+//                 } else if (typeof unionId === 'string') {
+//                     const union = await Union.findOne({ title: unionId });
+//                     area.union = {
+//                         title: union?.title,
+//                         _id: union?._id,
+//                     };
+//                 } else {
+//                     // area.union = undefined;
+//                     console.log({ unionId });
+//                 }
+
+//                 const villages = area?.village;
+
+//                 if (!villages) {
+//                     area.village = [];
+//                 } else {
+//                     for (let k = 0; k < villages.length; k++) {
+//                         const villageId = villages[k];
+
+//                         if (Types.ObjectId.isValid(villageId)) {
+//                             const village = await Village.findById(villageId);
+//                             area.village[k] = {
+//                                 title: village?.title,
+//                                 _id: village?._id,
+//                             };
+//                         } else if (typeof villageId === 'string') {
+//                             const village = await Village.findOne({
+//                                 title: villageId,
+//                             });
+//                             area.village[k] = {
+//                                 title: village?.title,
+//                                 _id: village?._id,
+//                             };
+//                         } else {
+//                             // area.village = undefined;
+//                             console.log({ villageId });
+//                         }
+//                     }
+//                 }
+
+//                 rider.serviceArea[j] = area;
+//             }
+//         }
+
+//         console.log(i + 1);
+
+//         await User.findByIdAndUpdate(rider._id, {
+//             serviceArea: rider.serviceArea,
+//         });
+//     }
+
+//     console.log({ updatedRiders: updatedRiders.length });
+
+//     return [];
+// };
+
 const getRiders = async (query: Record<string, unknown>) => {
     const { vehicle, dVil } = query;
 

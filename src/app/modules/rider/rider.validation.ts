@@ -10,19 +10,19 @@ const objectId = z
     });
 
 const addressSchema = z.object({
-    division: z.object({ title: z.string(), _id: objectId }),
-    district: z.object({ title: z.string(), _id: objectId }),
-    upazila: z.object({ title: z.string(), _id: objectId }),
-    union: z.object({ title: z.string(), _id: objectId }),
-    village: z.object({ title: z.string(), _id: objectId }),
+    division: z.object({ title: z.string(), _id: objectId }).optional(),
+    district: z.object({ title: z.string(), _id: objectId }).optional(),
+    upazila: z.object({ title: z.string(), _id: objectId }).optional(),
+    union: z.object({ title: z.string(), _id: objectId }).optional(),
+    village: z.object({ title: z.string(), _id: objectId }).optional(),
 });
 
 const areaSchema = z.object({
-    division: z.object({ title: z.string(), _id: objectId }),
-    district: z.object({ title: z.string(), _id: objectId }),
-    upazila: z.object({ title: z.string(), _id: objectId }),
-    union: z.object({ title: z.string(), _id: objectId }),
-    village: z.array(z.object({ title: z.string(), _id: objectId })),
+    division: z.object({ title: z.string(), _id: objectId }).optional(),
+    district: z.object({ title: z.string(), _id: objectId }).optional(),
+    upazila: z.object({ title: z.string(), _id: objectId }).optional(),
+    union: z.object({ title: z.string(), _id: objectId }).optional(),
+    village: z.array(z.object({ title: z.string(), _id: objectId })).optional(),
 });
 
 const locationSchema = z.object({
