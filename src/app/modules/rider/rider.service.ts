@@ -6,11 +6,9 @@ import { User } from '../user/user.model';
 
 // TODO: Add service area filter
 const getRiders = async (query: Record<string, unknown>) => {
-    const { vehicleType, latitude, longitude, limit = 10, page = 1 } = query;
+    const { vehicleType, latitude, longitude, limit, page } = query;
 
-    const parsedLatitude = parseFloat(latitude as string);
-    const parsedLongitude = parseFloat(longitude as string);
-    const skip = (parseInt(page as string) - 1) * parseInt(limit as string);
+    const skip = ((page as number) - 1) * (limit as number);
     const toRadians = Math.PI / 180;
 
     // Aggregation pipeline
@@ -56,8 +54,8 @@ const getRiders = async (query: Record<string, unknown>) => {
                 distance: {
                     $let: {
                         vars: {
-                            lat1: parsedLatitude * toRadians,
-                            lon1: parsedLongitude * toRadians,
+                            lat1: (latitude as number) * toRadians,
+                            lon1: (longitude as number) * toRadians,
                             lat2: {
                                 $multiply: ['$location.latitude', toRadians],
                             },
@@ -106,15 +104,38 @@ const getRiders = async (query: Record<string, unknown>) => {
         },
         // Paginate results
         { $skip: skip },
-        { $limit: parseInt(limit as string) },
+        { $limit: limit as number },
+        {
+            $addFields: {
+                isLive: {
+                    $cond: {
+                        if: {
+                            $and: [
+                                { $ifNull: ['$liveLocation', false] },
+                                {
+                                    $gte: [
+                                        '$liveLocation.timestamp',
+                                        Date.now() - 5 * 1000,
+                                    ],
+                                },
+                            ],
+                        },
+                        then: true,
+                        else: false,
+                    },
+                },
+            },
+        },
         // Project the fields to include in the response
         {
             $project: {
                 _id: 1,
                 name: 1,
-                vehicleType: 1,
-                location: 1,
+                avatarURL: 1,
+                contactNo1: 1,
+                mainStation: 1,
                 distance: 1,
+                isLive: 1,
             },
         },
     ]);
