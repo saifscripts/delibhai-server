@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateRiderId = void 0;
+exports.isCurrentTimeWithinServiceTimes = exports.calculateTimeInMinutes = exports.generateRiderId = void 0;
 const user_constant_1 = require("../user/user.constant");
 const user_model_1 = require("../user/user.model");
 const findLastRiderId = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -25,3 +25,26 @@ const generateRiderId = () => __awaiter(void 0, void 0, void 0, function* () {
     return `DR${incrementedId}`;
 });
 exports.generateRiderId = generateRiderId;
+const calculateTimeInMinutes = (time) => {
+    const timeArray = time.split(':');
+    const hour = Number(timeArray[0]);
+    const minute = Number(timeArray[1]);
+    return hour * 60 + minute;
+};
+exports.calculateTimeInMinutes = calculateTimeInMinutes;
+const isCurrentTimeWithinServiceTimes = (slots = []) => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentTimeInMinutes = currentHour * 60 + currentMinute;
+    for (const slot of slots) {
+        const slotStartMinutes = (0, exports.calculateTimeInMinutes)(slot.start);
+        const slotEndMinutes = (0, exports.calculateTimeInMinutes)(slot.end);
+        if (currentTimeInMinutes >= slotStartMinutes &&
+            currentTimeInMinutes <= slotEndMinutes) {
+            return true;
+        }
+    }
+    return false;
+};
+exports.isCurrentTimeWithinServiceTimes = isCurrentTimeWithinServiceTimes;

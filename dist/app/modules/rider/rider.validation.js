@@ -33,10 +33,20 @@ const getRidersValidationSchema = zod_1.z.object({
         vehicleType: zod_1.z
             .string({ required_error: 'Vehicle type is required!' })
             .trim(),
-        latitude: zod_1.z.number({ required_error: 'Latitude is required!' }),
-        longitude: zod_1.z.number({ required_error: 'Longitude is required!' }),
-        limit: zod_1.z.number().optional(),
-        page: zod_1.z.number().optional(),
+        latitude: zod_1.z
+            .string({ required_error: 'Latitude is required!' })
+            .transform((value) => parseFloat(value)),
+        longitude: zod_1.z
+            .string({ required_error: 'Longitude is required!' })
+            .transform((value) => parseFloat(value)),
+        limit: zod_1.z
+            .string()
+            .default('10')
+            .transform((value) => parseInt(value)),
+        page: zod_1.z
+            .string()
+            .default('1')
+            .transform((value) => parseInt(value)),
     }),
 });
 const updateRiderValidationSchema = zod_1.z.object({

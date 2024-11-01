@@ -26,7 +26,7 @@ app.use('/api/v1/', routes_1.default);
 app.get('/', (_req, res) => {
     res.status(http_status_1.default.OK).json({
         success: true,
-        message: `App is running on port ${config_1.default.port}!`,
+        message: `App is running successfully!`,
     });
 });
 // globalError handler

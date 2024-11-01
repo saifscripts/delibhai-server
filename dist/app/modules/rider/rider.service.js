@@ -19,11 +19,11 @@ const user_constant_1 = require("../user/user.constant");
 const user_model_1 = require("../user/user.model");
 // TODO: Add service area filter
 const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const { vehicleType, latitude, longitude, limit = 10, page = 1 } = query;
-    const parsedLatitude = parseFloat(latitude);
-    const parsedLongitude = parseFloat(longitude);
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const { vehicleType, latitude, longitude, limit, page } = query;
+    const skip = (page - 1) * limit;
     const toRadians = Math.PI / 180;
+    const currentTime = new Date();
+    const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
     // Aggregation pipeline
     const riders = yield user_model_1.User.aggregate([
         // Filter by vehicleType and role
@@ -67,8 +67,8 @@ const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
                 distance: {
                     $let: {
                         vars: {
-                            lat1: parsedLatitude * toRadians,
-                            lon1: parsedLongitude * toRadians,
+                            lat1: latitude * toRadians,
+                            lon1: longitude * toRadians,
                             lat2: {
                                 $multiply: ['$location.latitude', toRadians],
                             },
@@ -117,15 +117,155 @@ const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
         },
         // Paginate results
         { $skip: skip },
-        { $limit: parseInt(limit) },
+        { $limit: limit },
+        {
+            $addFields: {
+                isLive: {
+                    $cond: {
+                        if: {
+                            $and: [
+                                { $ifNull: ['$liveLocation', false] },
+                                {
+                                    $gte: [
+                                        '$liveLocation.timestamp',
+                                        Date.now() - 5 * 1000,
+                                    ],
+                                },
+                            ],
+                        },
+                        then: true,
+                        else: false,
+                    },
+                },
+                isOnline: {
+                    $cond: {
+                        if: { $eq: ['$serviceStatus', 'on'] },
+                        then: true,
+                        else: {
+                            $cond: {
+                                if: { $eq: ['$serviceStatus', 'off'] },
+                                then: false,
+                                else: {
+                                    $reduce: {
+                                        input: '$serviceTimeSlots',
+                                        initialValue: false,
+                                        in: {
+                                            $cond: [
+                                                '$$value', // If any previous slot has already set isOnline to true, keep it as true
+                                                true,
+                                                {
+                                                    $let: {
+                                                        vars: {
+                                                            startMinutes: {
+                                                                $add: [
+                                                                    {
+                                                                        $multiply: [
+                                                                            {
+                                                                                $toInt: {
+                                                                                    $arrayElemAt: [
+                                                                                        {
+                                                                                            $split: [
+                                                                                                '$$this.start',
+                                                                                                ':',
+                                                                                            ],
+                                                                                        },
+                                                                                        0,
+                                                                                    ],
+                                                                                },
+                                                                            },
+                                                                            60,
+                                                                        ],
+                                                                    },
+                                                                    {
+                                                                        $toInt: {
+                                                                            $arrayElemAt: [
+                                                                                {
+                                                                                    $split: [
+                                                                                        '$$this.start',
+                                                                                        ':',
+                                                                                    ],
+                                                                                },
+                                                                                1,
+                                                                            ],
+                                                                        },
+                                                                    },
+                                                                ],
+                                                            },
+                                                            endMinutes: {
+                                                                $add: [
+                                                                    {
+                                                                        $multiply: [
+                                                                            {
+                                                                                $toInt: {
+                                                                                    $arrayElemAt: [
+                                                                                        {
+                                                                                            $split: [
+                                                                                                '$$this.end',
+                                                                                                ':',
+                                                                                            ],
+                                                                                        },
+                                                                                        0,
+                                                                                    ],
+                                                                                },
+                                                                            },
+                                                                            60,
+                                                                        ],
+                                                                    },
+                                                                    {
+                                                                        $toInt: {
+                                                                            $arrayElemAt: [
+                                                                                {
+                                                                                    $split: [
+                                                                                        '$$this.end',
+                                                                                        ':',
+                                                                                    ],
+                                                                                },
+                                                                                1,
+                                                                            ],
+                                                                        },
+                                                                    },
+                                                                ],
+                                                            },
+                                                        },
+                                                        in: {
+                                                            $and: [
+                                                                {
+                                                                    $gte: [
+                                                                        currentMinutes,
+                                                                        '$$startMinutes',
+                                                                    ],
+                                                                },
+                                                                {
+                                                                    $lte: [
+                                                                        currentMinutes,
+                                                                        '$$endMinutes',
+                                                                    ],
+                                                                },
+                                                            ],
+                                                        },
+                                                    },
+                                                },
+                                            ],
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
         // Project the fields to include in the response
         {
             $project: {
                 _id: 1,
                 name: 1,
-                vehicleType: 1,
-                location: 1,
+                avatarURL: 1,
+                contactNo1: 1,
+                mainStation: 1,
                 distance: 1,
+                isLive: 1,
+                isOnline: 1,
             },
         },
     ]);
