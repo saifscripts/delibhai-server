@@ -20,3 +20,36 @@ export const generateRiderId = async () => {
 
     return `DR${incrementedId}`;
 };
+
+export const calculateTimeInMinutes = (time: string) => {
+    const timeArray = time.split(':');
+
+    const hour = Number(timeArray[0]);
+    const minute = Number(timeArray[1]);
+
+    return hour * 60 + minute;
+};
+
+export const isCurrentTimeWithinServiceTimes = (
+    slots: { start: string; end: string }[] = [],
+) => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+
+    const currentTimeInMinutes = currentHour * 60 + currentMinute;
+
+    for (const slot of slots) {
+        const slotStartMinutes = calculateTimeInMinutes(slot.start);
+        const slotEndMinutes = calculateTimeInMinutes(slot.end);
+
+        if (
+            currentTimeInMinutes >= slotStartMinutes &&
+            currentTimeInMinutes <= slotEndMinutes
+        ) {
+            return true;
+        }
+    }
+
+    return false;
+};

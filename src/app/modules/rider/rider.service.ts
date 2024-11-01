@@ -10,6 +10,9 @@ const getRiders = async (query: Record<string, unknown>) => {
 
     const skip = ((page as number) - 1) * (limit as number);
     const toRadians = Math.PI / 180;
+    const currentTime = new Date();
+    const currentMinutes =
+        currentTime.getHours() * 60 + currentTime.getMinutes();
 
     // Aggregation pipeline
     const riders = await User.aggregate([
@@ -124,6 +127,128 @@ const getRiders = async (query: Record<string, unknown>) => {
                         else: false,
                     },
                 },
+                isOnline: {
+                    $cond: {
+                        if: { $eq: ['$serviceStatus', 'on'] },
+                        then: true,
+                        else: {
+                            $cond: {
+                                if: { $eq: ['$serviceStatus', 'off'] },
+                                then: false,
+                                else: {
+                                    $reduce: {
+                                        input: '$serviceTimeSlots',
+                                        initialValue: false,
+                                        in: {
+                                            $cond: [
+                                                '$$value', // If any previous slot has already set isOnline to true, keep it as true
+                                                true,
+                                                {
+                                                    $let: {
+                                                        vars: {
+                                                            startMinutes: {
+                                                                $add: [
+                                                                    {
+                                                                        $multiply:
+                                                                            [
+                                                                                {
+                                                                                    $toInt: {
+                                                                                        $arrayElemAt:
+                                                                                            [
+                                                                                                {
+                                                                                                    $split: [
+                                                                                                        '$$this.start',
+                                                                                                        ':',
+                                                                                                    ],
+                                                                                                },
+                                                                                                0,
+                                                                                            ],
+                                                                                    },
+                                                                                },
+                                                                                60,
+                                                                            ],
+                                                                    },
+                                                                    {
+                                                                        $toInt: {
+                                                                            $arrayElemAt:
+                                                                                [
+                                                                                    {
+                                                                                        $split: [
+                                                                                            '$$this.start',
+                                                                                            ':',
+                                                                                        ],
+                                                                                    },
+                                                                                    1,
+                                                                                ],
+                                                                        },
+                                                                    },
+                                                                ],
+                                                            },
+                                                            endMinutes: {
+                                                                $add: [
+                                                                    {
+                                                                        $multiply:
+                                                                            [
+                                                                                {
+                                                                                    $toInt: {
+                                                                                        $arrayElemAt:
+                                                                                            [
+                                                                                                {
+                                                                                                    $split: [
+                                                                                                        '$$this.end',
+                                                                                                        ':',
+                                                                                                    ],
+                                                                                                },
+                                                                                                0,
+                                                                                            ],
+                                                                                    },
+                                                                                },
+                                                                                60,
+                                                                            ],
+                                                                    },
+                                                                    {
+                                                                        $toInt: {
+                                                                            $arrayElemAt:
+                                                                                [
+                                                                                    {
+                                                                                        $split: [
+                                                                                            '$$this.end',
+                                                                                            ':',
+                                                                                        ],
+                                                                                    },
+                                                                                    1,
+                                                                                ],
+                                                                        },
+                                                                    },
+                                                                ],
+                                                            },
+                                                        },
+                                                        in: {
+                                                            $and: [
+                                                                {
+                                                                    $gte: [
+                                                                        currentMinutes,
+                                                                        '$$startMinutes',
+                                                                    ],
+                                                                },
+                                                                {
+                                                                    $lte: [
+                                                                        currentMinutes,
+                                                                        '$$endMinutes',
+                                                                    ],
+                                                                },
+                                                            ],
+                                                        },
+                                                    },
+                                                },
+                                            ],
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
             },
         },
         // Project the fields to include in the response
@@ -136,6 +261,7 @@ const getRiders = async (query: Record<string, unknown>) => {
                 mainStation: 1,
                 distance: 1,
                 isLive: 1,
+                isOnline: 1,
             },
         },
     ]);
