@@ -24,19 +24,16 @@ const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const toRadians = Math.PI / 180;
     const currentTime = new Date();
     const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-    // Aggregation pipeline
     const riders = yield user_model_1.User.aggregate([
-        // Filter by vehicleType and role
         {
             $match: {
                 vehicleType,
                 role: user_constant_1.USER_ROLE.rider,
             },
         },
-        // Add a field "location" which selects liveLocation if timestamp is within last 5 seconds, otherwise manualLocation
         {
             $addFields: {
-                location: {
+                isLive: {
                     $cond: {
                         if: {
                             $and: [
@@ -49,19 +46,28 @@ const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
                                 },
                             ],
                         },
+                        then: true,
+                        else: false,
+                    },
+                },
+            },
+        },
+        {
+            $addFields: {
+                location: {
+                    $cond: {
+                        if: { $ifNull: ['$isLive', true] },
                         then: '$liveLocation',
                         else: '$manualLocation',
                     },
                 },
             },
         },
-        // Filter out riders without a valid location
         {
             $match: {
                 location: { $exists: true, $ne: null },
             },
         },
-        // Calculate the distance using the Haversine formula
         {
             $addFields: {
                 distance: {
@@ -78,7 +84,7 @@ const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
                         },
                         in: {
                             $multiply: [
-                                6371, // Earth radius in kilometers
+                                6371,
                                 {
                                     $acos: {
                                         $add: [
@@ -109,34 +115,6 @@ const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
                         },
                     },
                 },
-            },
-        },
-        // Sort by distance
-        {
-            $sort: { distance: 1 },
-        },
-        // Paginate results
-        { $skip: skip },
-        { $limit: limit },
-        {
-            $addFields: {
-                isLive: {
-                    $cond: {
-                        if: {
-                            $and: [
-                                { $ifNull: ['$liveLocation', false] },
-                                {
-                                    $gte: [
-                                        '$liveLocation.timestamp',
-                                        Date.now() - 5 * 1000,
-                                    ],
-                                },
-                            ],
-                        },
-                        then: true,
-                        else: false,
-                    },
-                },
                 isOnline: {
                     $cond: {
                         if: { $eq: ['$serviceStatus', 'on'] },
@@ -151,7 +129,7 @@ const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
                                         initialValue: false,
                                         in: {
                                             $cond: [
-                                                '$$value', // If any previous slot has already set isOnline to true, keep it as true
+                                                '$$value',
                                                 true,
                                                 {
                                                     $let: {
@@ -255,7 +233,11 @@ const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
                 },
             },
         },
-        // Project the fields to include in the response
+        {
+            $sort: { distance: 1, isLive: -1, isOnline: -1, createdAt: 1 },
+        },
+        { $skip: skip },
+        { $limit: limit },
         {
             $project: {
                 _id: 1,
