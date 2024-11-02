@@ -22,7 +22,10 @@ const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const { vehicleType, latitude, longitude, limit, page } = query;
     const skip = (page - 1) * limit;
     const toRadians = Math.PI / 180;
-    const currentTime = new Date();
+    const bangladeshTime = new Date().toLocaleString('en-US', {
+        timeZone: 'Asia/Dhaka',
+    });
+    const currentTime = new Date(bangladeshTime);
     const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
     const riders = yield user_model_1.User.aggregate([
         // Match riders with the given vehicle type and role
