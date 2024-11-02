@@ -10,6 +10,7 @@
         "build": "rimraf dist && tsc",
         "add-build": "git add dist",
         "commit-build": "git commit -m 'build'",
+        "push": "git push",
         "lint": "npx eslint src --ignore-pattern .ts",
         "lint:fix": "npx eslint src --fix",
         "prettier": "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\"",
@@ -19,7 +20,8 @@
         "ts.check",
         "build",
         "add-build",
-        "commit-build"
+        "commit-build",
+        "push"
     ],
     "license": "MIT",
     "dependencies": {
