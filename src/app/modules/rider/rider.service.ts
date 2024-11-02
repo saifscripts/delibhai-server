@@ -15,12 +15,14 @@ const getRiders = async (query: Record<string, unknown>) => {
         currentTime.getHours() * 60 + currentTime.getMinutes();
 
     const riders = await User.aggregate([
+        // Match riders with the given vehicle type and role
         {
             $match: {
                 vehicleType,
                 role: USER_ROLE.rider,
             },
         },
+        // Add a field "isLive" which is true if liveLocation is not null and timestamp is within last 5 seconds, otherwise false
         {
             $addFields: {
                 isLive: {
@@ -42,6 +44,7 @@ const getRiders = async (query: Record<string, unknown>) => {
                 },
             },
         },
+        // Add a field "location" which selects liveLocation if isLive is true, otherwise manualLocation
         {
             $addFields: {
                 location: {
@@ -53,11 +56,13 @@ const getRiders = async (query: Record<string, unknown>) => {
                 },
             },
         },
+        // Match riders with a valid location
         {
             $match: {
                 location: { $exists: true, $ne: null },
             },
         },
+        // Add a field "distance" which calculates the distance between the rider's location and the given latitude and longitude
         {
             $addFields: {
                 distance: {
@@ -105,6 +110,7 @@ const getRiders = async (query: Record<string, unknown>) => {
                         },
                     },
                 },
+                // Add a field "isOnline" which is true if serviceStatus is "on", false if "off", otherwise true if any of the serviceTimeSlots is currently active
                 isOnline: {
                     $cond: {
                         if: { $eq: ['$serviceStatus', 'on'] },
@@ -229,11 +235,14 @@ const getRiders = async (query: Record<string, unknown>) => {
                 },
             },
         },
+        // Sort by distance, then by isLive (true first), then by isOnline (true first), then by createdAt
         {
             $sort: { distance: 1, isLive: -1, isOnline: -1, createdAt: 1 },
         },
+        // Paginate results
         { $skip: skip },
         { $limit: limit as number },
+        // Project the required fields
         {
             $project: {
                 _id: 1,
