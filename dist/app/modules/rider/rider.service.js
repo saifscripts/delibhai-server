@@ -239,9 +239,9 @@ const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
                 },
             },
         },
-        // Sort by distance, then by isLive (true first), then by isOnline (true first), then by createdAt
+        // Sort by isOnline (true first), then by distance, then by isLive (true first), then by createdAt
         {
-            $sort: { distance: 1, isLive: -1, isOnline: -1, createdAt: 1 },
+            $sort: { isOnline: -1, distance: 1, isLive: -1, createdAt: 1 },
         },
         // Paginate results
         { $skip: skip },
