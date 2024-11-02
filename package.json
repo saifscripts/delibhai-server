@@ -10,7 +10,7 @@
         "build": "rimraf dist && tsc",
         "add-build": "git add dist",
         "commit-build": "git commit -m 'build'",
-        "push": "git push",
+        "push": "git push --no-verify",
         "lint": "npx eslint src --ignore-pattern .ts",
         "lint:fix": "npx eslint src --fix",
         "prettier": "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\"",

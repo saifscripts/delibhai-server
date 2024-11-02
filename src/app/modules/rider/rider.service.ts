@@ -10,7 +10,12 @@ const getRiders = async (query: Record<string, unknown>) => {
 
     const skip = ((page as number) - 1) * (limit as number);
     const toRadians = Math.PI / 180;
-    const currentTime = new Date();
+    const bangladeshTime = new Date().toLocaleString('en-US', {
+        timeZone: 'Asia/Dhaka',
+    });
+
+    const currentTime = new Date(bangladeshTime);
+
     const currentMinutes =
         currentTime.getHours() * 60 + currentTime.getMinutes();
 
