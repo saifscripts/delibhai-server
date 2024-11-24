@@ -6,7 +6,8 @@ import { User } from '../user/user.model';
 
 // TODO: Add service area filter
 const getRiders = async (query: Record<string, unknown>) => {
-    const { vehicleType, latitude, longitude, limit, page } = query;
+    const { vehicleType, latitude, longitude, limit, page, destinations } =
+        query;
 
     const skip = ((page as number) - 1) * (limit as number);
     const toRadians = Math.PI / 180;
@@ -19,13 +20,26 @@ const getRiders = async (query: Record<string, unknown>) => {
     const currentMinutes =
         currentTime.getHours() * 60 + currentTime.getMinutes();
 
+    let filters = {
+        vehicleType,
+        role: USER_ROLE.rider,
+    };
+
+    if (destinations) {
+        filters = {
+            vehicleType,
+            role: USER_ROLE.rider,
+        };
+
+        // destinations.forEach(dest => {
+
+        // })
+    }
+
     const riders = await User.aggregate([
         // Match riders with the given vehicle type and role
         {
-            $match: {
-                vehicleType,
-                role: USER_ROLE.rider,
-            },
+            $match: filters,
         },
         // Add a field "isLive" which is true if liveLocation is not null and timestamp is within last 5 seconds, otherwise false
         {
