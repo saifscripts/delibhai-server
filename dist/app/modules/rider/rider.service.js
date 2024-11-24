@@ -19,7 +19,7 @@ const user_constant_1 = require("../user/user.constant");
 const user_model_1 = require("../user/user.model");
 // TODO: Add service area filter
 const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const { vehicleType, latitude, longitude, limit, page } = query;
+    const { vehicleType, latitude, longitude, limit, page, destinations } = query;
     const skip = (page - 1) * limit;
     const toRadians = Math.PI / 180;
     const bangladeshTime = new Date().toLocaleString('en-US', {
@@ -27,13 +27,22 @@ const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
     });
     const currentTime = new Date(bangladeshTime);
     const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
+    let filters = {
+        vehicleType,
+        role: user_constant_1.USER_ROLE.rider,
+    };
+    if (destinations) {
+        filters = {
+            vehicleType,
+            role: user_constant_1.USER_ROLE.rider,
+        };
+        // destinations.forEach(dest => {
+        // })
+    }
     const riders = yield user_model_1.User.aggregate([
         // Match riders with the given vehicle type and role
         {
-            $match: {
-                vehicleType,
-                role: user_constant_1.USER_ROLE.rider,
-            },
+            $match: filters,
         },
         // Add a field "isLive" which is true if liveLocation is not null and timestamp is within last 5 seconds, otherwise false
         {
