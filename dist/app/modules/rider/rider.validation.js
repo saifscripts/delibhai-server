@@ -84,18 +84,35 @@ const updateRiderValidationSchema = zod_1.z.object({
         contactNo1: zod_1.z
             .string()
             .trim()
-            .refine((value) => (0, validator_1.isMobilePhone)(value, 'bn-BD'), {
+            .min(1, 'Mobile number is required!')
+            .refine(validator_1.isMobilePhone, {
             message: 'Invalid mobile number!',
         }),
         contactNo2: zod_1.z
             .string()
             .trim()
-            .refine((value) => (0, validator_1.isMobilePhone)(value, 'bn-BD'), {
+            .transform((val) => (val === '' ? null : val))
+            .refine((val) => val === null || (0, validator_1.isMobilePhone)(val), {
             message: 'Invalid mobile number!',
         })
+            .nullable()
             .optional(),
-        email: zod_1.z.string().email('Invalid email!').optional(),
-        facebookURL: zod_1.z.string().url('Invalid URL!').optional(),
+        email: zod_1.z
+            .string()
+            .transform((val) => (val === '' ? null : val))
+            .refine((val) => val === null || zod_1.z.string().email().safeParse(val).success, {
+            message: 'Invalid email!',
+        })
+            .nullable()
+            .optional(),
+        facebookURL: zod_1.z
+            .string()
+            .transform((val) => (val === '' ? null : val))
+            .refine((val) => val === null || zod_1.z.string().url().safeParse(val).success, {
+            message: 'Invalid URL!',
+        })
+            .nullable()
+            .optional(),
         presentAddress: addressSchema.optional(),
         permanentAddress: addressSchema.optional(),
         vehicleType: zod_1.z.string().trim().optional(),
