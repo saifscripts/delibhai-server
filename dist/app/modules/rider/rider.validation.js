@@ -59,7 +59,9 @@ const updateRiderValidationSchema = zod_1.z.object({
         fatherName: zod_1.z
             .string()
             .trim()
-            .min(3, 'Name must be at least 3 characters long!')
+            .refine((value) => value === '' || value.length > 3, {
+            message: "Father's name must be at least 3 characters long!",
+        })
             .optional(),
         gender: zod_1.z
             .enum(['পুরুষ', 'মহিলা', 'অন্যান্য'], {
@@ -78,7 +80,7 @@ const updateRiderValidationSchema = zod_1.z.object({
             message: 'Invalid NID number!',
         })
             .optional(),
-        nidURL: zod_1.z.string().url('Invalid NID URL').optional(),
+        nidURL: zod_1.z.string().url('Invalid NID URL').nullish().optional(),
         contactNo1: zod_1.z
             .string()
             .trim()
