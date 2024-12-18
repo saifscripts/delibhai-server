@@ -86,8 +86,7 @@ const updateRiderValidationSchema = zod_1.z.object({
             .trim()
             .refine((value) => (0, validator_1.isMobilePhone)(value, 'bn-BD'), {
             message: 'Invalid mobile number!',
-        })
-            .optional(),
+        }),
         contactNo2: zod_1.z
             .string()
             .trim()
