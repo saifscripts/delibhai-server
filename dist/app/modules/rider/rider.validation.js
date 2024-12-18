@@ -52,16 +52,19 @@ const getRidersValidationSchema = zod_1.z.object({
 const updateRiderValidationSchema = zod_1.z.object({
     body: zod_1.z.object({
         name: zod_1.z
-            .string()
+            .string({ required_error: 'Name is required!' })
             .trim()
+            .min(1, 'Name is required!')
             .min(3, 'Name must be at least 3 characters long!')
             .optional(),
         fatherName: zod_1.z
             .string()
             .trim()
-            .refine((value) => value === '' || value.length > 3, {
+            .transform((val) => (val === '' ? null : val))
+            .refine((value) => value === null || value.length > 3, {
             message: "Father's name must be at least 3 characters long!",
         })
+            .nullable()
             .optional(),
         gender: zod_1.z
             .enum(['পুরুষ', 'মহিলা', 'অন্যান্য'], {
@@ -73,12 +76,21 @@ const updateRiderValidationSchema = zod_1.z.object({
             invalid_type_error: 'Invalid blood group!',
         })
             .optional(),
-        dateOfBirth: zod_1.z.string().date('Invalid date of birth!').optional(),
+        dateOfBirth: zod_1.z
+            .string()
+            .transform((val) => (val === '' ? null : val))
+            .refine((val) => val === null || zod_1.z.string().date().safeParse(val).success, {
+            message: 'Invalid date of birth!',
+        })
+            .nullable()
+            .optional(),
         nid: zod_1.z
             .string()
-            .refine((value) => (0, validators_1.isNID)(value), {
+            .transform((val) => (val === '' ? null : val))
+            .refine((val) => val === null || (0, validators_1.isNID)(val), {
             message: 'Invalid NID number!',
         })
+            .nullable()
             .optional(),
         nidURL: zod_1.z.string().url('Invalid NID URL').nullish().optional(),
         contactNo1: zod_1.z
@@ -87,7 +99,8 @@ const updateRiderValidationSchema = zod_1.z.object({
             .min(1, 'Mobile number is required!')
             .refine(validator_1.isMobilePhone, {
             message: 'Invalid mobile number!',
-        }),
+        })
+            .optional(),
         contactNo2: zod_1.z
             .string()
             .trim()
