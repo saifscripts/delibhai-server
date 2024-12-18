@@ -87,18 +87,43 @@ const updateRiderValidationSchema = z.object({
         contactNo1: z
             .string()
             .trim()
-            .refine((value) => isMobilePhone(value, 'bn-BD'), {
+            .min(1, 'Mobile number is required!')
+            .refine(isMobilePhone, {
                 message: 'Invalid mobile number!',
             }),
         contactNo2: z
             .string()
             .trim()
-            .refine((value) => isMobilePhone(value, 'bn-BD'), {
+            .transform((val) => (val === '' ? null : val))
+            .refine((val) => val === null || isMobilePhone(val), {
                 message: 'Invalid mobile number!',
             })
+            .nullable()
             .optional(),
-        email: z.string().email('Invalid email!').optional(),
-        facebookURL: z.string().url('Invalid URL!').optional(),
+        email: z
+            .string()
+            .transform((val) => (val === '' ? null : val))
+            .refine(
+                (val) =>
+                    val === null || z.string().email().safeParse(val).success,
+                {
+                    message: 'Invalid email!',
+                },
+            )
+            .nullable()
+            .optional(),
+        facebookURL: z
+            .string()
+            .transform((val) => (val === '' ? null : val))
+            .refine(
+                (val) =>
+                    val === null || z.string().url().safeParse(val).success,
+                {
+                    message: 'Invalid URL!',
+                },
+            )
+            .nullable()
+            .optional(),
         presentAddress: addressSchema.optional(),
         permanentAddress: addressSchema.optional(),
         vehicleType: z.string().trim().optional(),
