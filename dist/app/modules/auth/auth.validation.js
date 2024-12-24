@@ -13,11 +13,6 @@ const createRiderValidationSchema = zod_1.z.object({
             .string({ required_error: 'Name is required!' })
             .trim()
             .min(3, 'Name must be at least 3 characters long!'),
-        gender: zod_1.z
-            .enum(['পুরুষ', 'মহিলা', 'অন্যান্য'], {
-            invalid_type_error: 'Gender must be পুরুষ/মহিলা/অন্যান্য!',
-        })
-            .optional(),
         mobile: zod_1.z
             .string({ required_error: 'Mobile number is required!' })
             .trim()
