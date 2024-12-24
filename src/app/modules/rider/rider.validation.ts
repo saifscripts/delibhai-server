@@ -70,14 +70,42 @@ const updateRiderValidationSchema = z.object({
             .nullable()
             .optional(),
         gender: z
-            .enum(['পুরুষ', 'মহিলা', 'অন্যান্য'], {
-                invalid_type_error: 'Gender must be পুরুষ/মহিলা/অন্যান্য!',
-            })
+            .string()
+            .transform((val) => (val === '' ? null : val))
+            .refine(
+                (val) =>
+                    val === null ||
+                    z.enum(['পুরুষ', 'মহিলা', 'অন্যান্য']).safeParse(val)
+                        .success,
+                {
+                    message: 'Gender must be পুরুষ/মহিলা/অন্যান্য!',
+                },
+            )
+            .nullable()
             .optional(),
         bloodGroup: z
-            .enum(['এ+', 'বি+', 'এবি+', 'ও+', 'এ-', 'বি-', 'এবি-', 'ও-'], {
-                invalid_type_error: 'Invalid blood group!',
-            })
+            .string()
+            .transform((val) => (val === '' ? null : val))
+            .refine(
+                (val) =>
+                    val === null ||
+                    z
+                        .enum([
+                            'এ+',
+                            'বি+',
+                            'এবি+',
+                            'ও+',
+                            'এ-',
+                            'বি-',
+                            'এবি-',
+                            'ও-',
+                        ])
+                        .safeParse(val).success,
+                {
+                    message: 'Invalid blood group!',
+                },
+            )
+            .nullable()
             .optional(),
         dateOfBirth: z
             .string()
