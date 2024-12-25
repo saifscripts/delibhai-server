@@ -33,6 +33,7 @@ const getRidersValidationSchema = zod_1.z.object({
         vehicleType: zod_1.z
             .string({ required_error: 'Vehicle type is required!' })
             .trim(),
+        vehicleSubType: zod_1.z.string().trim().optional(),
         latitude: zod_1.z
             .string({ required_error: 'Latitude is required!' })
             .transform((value) => parseFloat(value)),

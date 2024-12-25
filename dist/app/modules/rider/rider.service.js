@@ -19,7 +19,20 @@ const user_constant_1 = require("../user/user.constant");
 const user_model_1 = require("../user/user.model");
 // TODO: Add service area filter
 const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const { vehicleType, latitude, longitude, limit, page, destinations } = query;
+    const { vehicleType, latitude, longitude, limit, page, destinations, vehicleSubType, } = query;
+    const filters = {
+        role: user_constant_1.USER_ROLE.rider,
+    };
+    if (vehicleSubType) {
+        filters.vehicleSubType = { $in: vehicleSubType.split(',') };
+    }
+    else {
+        filters.vehicleType = vehicleType;
+    }
+    if (destinations) {
+        // destinations.forEach(dest => {
+        // })
+    }
     const skip = (page - 1) * limit;
     const toRadians = Math.PI / 180;
     const bangladeshTime = new Date().toLocaleString('en-US', {
@@ -27,18 +40,6 @@ const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
     });
     const currentTime = new Date(bangladeshTime);
     const currentMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
-    let filters = {
-        vehicleType,
-        role: user_constant_1.USER_ROLE.rider,
-    };
-    if (destinations) {
-        filters = {
-            vehicleType,
-            role: user_constant_1.USER_ROLE.rider,
-        };
-        // destinations.forEach(dest => {
-        // })
-    }
     const riders = yield user_model_1.User.aggregate([
         // Match riders with the given vehicle type and role
         {
