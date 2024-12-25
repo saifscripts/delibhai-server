@@ -3,11 +3,34 @@ import AppError from '../../errors/AppError';
 import { USER_ROLE } from '../user/user.constant';
 import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
+import { IRiderFilter } from './rider.interface';
 
 // TODO: Add service area filter
 const getRiders = async (query: Record<string, unknown>) => {
-    const { vehicleType, latitude, longitude, limit, page, destinations } =
-        query;
+    const {
+        vehicleType,
+        latitude,
+        longitude,
+        limit,
+        page,
+        destinations,
+        vehicleSubType,
+    } = query;
+
+    const filters: IRiderFilter = {
+        role: USER_ROLE.rider,
+    };
+
+    if (vehicleSubType) {
+        filters.vehicleSubType = { $in: (vehicleSubType as string).split(',') };
+    } else {
+        filters.vehicleType = vehicleType as string;
+    }
+
+    if (destinations) {
+        // destinations.forEach(dest => {
+        // })
+    }
 
     const skip = ((page as number) - 1) * (limit as number);
     const toRadians = Math.PI / 180;
@@ -19,22 +42,6 @@ const getRiders = async (query: Record<string, unknown>) => {
 
     const currentMinutes =
         currentTime.getHours() * 60 + currentTime.getMinutes();
-
-    let filters = {
-        vehicleType,
-        role: USER_ROLE.rider,
-    };
-
-    if (destinations) {
-        filters = {
-            vehicleType,
-            role: USER_ROLE.rider,
-        };
-
-        // destinations.forEach(dest => {
-
-        // })
-    }
 
     const riders = await User.aggregate([
         // Match riders with the given vehicle type and role

@@ -61,3 +61,9 @@ export interface IRider {
     videoURL: string;
     isDeleted: boolean;
 }
+
+export interface IRiderFilter {
+    vehicleType?: string;
+    vehicleSubType?: { $in: string[] };
+    role: string;
+}
