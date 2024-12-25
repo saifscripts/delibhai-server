@@ -90,6 +90,7 @@ const userSchema = new mongoose_1.Schema({
     presentAddress: addressSchema,
     permanentAddress: addressSchema,
     vehicleType: String,
+    vehicleSubType: String,
     vehicleBrand: String,
     vehicleModel: String,
     vehicleNumber: String,
