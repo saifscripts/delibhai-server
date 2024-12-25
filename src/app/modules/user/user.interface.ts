@@ -30,6 +30,7 @@ export interface IUser {
     presentAddress: IAddress;
     permanentAddress: IAddress;
     vehicleType: string;
+    vehicleSubType: string;
     vehicleBrand: string;
     vehicleModel: string;
     vehicleNumber: string;

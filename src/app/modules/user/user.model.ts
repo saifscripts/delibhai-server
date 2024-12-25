@@ -86,6 +86,7 @@ const userSchema = new Schema<IUser, UserModel>(
         presentAddress: addressSchema,
         permanentAddress: addressSchema,
         vehicleType: String,
+        vehicleSubType: String,
         vehicleBrand: String,
         vehicleModel: String,
         vehicleNumber: String,

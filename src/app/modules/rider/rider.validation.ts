@@ -172,6 +172,7 @@ const updateRiderValidationSchema = z.object({
         presentAddress: addressSchema.optional(),
         permanentAddress: addressSchema.optional(),
         vehicleType: z.string().trim().optional(),
+        vehicleSubType: z.string().trim().optional(),
         vehicleBrand: z.string().trim().optional(),
         vehicleModel: z.string().trim().optional(),
         vehicleNumber: z.string().trim().optional(),
