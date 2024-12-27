@@ -69,6 +69,7 @@ const verifyOTP = (payload) => __awaiter(void 0, void 0, void 0, function* () {
             id: yield (0, rider_utils_1.generateRiderId)(),
             mobile: user.tempMobile,
             contactNo1: user.tempMobile,
+            contactNo2: user.tempMobile,
             status: 'active',
         },
     }, { new: true, runValidators: true });
