@@ -13,8 +13,9 @@ const getRiders = async (query: Record<string, unknown>) => {
         longitude,
         limit,
         page,
-        destinations,
+        // destinations,
         vehicleSubType,
+        rentType,
     } = query;
 
     const filters: IRiderFilter = {
@@ -27,9 +28,8 @@ const getRiders = async (query: Record<string, unknown>) => {
         filters.vehicleType = vehicleType as string;
     }
 
-    if (destinations) {
-        // destinations.forEach(dest => {
-        // })
+    if (rentType) {
+        filters.rentType = { $in: rentType as string[] };
     }
 
     const skip = ((page as number) - 1) * (limit as number);

@@ -61,5 +61,6 @@ export interface IRider {
 export interface IRiderFilter {
     vehicleType?: string;
     vehicleSubType?: { $in: string[] };
+    rentType?: { $in: string[] };
     role: string;
 }
