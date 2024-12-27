@@ -202,16 +202,10 @@ const updateRiderValidationSchema = z.object({
             })
             .optional(),
         rentType: z
-            .enum(
-                [
-                    'লোকাল ভাড়া',
-                    'রিজার্ভ ভাড়া',
-                    'লোকাল ও রিজার্ভ ভাড়া',
-                    'কন্টাক্ট ভাড়া',
-                ],
-                {
+            .array(
+                z.enum(['লোকাল', 'রিজার্ভ', 'কন্টাক্ট'], {
                     invalid_type_error: 'Invalid rent type!',
-                },
+                }),
             )
             .optional(),
         mainStation: addressSchema.optional(),

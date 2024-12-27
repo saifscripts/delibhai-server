@@ -47,11 +47,7 @@ export interface IRider {
     ownerEmail: string;
     vehiclePhotos: string[];
     serviceType: 'ব্যক্তিগত' | 'ভাড়ায় চালিত';
-    rentType:
-        | 'লোকাল ভাড়া'
-        | 'রিজার্ভ ভাড়া'
-        | 'লোকাল ও রিজার্ভ ভাড়া'
-        | 'কন্টাক্ট ভাড়া';
+    rentType: ('লোকাল' | 'রিজার্ভ' | 'কন্টাক্ট')[];
     mainStation: IAddress;
     serviceArea: IArea[];
     serviceTimeSlots: ITimeSlot[];
