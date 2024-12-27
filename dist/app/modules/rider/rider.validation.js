@@ -34,6 +34,11 @@ const getRidersValidationSchema = zod_1.z.object({
             .string({ required_error: 'Vehicle type is required!' })
             .trim(),
         vehicleSubType: zod_1.z.string().trim().optional(),
+        rentType: zod_1.z
+            .string()
+            .trim()
+            .optional()
+            .transform((value) => value && value.split(',')),
         latitude: zod_1.z
             .string({ required_error: 'Latitude is required!' })
             .transform((value) => parseFloat(value)),
@@ -179,14 +184,9 @@ const updateRiderValidationSchema = zod_1.z.object({
         })
             .optional(),
         rentType: zod_1.z
-            .enum([
-            'লোকাল ভাড়া',
-            'রিজার্ভ ভাড়া',
-            'লোকাল ও রিজার্ভ ভাড়া',
-            'কন্টাক্ট ভাড়া',
-        ], {
+            .array(zod_1.z.enum(['লোকাল', 'রিজার্ভ', 'কন্টাক্ট'], {
             invalid_type_error: 'Invalid rent type!',
-        })
+        }))
             .optional(),
         mainStation: addressSchema.optional(),
         serviceArea: zod_1.z.array(areaSchema).optional(),

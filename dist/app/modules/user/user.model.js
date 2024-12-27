@@ -104,15 +104,12 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         enum: ['ব্যক্তিগত', 'ভাড়ায় চালিত'],
     },
-    rentType: {
-        type: String,
-        enum: [
-            'লোকাল ভাড়া',
-            'রিজার্ভ ভাড়া',
-            'লোকাল ও রিজার্ভ ভাড়া',
-            'কন্টাক্ট ভাড়া',
-        ],
-    },
+    rentType: [
+        {
+            type: String,
+            enum: ['লোকাল', 'রিজার্ভ', 'কন্টাক্ট'],
+        },
+    ],
     mainStation: addressSchema,
     serviceArea: [areaSchema],
     serviceTimeSlots: [

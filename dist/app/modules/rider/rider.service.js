@@ -19,7 +19,9 @@ const user_constant_1 = require("../user/user.constant");
 const user_model_1 = require("../user/user.model");
 // TODO: Add service area filter
 const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const { vehicleType, latitude, longitude, limit, page, destinations, vehicleSubType, } = query;
+    const { vehicleType, latitude, longitude, limit, page, 
+    // destinations,
+    vehicleSubType, rentType, } = query;
     const filters = {
         role: user_constant_1.USER_ROLE.rider,
     };
@@ -29,9 +31,8 @@ const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
     else {
         filters.vehicleType = vehicleType;
     }
-    if (destinations) {
-        // destinations.forEach(dest => {
-        // })
+    if (rentType) {
+        filters.rentType = { $in: rentType };
     }
     const skip = (page - 1) * limit;
     const toRadians = Math.PI / 180;
