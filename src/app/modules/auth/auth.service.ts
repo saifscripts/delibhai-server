@@ -96,6 +96,7 @@ const verifyOTP = async (payload: IVerifyOTP) => {
                 id: await generateRiderId(),
                 mobile: user.tempMobile,
                 contactNo1: user.tempMobile,
+                contactNo2: user.tempMobile,
                 status: 'active',
             },
         },
