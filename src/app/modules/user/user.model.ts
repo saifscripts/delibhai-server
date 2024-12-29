@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import { Schema, model } from 'mongoose';
 import config from '../../config';
+import { RentType, ServiceStatus } from './user.constant';
 import { IAddress, IArea, IUser, UserModel } from './user.interface';
 
 const addressSchema = new Schema<IAddress>(
@@ -103,7 +104,7 @@ const userSchema = new Schema<IUser, UserModel>(
         rentType: [
             {
                 type: String,
-                enum: ['লোকাল', 'রিজার্ভ', 'কন্টাক্ট'],
+                enum: RentType,
             },
         ],
         mainStation: addressSchema,
@@ -116,7 +117,7 @@ const userSchema = new Schema<IUser, UserModel>(
         ],
         serviceStatus: {
             type: String,
-            enum: ['off', 'scheduled', 'on'],
+            enum: ServiceStatus,
             default: 'scheduled',
         },
         liveLocation: {

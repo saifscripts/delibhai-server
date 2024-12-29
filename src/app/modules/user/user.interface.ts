@@ -1,7 +1,9 @@
 import { Model, Types } from 'mongoose';
-import { USER_ROLE } from './user.constant';
+import { RentType, ServiceStatus, USER_ROLE } from './user.constant';
 
 export type IUserRole = keyof typeof USER_ROLE;
+export type IServiceStatus = (typeof ServiceStatus)[number];
+export type IRentType = (typeof RentType)[number];
 
 interface ICropData {
     unit: string;
@@ -41,15 +43,11 @@ export interface IUser {
     ownerEmail: string;
     vehiclePhotos: string[];
     serviceType: 'ব্যক্তিগত' | 'ভাড়ায় চালিত';
-    rentType:
-        | 'লোকাল ভাড়া'
-        | 'রিজার্ভ ভাড়া'
-        | 'লোকাল ও রিজার্ভ ভাড়া'
-        | 'কন্টাক্ট ভাড়া';
+    rentType: IRentType[];
     mainStation: IAddress;
     serviceArea: IArea[];
     serviceTimeSlots: ITimeSlot[];
-    serviceStatus: 'off' | 'scheduled' | 'on';
+    serviceStatus: IServiceStatus;
     liveLocation: IGeoLocation;
     manualLocation: IGeoLocation;
     videoURL: string;

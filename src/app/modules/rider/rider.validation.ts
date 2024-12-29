@@ -2,6 +2,7 @@ import { Types } from 'mongoose';
 import { isMobilePhone } from 'validator';
 import { z } from 'zod';
 import { isNID } from '../../utils/validators';
+import { RentType, ServiceStatus } from '../user/user.constant';
 
 const objectId = z
     .string({ required_error: 'ID is required!' })
@@ -208,7 +209,7 @@ const updateRiderValidationSchema = z.object({
             .optional(),
         rentType: z
             .array(
-                z.enum(['লোকাল', 'রিজার্ভ', 'কন্টাক্ট'], {
+                z.enum(RentType, {
                     invalid_type_error: 'Invalid rent type!',
                 }),
             )
@@ -219,7 +220,7 @@ const updateRiderValidationSchema = z.object({
             .array(z.object({ start: z.string(), end: z.string() }))
             .optional(),
         serviceStatus: z
-            .enum(['off', 'scheduled', 'on'], {
+            .enum(ServiceStatus, {
                 invalid_type_error: 'Invalid service status!',
             })
             .optional(),

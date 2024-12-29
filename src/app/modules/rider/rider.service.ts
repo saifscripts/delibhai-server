@@ -1,6 +1,6 @@
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
-import { USER_ROLE } from '../user/user.constant';
+import { SERVICE_STATUS, USER_ROLE } from '../user/user.constant';
 import { IUser } from '../user/user.interface';
 import { User } from '../user/user.model';
 import { IRiderFilter } from './rider.interface';
@@ -20,6 +20,7 @@ const getRiders = async (query: Record<string, unknown>) => {
 
     const filters: IRiderFilter = {
         role: USER_ROLE.rider,
+        serviceStatus: { $ne: SERVICE_STATUS.deactivated },
     };
 
     if (vehicleSubType) {
