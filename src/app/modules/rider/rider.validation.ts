@@ -4,29 +4,91 @@ import { z } from 'zod';
 import { isNID } from '../../utils/validators';
 import { RentType, ServiceStatus } from '../user/user.constant';
 
-const objectId = z
+const ObjectId = z
     .string({ required_error: 'ID is required!' })
     .refine((value) => Types.ObjectId.isValid(value), {
         message: 'Invalid ObjectId',
     });
 
-const addressSchema = z.object({
-    division: z.object({ title: z.string(), _id: objectId }).optional(),
-    district: z.object({ title: z.string(), _id: objectId }).optional(),
-    upazila: z.object({ title: z.string(), _id: objectId }).optional(),
-    union: z.object({ title: z.string(), _id: objectId }).optional(),
-    village: z.object({ title: z.string(), _id: objectId }).optional(),
+const AreaSchema = z.object({
+    division: z.object({ title: z.string(), _id: ObjectId }).optional(),
+    district: z.object({ title: z.string(), _id: ObjectId }).optional(),
+    upazila: z.object({ title: z.string(), _id: ObjectId }).optional(),
+    union: z.object({ title: z.string(), _id: ObjectId }).optional(),
+    village: z.array(z.object({ title: z.string(), _id: ObjectId })).optional(),
 });
 
-const areaSchema = z.object({
-    division: z.object({ title: z.string(), _id: objectId }).optional(),
-    district: z.object({ title: z.string(), _id: objectId }).optional(),
-    upazila: z.object({ title: z.string(), _id: objectId }).optional(),
-    union: z.object({ title: z.string(), _id: objectId }).optional(),
-    village: z.array(z.object({ title: z.string(), _id: objectId })).optional(),
+export const StrictAddressSchema = z.object({
+    division: z.object(
+        {
+            _id: z.string(),
+            title: z.string(),
+        },
+        { required_error: 'Division is required' },
+    ),
+    district: z.object(
+        {
+            _id: z.string(),
+            title: z.string(),
+        },
+        { required_error: 'District is required' },
+    ),
+    upazila: z.object(
+        {
+            _id: z.string(),
+            title: z.string(),
+        },
+        { required_error: 'Upazila is required' },
+    ),
+    union: z.object(
+        {
+            _id: z.string(),
+            title: z.string(),
+        },
+        { required_error: 'Union is required' },
+    ),
+    village: z
+        .object({
+            _id: z.string(),
+            title: z.string(),
+        })
+        .optional(),
 });
 
-const locationSchema = z.object({
+export const FlexibleAddressSchema = z.object({
+    division: z
+        .object({
+            _id: z.string(),
+            title: z.string(),
+        })
+        .optional(),
+    district: z
+        .object({
+            _id: z.string(),
+            title: z.string(),
+        })
+        .optional(),
+    upazila: z
+        .object({
+            _id: z.string(),
+            title: z.string(),
+        })
+        .optional(),
+    union: z
+        .object({
+            _id: z.string(),
+            title: z.string(),
+        })
+        .optional(),
+    village: z
+        .object({
+            _id: z.string(),
+            title: z.string(),
+        })
+        .optional(),
+});
+
+const LocationSchema = z.object({
     latitude: z.number(),
     longitude: z.number(),
 });
@@ -176,8 +238,8 @@ const updateRiderValidationSchema = z.object({
             )
             .nullable()
             .optional(),
-        presentAddress: addressSchema.optional(),
-        permanentAddress: addressSchema.optional(),
+        presentAddress: FlexibleAddressSchema.optional(),
+        permanentAddress: FlexibleAddressSchema.optional(),
         vehicleType: z.string().trim().optional(),
         vehicleSubType: z.string().trim().optional(),
         vehicleBrand: z.string().trim().optional(),
@@ -189,7 +251,7 @@ const updateRiderValidationSchema = z.object({
             .trim()
             .min(3, 'Name must be at least 3 characters long!')
             .optional(),
-        ownerAddress: addressSchema.optional(),
+        ownerAddress: FlexibleAddressSchema.optional(),
         ownerContactNo: z
             .string()
             .trim()
@@ -214,8 +276,8 @@ const updateRiderValidationSchema = z.object({
                 }),
             )
             .optional(),
-        mainStation: addressSchema.optional(),
-        serviceArea: z.array(areaSchema).optional(),
+        mainStation: StrictAddressSchema.optional(),
+        serviceArea: z.array(AreaSchema).optional(),
         serviceTimeSlots: z
             .array(z.object({ start: z.string(), end: z.string() }))
             .optional(),
@@ -224,14 +286,14 @@ const updateRiderValidationSchema = z.object({
                 invalid_type_error: 'Invalid service status!',
             })
             .optional(),
-        manualLocation: locationSchema.optional(),
+        manualLocation: LocationSchema.optional(),
         videoURL: z.string().url('Invalid URL!').optional(),
     }),
 });
 
 const updateLocationValidationSchema = z.object({
     body: z.object({
-        liveLocation: locationSchema,
+        liveLocation: LocationSchema,
     }),
 });
 
