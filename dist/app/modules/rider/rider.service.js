@@ -24,6 +24,7 @@ const getRiders = (query) => __awaiter(void 0, void 0, void 0, function* () {
     vehicleSubType, rentType, } = query;
     const filters = {
         role: user_constant_1.USER_ROLE.rider,
+        serviceStatus: { $ne: user_constant_1.SERVICE_STATUS.deactivated },
     };
     if (vehicleSubType) {
         filters.vehicleSubType = { $in: vehicleSubType.split(',') };

@@ -5,6 +5,7 @@ const mongoose_1 = require("mongoose");
 const validator_1 = require("validator");
 const zod_1 = require("zod");
 const validators_1 = require("../../utils/validators");
+const user_constant_1 = require("../user/user.constant");
 const objectId = zod_1.z
     .string({ required_error: 'ID is required!' })
     .refine((value) => mongoose_1.Types.ObjectId.isValid(value), {
@@ -184,7 +185,7 @@ const updateRiderValidationSchema = zod_1.z.object({
         })
             .optional(),
         rentType: zod_1.z
-            .array(zod_1.z.enum(['লোকাল', 'রিজার্ভ', 'কন্টাক্ট'], {
+            .array(zod_1.z.enum(user_constant_1.RentType, {
             invalid_type_error: 'Invalid rent type!',
         }))
             .optional(),
@@ -194,7 +195,7 @@ const updateRiderValidationSchema = zod_1.z.object({
             .array(zod_1.z.object({ start: zod_1.z.string(), end: zod_1.z.string() }))
             .optional(),
         serviceStatus: zod_1.z
-            .enum(['off', 'scheduled', 'on'], {
+            .enum(user_constant_1.ServiceStatus, {
             invalid_type_error: 'Invalid service status!',
         })
             .optional(),

@@ -16,6 +16,7 @@ exports.User = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const mongoose_1 = require("mongoose");
 const config_1 = __importDefault(require("../../config"));
+const user_constant_1 = require("./user.constant");
 const addressSchema = new mongoose_1.Schema({
     division: {
         title: String,
@@ -107,7 +108,7 @@ const userSchema = new mongoose_1.Schema({
     rentType: [
         {
             type: String,
-            enum: ['লোকাল', 'রিজার্ভ', 'কন্টাক্ট'],
+            enum: user_constant_1.RentType,
         },
     ],
     mainStation: addressSchema,
@@ -120,7 +121,7 @@ const userSchema = new mongoose_1.Schema({
     ],
     serviceStatus: {
         type: String,
-        enum: ['off', 'scheduled', 'on'],
+        enum: user_constant_1.ServiceStatus,
         default: 'scheduled',
     },
     liveLocation: {
