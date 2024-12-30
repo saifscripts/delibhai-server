@@ -30,33 +30,30 @@ const addressSchema = new Schema<IAddress>(
     { _id: false },
 );
 
-const areaSchema = new Schema<IArea>(
-    {
-        division: {
-            title: String,
-            _id: { type: Schema.Types.ObjectId, ref: 'Division' },
-        },
-        district: {
-            title: String,
-            _id: { type: Schema.Types.ObjectId, ref: 'District' },
-        },
-        upazila: {
-            title: String,
-            _id: { type: Schema.Types.ObjectId, ref: 'Upazila' },
-        },
-        union: {
-            title: String,
-            _id: { type: Schema.Types.ObjectId, ref: 'Union' },
-        },
-        village: [
-            {
-                title: String,
-                _id: { type: Schema.Types.ObjectId, ref: 'Village' },
-            },
-        ],
+const areaSchema = new Schema<IArea>({
+    division: {
+        title: String,
+        _id: { type: Schema.Types.ObjectId, ref: 'Division' },
     },
-    { _id: false },
-);
+    district: {
+        title: String,
+        _id: { type: Schema.Types.ObjectId, ref: 'District' },
+    },
+    upazila: {
+        title: String,
+        _id: { type: Schema.Types.ObjectId, ref: 'Upazila' },
+    },
+    union: {
+        title: String,
+        _id: { type: Schema.Types.ObjectId, ref: 'Union' },
+    },
+    village: [
+        {
+            title: String,
+            _id: { type: Schema.Types.ObjectId, ref: 'Village' },
+        },
+    ],
+});
 
 const userSchema = new Schema<IUser, UserModel>(
     {

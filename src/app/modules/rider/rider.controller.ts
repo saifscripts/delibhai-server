@@ -23,6 +23,29 @@ const updateRider = catchAsync(async (req, res) => {
     });
 });
 
+const addServiceArea = catchAsync(async (req, res) => {
+    const result = await RiderServices.addServiceArea(req.user.id, req.body);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: 'Service area added successfully!',
+        data: result,
+    });
+});
+
+const deleteServiceArea = catchAsync(async (req, res) => {
+    const result = await RiderServices.deleteServiceArea(
+        req.user.id,
+        req.params.id,
+    );
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        message: 'Service area deleted successfully!',
+        data: result,
+    });
+});
+
 const updateLocation = catchAsync(async (req, res) => {
     const result = await RiderServices.updateLocation(req.user.id, req.body);
 
@@ -46,6 +69,8 @@ const getLocation = catchAsync(async (req, res) => {
 export const RiderControllers = {
     getRiders,
     updateRider,
+    addServiceArea,
+    deleteServiceArea,
     updateLocation,
     getLocation,
 };

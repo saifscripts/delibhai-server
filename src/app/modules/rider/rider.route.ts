@@ -20,6 +20,21 @@ router
     );
 
 router
+    .route('/service-area')
+    .post(
+        auth(USER_ROLE.rider, USER_ROLE.admin),
+        validateRequest(RiderValidations.addServiceAreaValidationSchema),
+        RiderControllers.addServiceArea,
+    );
+
+router
+    .route('/service-area/:id')
+    .delete(
+        auth(USER_ROLE.rider, USER_ROLE.admin),
+        RiderControllers.deleteServiceArea,
+    );
+
+router
     .route('/location')
     .put(
         auth(USER_ROLE.rider, USER_ROLE.admin),
