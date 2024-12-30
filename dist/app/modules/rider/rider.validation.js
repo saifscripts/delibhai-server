@@ -1,31 +1,80 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RiderValidations = void 0;
+exports.RiderValidations = exports.FlexibleAddressSchema = exports.StrictAddressSchema = void 0;
 const mongoose_1 = require("mongoose");
 const validator_1 = require("validator");
 const zod_1 = require("zod");
 const validators_1 = require("../../utils/validators");
 const user_constant_1 = require("../user/user.constant");
-const objectId = zod_1.z
+const ObjectId = zod_1.z
     .string({ required_error: 'ID is required!' })
     .refine((value) => mongoose_1.Types.ObjectId.isValid(value), {
     message: 'Invalid ObjectId',
 });
-const addressSchema = zod_1.z.object({
-    division: zod_1.z.object({ title: zod_1.z.string(), _id: objectId }).optional(),
-    district: zod_1.z.object({ title: zod_1.z.string(), _id: objectId }).optional(),
-    upazila: zod_1.z.object({ title: zod_1.z.string(), _id: objectId }).optional(),
-    union: zod_1.z.object({ title: zod_1.z.string(), _id: objectId }).optional(),
-    village: zod_1.z.object({ title: zod_1.z.string(), _id: objectId }).optional(),
+const AreaSchema = zod_1.z.object({
+    division: zod_1.z.object({ title: zod_1.z.string(), _id: ObjectId }).optional(),
+    district: zod_1.z.object({ title: zod_1.z.string(), _id: ObjectId }).optional(),
+    upazila: zod_1.z.object({ title: zod_1.z.string(), _id: ObjectId }).optional(),
+    union: zod_1.z.object({ title: zod_1.z.string(), _id: ObjectId }).optional(),
+    village: zod_1.z.array(zod_1.z.object({ title: zod_1.z.string(), _id: ObjectId })).optional(),
 });
-const areaSchema = zod_1.z.object({
-    division: zod_1.z.object({ title: zod_1.z.string(), _id: objectId }).optional(),
-    district: zod_1.z.object({ title: zod_1.z.string(), _id: objectId }).optional(),
-    upazila: zod_1.z.object({ title: zod_1.z.string(), _id: objectId }).optional(),
-    union: zod_1.z.object({ title: zod_1.z.string(), _id: objectId }).optional(),
-    village: zod_1.z.array(zod_1.z.object({ title: zod_1.z.string(), _id: objectId })).optional(),
+exports.StrictAddressSchema = zod_1.z.object({
+    division: zod_1.z.object({
+        _id: zod_1.z.string(),
+        title: zod_1.z.string(),
+    }, { required_error: 'Division is required' }),
+    district: zod_1.z.object({
+        _id: zod_1.z.string(),
+        title: zod_1.z.string(),
+    }, { required_error: 'District is required' }),
+    upazila: zod_1.z.object({
+        _id: zod_1.z.string(),
+        title: zod_1.z.string(),
+    }, { required_error: 'Upazila is required' }),
+    union: zod_1.z.object({
+        _id: zod_1.z.string(),
+        title: zod_1.z.string(),
+    }, { required_error: 'Union is required' }),
+    village: zod_1.z
+        .object({
+        _id: zod_1.z.string(),
+        title: zod_1.z.string(),
+    })
+        .optional(),
 });
-const locationSchema = zod_1.z.object({
+exports.FlexibleAddressSchema = zod_1.z.object({
+    division: zod_1.z
+        .object({
+        _id: zod_1.z.string(),
+        title: zod_1.z.string(),
+    })
+        .optional(),
+    district: zod_1.z
+        .object({
+        _id: zod_1.z.string(),
+        title: zod_1.z.string(),
+    })
+        .optional(),
+    upazila: zod_1.z
+        .object({
+        _id: zod_1.z.string(),
+        title: zod_1.z.string(),
+    })
+        .optional(),
+    union: zod_1.z
+        .object({
+        _id: zod_1.z.string(),
+        title: zod_1.z.string(),
+    })
+        .optional(),
+    village: zod_1.z
+        .object({
+        _id: zod_1.z.string(),
+        title: zod_1.z.string(),
+    })
+        .optional(),
+});
+const LocationSchema = zod_1.z.object({
     latitude: zod_1.z.number(),
     longitude: zod_1.z.number(),
 });
@@ -153,8 +202,8 @@ const updateRiderValidationSchema = zod_1.z.object({
         })
             .nullable()
             .optional(),
-        presentAddress: addressSchema.optional(),
-        permanentAddress: addressSchema.optional(),
+        presentAddress: exports.FlexibleAddressSchema.optional(),
+        permanentAddress: exports.FlexibleAddressSchema.optional(),
         vehicleType: zod_1.z.string().trim().optional(),
         vehicleSubType: zod_1.z.string().trim().optional(),
         vehicleBrand: zod_1.z.string().trim().optional(),
@@ -166,7 +215,7 @@ const updateRiderValidationSchema = zod_1.z.object({
             .trim()
             .min(3, 'Name must be at least 3 characters long!')
             .optional(),
-        ownerAddress: addressSchema.optional(),
+        ownerAddress: exports.FlexibleAddressSchema.optional(),
         ownerContactNo: zod_1.z
             .string()
             .trim()
@@ -189,8 +238,8 @@ const updateRiderValidationSchema = zod_1.z.object({
             invalid_type_error: 'Invalid rent type!',
         }))
             .optional(),
-        mainStation: addressSchema.optional(),
-        serviceArea: zod_1.z.array(areaSchema).optional(),
+        mainStation: exports.StrictAddressSchema.optional(),
+        serviceArea: zod_1.z.array(AreaSchema).optional(),
         serviceTimeSlots: zod_1.z
             .array(zod_1.z.object({ start: zod_1.z.string(), end: zod_1.z.string() }))
             .optional(),
@@ -199,17 +248,21 @@ const updateRiderValidationSchema = zod_1.z.object({
             invalid_type_error: 'Invalid service status!',
         })
             .optional(),
-        manualLocation: locationSchema.optional(),
+        manualLocation: LocationSchema.optional(),
         videoURL: zod_1.z.string().url('Invalid URL!').optional(),
     }),
 });
 const updateLocationValidationSchema = zod_1.z.object({
     body: zod_1.z.object({
-        liveLocation: locationSchema,
+        liveLocation: LocationSchema,
     }),
+});
+const addServiceAreaValidationSchema = zod_1.z.object({
+    body: AreaSchema,
 });
 exports.RiderValidations = {
     getRidersValidationSchema,
     updateRiderValidationSchema,
     updateLocationValidationSchema,
+    addServiceAreaValidationSchema,
 };

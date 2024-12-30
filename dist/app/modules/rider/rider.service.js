@@ -290,6 +290,52 @@ const updateRider = (id, payload) => __awaiter(void 0, void 0, void 0, function*
     }
     return updatedRider;
 });
+const addServiceArea = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const updatedRider = yield user_model_1.User.findByIdAndUpdate(id, {
+        $push: { serviceArea: payload },
+    }, {
+        new: true,
+    });
+    if (!updatedRider) {
+        throw new AppError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'Failed to add service area!');
+    }
+    return updatedRider;
+});
+const deleteServiceArea = (id, serviceAreaId) => __awaiter(void 0, void 0, void 0, function* () {
+    const updatedRider = yield user_model_1.User.findByIdAndUpdate(id, {
+        $pull: { serviceArea: { _id: serviceAreaId } },
+    }, {
+        new: true,
+    });
+    if (!updatedRider) {
+        throw new AppError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'Failed to delete service area!');
+    }
+    return updatedRider;
+});
+// const updateServiceArea = async (
+//     id: string,
+//     serviceAreaId: string,
+//     payload: IArea,
+// ) => {
+//     const updatedRider = await User.findOneAndUpdate(
+//         { _id: id, 'serviceArea._id': serviceAreaId },
+//         {
+//             $set: {
+//                 'serviceArea.$': payload,
+//             },
+//         },
+//         {
+//             new: true,
+//         },
+//     );
+//     if (!updatedRider) {
+//         throw new AppError(
+//             httpStatus.INTERNAL_SERVER_ERROR,
+//             'Failed to update service area!',
+//         );
+//     }
+//     return updatedRider;
+// };
 const updateLocation = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
     payload.liveLocation.timestamp = Date.now();
     const updatedRider = yield user_model_1.User.findByIdAndUpdate(id, payload, {
@@ -310,6 +356,9 @@ const getLocation = (id) => __awaiter(void 0, void 0, void 0, function* () {
 exports.RiderServices = {
     getRiders,
     updateRider,
+    addServiceArea,
+    deleteServiceArea,
+    // updateServiceArea,
     updateLocation,
     getLocation,
 };

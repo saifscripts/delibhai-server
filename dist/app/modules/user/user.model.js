@@ -62,7 +62,7 @@ const areaSchema = new mongoose_1.Schema({
             _id: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Village' },
         },
     ],
-}, { _id: false });
+});
 const userSchema = new mongoose_1.Schema({
     id: { type: String, required: true, unique: true },
     name: { type: String, required: true },

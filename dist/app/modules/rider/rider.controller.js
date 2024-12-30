@@ -33,6 +33,22 @@ const updateRider = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
         data: result,
     });
 }));
+const addServiceArea = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield rider_service_1.RiderServices.addServiceArea(req.user.id, req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        message: 'Service area added successfully!',
+        data: result,
+    });
+}));
+const deleteServiceArea = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield rider_service_1.RiderServices.deleteServiceArea(req.user.id, req.params.id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        message: 'Service area deleted successfully!',
+        data: result,
+    });
+}));
 const updateLocation = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield rider_service_1.RiderServices.updateLocation(req.user.id, req.body);
     (0, sendResponse_1.default)(res, {
@@ -52,6 +68,8 @@ const getLocation = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, vo
 exports.RiderControllers = {
     getRiders,
     updateRider,
+    addServiceArea,
+    deleteServiceArea,
     updateLocation,
     getLocation,
 };
