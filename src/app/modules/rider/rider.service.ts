@@ -345,32 +345,32 @@ const deleteServiceArea = async (id: string, serviceAreaId: string) => {
     return updatedRider;
 };
 
-// const updateServiceArea = async (
-//     id: string,
-//     serviceAreaId: string,
-//     payload: IArea,
-// ) => {
-//     const updatedRider = await User.findOneAndUpdate(
-//         { _id: id, 'serviceArea._id': serviceAreaId },
-//         {
-//             $set: {
-//                 'serviceArea.$': payload,
-//             },
-//         },
-//         {
-//             new: true,
-//         },
-//     );
+const updateServiceArea = async (
+    userId: string,
+    serviceAreaId: string,
+    payload: IArea,
+) => {
+    const updatedRider = await User.findOneAndUpdate(
+        { _id: userId, 'serviceArea._id': serviceAreaId },
+        {
+            $set: {
+                'serviceArea.$': payload,
+            },
+        },
+        {
+            new: true,
+        },
+    );
 
-//     if (!updatedRider) {
-//         throw new AppError(
-//             httpStatus.INTERNAL_SERVER_ERROR,
-//             'Failed to update service area!',
-//         );
-//     }
+    if (!updatedRider) {
+        throw new AppError(
+            httpStatus.INTERNAL_SERVER_ERROR,
+            'Failed to update service area!',
+        );
+    }
 
-//     return updatedRider;
-// };
+    return updatedRider;
+};
 
 const updateLocation = async (
     id: string,
@@ -404,7 +404,7 @@ export const RiderServices = {
     updateRider,
     addServiceArea,
     deleteServiceArea,
-    // updateServiceArea,
+    updateServiceArea,
     updateLocation,
     getLocation,
 };
