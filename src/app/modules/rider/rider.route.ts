@@ -23,7 +23,7 @@ router
     .route('/service-area')
     .post(
         auth(USER_ROLE.rider, USER_ROLE.admin),
-        validateRequest(RiderValidations.addServiceAreaValidationSchema),
+        validateRequest(RiderValidations.serviceAreaValidationSchema),
         RiderControllers.addServiceArea,
     );
 
@@ -32,6 +32,11 @@ router
     .delete(
         auth(USER_ROLE.rider, USER_ROLE.admin),
         RiderControllers.deleteServiceArea,
+    )
+    .put(
+        auth(USER_ROLE.rider, USER_ROLE.admin),
+        validateRequest(RiderValidations.serviceAreaValidationSchema),
+        RiderControllers.updateServiceArea,
     );
 
 router

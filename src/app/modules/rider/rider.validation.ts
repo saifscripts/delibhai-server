@@ -297,7 +297,7 @@ const updateLocationValidationSchema = z.object({
     }),
 });
 
-const addServiceAreaValidationSchema = z.object({
+const serviceAreaValidationSchema = z.object({
     body: AreaSchema,
 });
 
@@ -305,5 +305,5 @@ export const RiderValidations = {
     getRidersValidationSchema,
     updateRiderValidationSchema,
     updateLocationValidationSchema,
-    addServiceAreaValidationSchema,
+    serviceAreaValidationSchema,
 };
