@@ -17,10 +17,11 @@ router
     .put((0, auth_1.default)(user_constant_1.USER_ROLE.rider, user_constant_1.USER_ROLE.admin), (0, validateRequest_1.default)(rider_validation_1.RiderValidations.updateRiderValidationSchema), rider_controller_1.RiderControllers.updateRider);
 router
     .route('/service-area')
-    .post((0, auth_1.default)(user_constant_1.USER_ROLE.rider, user_constant_1.USER_ROLE.admin), (0, validateRequest_1.default)(rider_validation_1.RiderValidations.addServiceAreaValidationSchema), rider_controller_1.RiderControllers.addServiceArea);
+    .post((0, auth_1.default)(user_constant_1.USER_ROLE.rider, user_constant_1.USER_ROLE.admin), (0, validateRequest_1.default)(rider_validation_1.RiderValidations.serviceAreaValidationSchema), rider_controller_1.RiderControllers.addServiceArea);
 router
     .route('/service-area/:id')
-    .delete((0, auth_1.default)(user_constant_1.USER_ROLE.rider, user_constant_1.USER_ROLE.admin), rider_controller_1.RiderControllers.deleteServiceArea);
+    .delete((0, auth_1.default)(user_constant_1.USER_ROLE.rider, user_constant_1.USER_ROLE.admin), rider_controller_1.RiderControllers.deleteServiceArea)
+    .put((0, auth_1.default)(user_constant_1.USER_ROLE.rider, user_constant_1.USER_ROLE.admin), (0, validateRequest_1.default)(rider_validation_1.RiderValidations.serviceAreaValidationSchema), rider_controller_1.RiderControllers.updateServiceArea);
 router
     .route('/location')
     .put((0, auth_1.default)(user_constant_1.USER_ROLE.rider, user_constant_1.USER_ROLE.admin), (0, validateRequest_1.default)(rider_validation_1.RiderValidations.updateLocationValidationSchema), rider_controller_1.RiderControllers.updateLocation);

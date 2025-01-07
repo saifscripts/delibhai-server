@@ -257,12 +257,12 @@ const updateLocationValidationSchema = zod_1.z.object({
         liveLocation: LocationSchema,
     }),
 });
-const addServiceAreaValidationSchema = zod_1.z.object({
+const serviceAreaValidationSchema = zod_1.z.object({
     body: AreaSchema,
 });
 exports.RiderValidations = {
     getRidersValidationSchema,
     updateRiderValidationSchema,
     updateLocationValidationSchema,
-    addServiceAreaValidationSchema,
+    serviceAreaValidationSchema,
 };
