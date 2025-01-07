@@ -27,7 +27,7 @@ function main() {
             });
             const io = new socket_io_1.Server(server, {
                 cors: {
-                    origin: config_1.default.client_base_url,
+                    origin: '*',
                 },
             });
             io.on('connection', () => {
