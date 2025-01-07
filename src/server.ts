@@ -17,7 +17,7 @@ async function main() {
 
         const io = new SocketServer(server, {
             cors: {
-                origin: config.client_base_url,
+                origin: '*',
             },
         });
 
