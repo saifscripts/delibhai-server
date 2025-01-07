@@ -1,5 +1,6 @@
 import { Server } from 'http';
 import mongoose from 'mongoose';
+import { Server as SocketServer } from 'socket.io';
 import app from './app';
 import config from './app/config';
 
@@ -12,6 +13,17 @@ async function main() {
         await mongoose.connect(config.db_uri as string);
         server = app.listen(config.port, () => {
             console.log(`App is running on port ${config.port}`);
+        });
+
+        const io = new SocketServer(server, {
+            cors: {
+                origin: config.client_base_url,
+            },
+        });
+
+        io.on('connection', () => {
+            console.log('A user connected');
+            io.emit('connection', 'A user connected');
         });
     } catch (error) {
         console.log(error);
