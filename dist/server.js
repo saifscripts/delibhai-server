@@ -13,6 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
+const socket_io_1 = require("socket.io");
 const app_1 = __importDefault(require("./app"));
 const config_1 = __importDefault(require("./app/config"));
 let server;
@@ -23,6 +24,15 @@ function main() {
             yield mongoose_1.default.connect(config_1.default.db_uri);
             server = app_1.default.listen(config_1.default.port, () => {
                 console.log(`App is running on port ${config_1.default.port}`);
+            });
+            const io = new socket_io_1.Server(server, {
+                cors: {
+                    origin: config_1.default.client_base_url,
+                },
+            });
+            io.on('connection', () => {
+                console.log('A user connected');
+                io.emit('connection', 'A user connected');
             });
         }
         catch (error) {
