@@ -1,116 +1,33 @@
 import httpStatus from 'http-status';
-import QueryBuilder from '../../builders/QueryBuilder';
 import AppError from '../../errors/AppError';
 import { IVehicleCategory } from './vehicle-category.interface';
 import { VehicleCategory } from './vehicle-category.model';
 
-const createVillages = async (villages: IVehicleCategory[]) => {
-    const existingVillages = await VehicleCategory.find({
-        $or: villages.map((village) => ({
-            unionId: village.unionId,
-            title: village.title,
-        })),
-    });
+const createVehicleCategory = async (payload: IVehicleCategory) => {
+    const newCategory = await VehicleCategory.create(payload);
 
-    if (existingVillages.length) {
-        throw new AppError(
-            httpStatus.CONFLICT,
-            'One or more villages already exists!',
-        );
-    }
-
-    const newVillages = await VehicleCategory.create(villages);
-
-    if (!newVillages.length) {
+    if (newCategory) {
         throw new AppError(
             httpStatus.INTERNAL_SERVER_ERROR,
             'Failed to create villages',
         );
     }
 
-    return newVillages;
+    return newCategory;
 };
 
-const updateVillage = async (
-    id: string,
-    payload: Pick<IVehicleCategory, 'title'>,
-) => {
-    const village = await VehicleCategory.findById(id);
+// const updateVehicleCategory = async (
+//     id: string,
+//     payload: Partial<IVehicleCategory>,
+// ) => {};
 
-    if (!village) {
-        throw new AppError(httpStatus.NOT_FOUND, 'Village not found!');
-    }
+// const deleteVehicleCategory = async (id: string) => {};
 
-    // if the title is same as before, should ignore updating in db
-    // THIS IS IMPORTANT to avoid conflict error.
-    if (village.title === payload.title) {
-        return village;
-    }
+// const getVehicleCategories = async (query: Record<string, unknown>) => {};
 
-    // check if same titled village exists with same unionId
-    const isVillageExists = await VehicleCategory.findOne({
-        unionId: village.unionId,
-        title: payload.title,
-    });
-
-    if (isVillageExists) {
-        throw new AppError(httpStatus.CONFLICT, 'Village already exists!');
-    }
-
-    const updatedVillage = await VehicleCategory.findByIdAndUpdate(
-        id,
-        payload,
-        {
-            new: true,
-        },
-    );
-
-    if (!updatedVillage) {
-        throw new AppError(
-            httpStatus.INTERNAL_SERVER_ERROR,
-            'Failed to update village!',
-        );
-    }
-
-    return updatedVillage;
-};
-
-const deleteVillage = async (id: string) => {
-    const deletedVillage = await VehicleCategory.findByIdAndUpdate(
-        id,
-        { isDeleted: true },
-        {
-            new: true,
-        },
-    );
-
-    if (!deletedVillage) {
-        throw new AppError(httpStatus.NOT_FOUND, 'Village not found!');
-    }
-
-    return deletedVillage;
-};
-
-const getVillages = async (unionId: string, query: Record<string, unknown>) => {
-    const villageQuery = new QueryBuilder(
-        VehicleCategory.find({ unionId }),
-        query,
-    )
-        .filter()
-        .fields();
-
-    const villages = await villageQuery.modelQuery;
-
-    if (!villages.length) {
-        throw new AppError(httpStatus.NOT_FOUND, 'No village found!');
-    }
-
-    return villages;
-};
-
-export const VillageServices = {
-    createVillages,
-    updateVillage,
-    deleteVillage,
-    getVillages,
+export const VehicleCategoryServices = {
+    createVehicleCategory,
+    // updateVehicleCategory,
+    // deleteVehicleCategory,
+    // getVehicleCategories,
 };
