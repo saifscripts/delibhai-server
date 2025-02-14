@@ -16,8 +16,9 @@ exports.VehicleCategoryServices = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const AppError_1 = __importDefault(require("../../errors/AppError"));
 const vehicle_category_model_1 = require("./vehicle-category.model");
+const vehicle_category_utils_1 = require("./vehicle-category.utils");
 const createVehicleCategory = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const newCategory = yield vehicle_category_model_1.VehicleCategory.create(payload);
+    const newCategory = yield vehicle_category_model_1.VehicleCategory.create(Object.assign(Object.assign({}, payload), { slug: payload.slug || (0, vehicle_category_utils_1.createSlug)(payload.title_en), order: yield (0, vehicle_category_utils_1.generateCategoryOrder)() }));
     if (!newCategory) {
         throw new AppError_1.default(http_status_1.default.INTERNAL_SERVER_ERROR, 'Failed to create Vehicle Category');
     }
