@@ -6,10 +6,10 @@ import { VehicleCategory } from './vehicle-category.model';
 const createVehicleCategory = async (payload: IVehicleCategory) => {
     const newCategory = await VehicleCategory.create(payload);
 
-    if (newCategory) {
+    if (!newCategory) {
         throw new AppError(
             httpStatus.INTERNAL_SERVER_ERROR,
-            'Failed to create villages',
+            'Failed to create Vehicle Category',
         );
     }
 

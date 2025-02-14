@@ -1,57 +1,16 @@
-import { Types } from 'mongoose';
 import { z } from 'zod';
-import { hasDuplicateUnionIdAndTitle } from './vehicle-category.utils';
 
-const createVillagesValidationSchema = z.object({
+const createVehicleCategoryValidationSchema = z.object({
     body: z.object({
-        villages: z
-            .array(
-                z.object({
-                    unionId: z
-                        .string({ required_error: 'UnionID is required!' })
-                        .refine((value) => Types.ObjectId.isValid(value), {
-                            message: 'Invalid UnionID',
-                        }),
-                    wardId: z
-                        .string({
-                            required_error: 'WardID is required!',
-                        })
-                        .min(1, 'WardID is required!')
-                        .refine(
-                            (val) =>
-                                !Number.isNaN(Number(val)) && Number(val) > 0,
-                            {
-                                message: 'Invalid WardID',
-                            },
-                        ),
-                    title: z
-                        .string({
-                            required_error: 'Title is required!',
-                        })
-                        .trim()
-                        .min(1, 'Title is required!'),
-                }),
-            )
-            .min(1, 'Village is required')
-            .refine(
-                (villages) => !hasDuplicateUnionIdAndTitle(villages),
-                'Duplicate village exists',
-            ),
+        icon: z.string().url('Invalid icon url'),
+        title: z.string().trim().min(1, 'Title is required!'),
+        title_en: z.string().trim().min(1, 'English Title is required!'),
+        slug: z.string().trim().min(1, 'Slug is required!'),
+        order: z.number({ required_error: 'Order is required!' }),
     }),
 });
 
-const updateVillageValidationSchema = z.object({
-    body: z.object({
-        title: z
-            .string({
-                required_error: 'Title is required!',
-            })
-            .trim()
-            .min(1, 'Title is required!'),
-    }),
-});
-
-export const VillageValidations = {
-    createVillagesValidationSchema,
-    updateVillageValidationSchema,
+export const VehicleCategoryValidations = {
+    createVehicleCategoryValidationSchema,
+    // updateVillageValidationSchema,
 };

@@ -4,9 +4,9 @@ import { IVehicleCategory } from './vehicle-category.interface';
 const vehicleCategorySchema = new Schema<IVehicleCategory>(
     {
         icon: { type: String, required: true },
-        title: { type: String, required: true },
-        title_en: { type: String, required: true },
-        slug: { type: String, required: true },
+        title: { type: String, required: true, unique: true },
+        title_en: { type: String, required: true, unique: true },
+        slug: { type: String, required: true, unique: true },
         order: { type: Number, required: true },
         isDeleted: { type: Boolean, default: false },
     },

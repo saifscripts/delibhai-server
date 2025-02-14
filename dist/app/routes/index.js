@@ -11,6 +11,7 @@ const rider_route_1 = require("../modules/rider/rider.route");
 const union_route_1 = require("../modules/union/union.route");
 const upazila_route_1 = require("../modules/upazila/upazila.route");
 const user_route_1 = require("../modules/user/user.route");
+const vehicle_category_route_1 = require("../modules/vehicle-categories/vehicle-category.route");
 const village_route_1 = require("../modules/village/village.route");
 const router = express_1.default.Router();
 const routes = [
@@ -22,6 +23,7 @@ const routes = [
     { path: '/upazila', route: upazila_route_1.UpazilaRoutes },
     { path: '/union', route: union_route_1.UnionRoutes },
     { path: '/village', route: village_route_1.VillageRoutes },
+    { path: '/vehicle/category', route: vehicle_category_route_1.VehicleCategoryRoutes },
 ];
 routes.forEach((route) => router.use(route.path, route.route));
 exports.default = router;

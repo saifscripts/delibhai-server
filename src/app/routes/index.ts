@@ -6,6 +6,7 @@ import { RiderRoutes } from '../modules/rider/rider.route';
 import { UnionRoutes } from '../modules/union/union.route';
 import { UpazilaRoutes } from '../modules/upazila/upazila.route';
 import { UserRoutes } from '../modules/user/user.route';
+import { VehicleCategoryRoutes } from '../modules/vehicle-categories/vehicle-category.route';
 import { VillageRoutes } from '../modules/village/village.route';
 
 const router = express.Router();
@@ -19,6 +20,7 @@ const routes = [
     { path: '/upazila', route: UpazilaRoutes },
     { path: '/union', route: UnionRoutes },
     { path: '/village', route: VillageRoutes },
+    { path: '/vehicle/category', route: VehicleCategoryRoutes },
 ];
 
 routes.forEach((route) => router.use(route.path, route.route));
