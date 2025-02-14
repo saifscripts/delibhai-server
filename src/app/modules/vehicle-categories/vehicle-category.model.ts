@@ -1,15 +1,13 @@
 import { Schema, model } from 'mongoose';
-import { IVillage } from './category.interface';
+import { IVehicleCategory } from './vehicle-category.interface';
 
-const villageSchema = new Schema<IVillage>(
+const vehicleCategorySchema = new Schema<IVehicleCategory>(
     {
-        unionId: {
-            type: Schema.Types.ObjectId,
-            required: true,
-            ref: 'Union',
-        },
-        wardId: { type: String, required: true },
+        icon: { type: String, required: true },
         title: { type: String, required: true },
+        title_en: { type: String, required: true },
+        slug: { type: String, required: true },
+        order: { type: Number, required: true },
         isDeleted: { type: Boolean, default: false },
     },
     {
@@ -17,7 +15,7 @@ const villageSchema = new Schema<IVillage>(
     },
 );
 
-villageSchema.pre('find', function (next) {
+vehicleCategorySchema.pre('find', function (next) {
     if (this.getOptions().getAll) {
         return next();
     }
@@ -25,7 +23,7 @@ villageSchema.pre('find', function (next) {
     next();
 });
 
-villageSchema.pre('findOne', function (next) {
+vehicleCategorySchema.pre('findOne', function (next) {
     if (this.getOptions().getAll) {
         return next();
     }
@@ -33,7 +31,7 @@ villageSchema.pre('findOne', function (next) {
     next();
 });
 
-villageSchema.pre('aggregate', function (next) {
+vehicleCategorySchema.pre('aggregate', function (next) {
     if (this.options.getAll) {
         return next();
     }
@@ -43,4 +41,7 @@ villageSchema.pre('aggregate', function (next) {
     next();
 });
 
-export const Village = model<IVillage>('Village', villageSchema);
+export const VehicleCategory = model<IVehicleCategory>(
+    'vehicleCategory',
+    vehicleCategorySchema,
+);

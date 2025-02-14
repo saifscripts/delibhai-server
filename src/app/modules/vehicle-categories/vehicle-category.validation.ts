@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { z } from 'zod';
-import { hasDuplicateUnionIdAndTitle } from './category.utils';
+import { hasDuplicateUnionIdAndTitle } from './vehicle-category.utils';
 
 const createVillagesValidationSchema = z.object({
     body: z.object({

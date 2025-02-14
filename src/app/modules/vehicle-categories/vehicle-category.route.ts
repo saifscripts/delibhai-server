@@ -2,8 +2,8 @@ import express from 'express';
 import auth from '../../middlewares/auth';
 import validateRequest from '../../middlewares/validateRequest';
 import { USER_ROLE } from '../user/user.constant';
-import { VillageControllers } from './category.controller';
-import { VillageValidations } from './category.validation';
+import { VillageControllers } from './vehicle-category.controller';
+import { VillageValidations } from './vehicle-category.validation';
 
 const router = express.Router();
 

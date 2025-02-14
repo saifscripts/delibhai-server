@@ -1,7 +1,7 @@
 import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
-import { VillageServices } from './category.service';
+import { VillageServices } from './vehicle-category.service';
 
 const createVillages = catchAsync(async (req, res) => {
     const result = await VillageServices.createVillages(req.body.villages);

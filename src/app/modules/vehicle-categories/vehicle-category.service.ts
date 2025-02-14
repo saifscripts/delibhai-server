@@ -1,11 +1,11 @@
 import httpStatus from 'http-status';
 import QueryBuilder from '../../builders/QueryBuilder';
 import AppError from '../../errors/AppError';
-import { IVillage } from './category.interface';
-import { Village } from './category.model';
+import { IVehicleCategory } from './vehicle-category.interface';
+import { VehicleCategory } from './vehicle-category.model';
 
-const createVillages = async (villages: IVillage[]) => {
-    const existingVillages = await Village.find({
+const createVillages = async (villages: IVehicleCategory[]) => {
+    const existingVillages = await VehicleCategory.find({
         $or: villages.map((village) => ({
             unionId: village.unionId,
             title: village.title,
@@ -19,7 +19,7 @@ const createVillages = async (villages: IVillage[]) => {
         );
     }
 
-    const newVillages = await Village.create(villages);
+    const newVillages = await VehicleCategory.create(villages);
 
     if (!newVillages.length) {
         throw new AppError(
@@ -31,8 +31,11 @@ const createVillages = async (villages: IVillage[]) => {
     return newVillages;
 };
 
-const updateVillage = async (id: string, payload: Pick<IVillage, 'title'>) => {
-    const village = await Village.findById(id);
+const updateVillage = async (
+    id: string,
+    payload: Pick<IVehicleCategory, 'title'>,
+) => {
+    const village = await VehicleCategory.findById(id);
 
     if (!village) {
         throw new AppError(httpStatus.NOT_FOUND, 'Village not found!');
@@ -45,7 +48,7 @@ const updateVillage = async (id: string, payload: Pick<IVillage, 'title'>) => {
     }
 
     // check if same titled village exists with same unionId
-    const isVillageExists = await Village.findOne({
+    const isVillageExists = await VehicleCategory.findOne({
         unionId: village.unionId,
         title: payload.title,
     });
@@ -54,9 +57,13 @@ const updateVillage = async (id: string, payload: Pick<IVillage, 'title'>) => {
         throw new AppError(httpStatus.CONFLICT, 'Village already exists!');
     }
 
-    const updatedVillage = await Village.findByIdAndUpdate(id, payload, {
-        new: true,
-    });
+    const updatedVillage = await VehicleCategory.findByIdAndUpdate(
+        id,
+        payload,
+        {
+            new: true,
+        },
+    );
 
     if (!updatedVillage) {
         throw new AppError(
@@ -69,7 +76,7 @@ const updateVillage = async (id: string, payload: Pick<IVillage, 'title'>) => {
 };
 
 const deleteVillage = async (id: string) => {
-    const deletedVillage = await Village.findByIdAndUpdate(
+    const deletedVillage = await VehicleCategory.findByIdAndUpdate(
         id,
         { isDeleted: true },
         {
@@ -85,7 +92,10 @@ const deleteVillage = async (id: string) => {
 };
 
 const getVillages = async (unionId: string, query: Record<string, unknown>) => {
-    const villageQuery = new QueryBuilder(Village.find({ unionId }), query)
+    const villageQuery = new QueryBuilder(
+        VehicleCategory.find({ unionId }),
+        query,
+    )
         .filter()
         .fields();
 
