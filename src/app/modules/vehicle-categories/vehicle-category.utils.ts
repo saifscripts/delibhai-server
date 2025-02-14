@@ -1,19 +1,21 @@
-interface IVillage {
-    unionId: string;
-    wardId: string;
-    title: string;
-}
+import slugify from 'slugify';
+import { VehicleCategory } from './vehicle-category.model';
 
-export function hasDuplicateUnionIdAndTitle(villages: IVillage[]): boolean {
-    const map = new Map<string, number>();
+export const createSlug = (value: string) =>
+    slugify(value, {
+        lower: true,
+        strict: true,
+        trim: true,
+    });
 
-    for (const village of villages) {
-        const key = `${village.unionId}-${village.title}`;
-        map.set(key, (map.get(key) || 0) + 1);
-        if (map.get(key)! > 1) {
-            return true;
-        }
-    }
+export const generateCategoryOrder = async () => {
+    const lastCategory = await VehicleCategory.findOne(
+        {},
+        { order: 1 },
+        { getAll: true },
+    ).sort({
+        order: -1,
+    });
 
-    return false;
-}
+    return lastCategory ? lastCategory.order + 1 : 0;
+};
